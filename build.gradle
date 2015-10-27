@@ -5,6 +5,10 @@ project.targetCompatibility = '1.8'
 version = "1.0.0-SNAPSHOT"
 group = "name.valery1707.interview"
 
+apply plugin: 'application'
+mainClassName = "name.valery1707.interview.lunchVote.Launcher"
+applicationName = project.name
+
 repositories {
 	mavenCentral()
 }
