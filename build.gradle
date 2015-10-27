@@ -1,3 +1,12 @@
+repositories {
+	mavenCentral()
+}
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+}
+
 apply plugin: 'java'
 project.sourceCompatibility = '1.8'
 project.targetCompatibility = '1.8'
@@ -9,9 +18,12 @@ apply plugin: 'application'
 mainClassName = "name.valery1707.interview.lunchVote.Launcher"
 applicationName = project.name
 
-repositories {
-	mavenCentral()
+buildscript {
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.7.RELEASE")
+	}
 }
+apply plugin: 'spring-boot'
 
 dependencies {
 	//Logging
