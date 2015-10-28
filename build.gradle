@@ -36,6 +36,9 @@ dependencies {
 	compile 'org.springframework:spring-webmvc:4.2.2.RELEASE'
 	compile 'org.springframework.boot:spring-boot:1.2.7.RELEASE'
 
+	//JSON parse library
+	compile 'com.google.code.gson:gson:2.4'
+
 	//Jetty
 	runtime 'org.eclipse.jetty:jetty-webapp:9.3.5.v20151012'
 

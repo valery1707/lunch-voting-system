@@ -8,6 +8,8 @@ import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletConta
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
@@ -29,6 +31,11 @@ public class Launcher {
 	@Bean
 	public DispatcherServlet dispatcherServlet() {
 		return new DispatcherServlet();
+	}
+
+	@Bean
+	public HttpMessageConverter<Object> httpMessageConverter() {
+		return new GsonHttpMessageConverter();
 	}
 
 	public static void main(String[] args) {
