@@ -1,16 +1,19 @@
 package name.valery1707.interview.lunchVote.domain;
 
+import org.springframework.jdbc.core.RowMapper;
+
+@SuppressWarnings("unused")
 public class DatabaseStatus {
 	private String version;
 	private String databaseName;
 	private String username;
-	private String sessionId;
-	private String memoryUsed;
+	private int sessionId;
+	private int memoryUsed;
 
 	public DatabaseStatus() {
 	}
 
-	public DatabaseStatus(String version, String databaseName, String username, String sessionId, String memoryUsed) {
+	public DatabaseStatus(String version, String databaseName, String username, int sessionId, int memoryUsed) {
 		this.version = version;
 		this.databaseName = databaseName;
 		this.username = username;
@@ -42,19 +45,23 @@ public class DatabaseStatus {
 		this.username = username;
 	}
 
-	public String getSessionId() {
+	public int getSessionId() {
 		return sessionId;
 	}
 
-	public void setSessionId(String sessionId) {
+	public void setSessionId(int sessionId) {
 		this.sessionId = sessionId;
 	}
 
-	public String getMemoryUsed() {
+	public int getMemoryUsed() {
 		return memoryUsed;
 	}
 
-	public void setMemoryUsed(String memoryUsed) {
+	public void setMemoryUsed(int memoryUsed) {
 		this.memoryUsed = memoryUsed;
 	}
+
+	public static final String QUERY = "SELECT H2VERSION(), DATABASE(), USER(), SESSION_ID(), MEMORY_USED()";
+	public static final RowMapper<DatabaseStatus> rowMapper = (rs, rowNum) ->
+			new DatabaseStatus(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getInt(5));
 }
