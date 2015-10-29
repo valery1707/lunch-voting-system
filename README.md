@@ -20,10 +20,14 @@ Explanation of technology choice:
 1. Embedded servlet container
 	* Alternatives: Tomcat embedded, Jetty
 	* Selected: Jetty
-	* Reason: Jetty has less footprint (~ 1.4 MiB, ~ 1.6 MiB with websocket implementation) than Tomcat (~ 3.1 MiB, 3.3 MiB with websocket implementation)
+	* Reason: Jetty has less footprint (~ 1.4 MiB, ~ 1.6 MiB with websocket implementation) than Tomcat (~ 2.9 MiB, 3.1 MiB with websocket implementation)
 1. JSON library
 	* Variants: Jackson, GSON, JSON.simple, JSONP
 	* Selected: GSON
 	* Reason: In some tests (see [1](http://blog.takipi.com/the-ultimate-json-library-json-simple-vs-gson-vs-jackson-vs-json/) and [2](http://ruedigermoeller.github.io/fast-serialization/json_bench.html))
 	GSON have less or comparable performance than Jackson, but its have very small footprint (~ 200 KiB) than Jackson (1.4 MiB).
 	If this project will need more performance in JSON processing, we can migrate to Jackson in few lines of code
+1. Database (select only from in-memory pure Java database)
+	* Variants: H2, HSQLDB, Apache Derby
+	* Selected: H2
+	* Reason: H2 database is more active project (HSQLDB released 4 version in last 2 years, Derby released 5 versions in last 2 years, H2 released more than 15 versions in last year) and it have less footprint than Derby.
