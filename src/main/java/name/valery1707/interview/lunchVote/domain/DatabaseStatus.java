@@ -73,7 +73,7 @@ public class DatabaseStatus {
 	}
 
 	@Language("SQL")
-	public static final String QUERY = "SELECT H2VERSION(), DATABASE(), USER(), SESSION_ID(), MEMORY_USED(), MAX(\"version\") FROM \"schema_version\"";
+	public static final String QUERY = "SELECT H2VERSION(), DATABASE(), USER(), SESSION_ID(), MEMORY_USED(), MAX(version) FROM schema_version";
 	public static final RowMapper<DatabaseStatus> rowMapper = (rs, rowNum) ->
 			new DatabaseStatus(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getInt(5), rs.getString(6));
 }
