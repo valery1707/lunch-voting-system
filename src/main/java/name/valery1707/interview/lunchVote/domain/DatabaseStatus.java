@@ -1,5 +1,6 @@
 package name.valery1707.interview.lunchVote.domain;
 
+import org.intellij.lang.annotations.Language;
 import org.springframework.jdbc.core.RowMapper;
 
 @SuppressWarnings("unused")
@@ -61,6 +62,7 @@ public class DatabaseStatus {
 		this.memoryUsed = memoryUsed;
 	}
 
+	@Language("SQL")
 	public static final String QUERY = "SELECT H2VERSION(), DATABASE(), USER(), SESSION_ID(), MEMORY_USED()";
 	public static final RowMapper<DatabaseStatus> rowMapper = (rs, rowNum) ->
 			new DatabaseStatus(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getInt(5));
