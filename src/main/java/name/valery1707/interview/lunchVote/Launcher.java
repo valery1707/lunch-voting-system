@@ -1,5 +1,6 @@
 package name.valery1707.interview.lunchVote;
 
+import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -35,7 +36,9 @@ public class Launcher {
 
 	@Bean
 	public HttpMessageConverter<Object> httpMessageConverter() {
-		return new GsonHttpMessageConverter();
+		GsonHttpMessageConverter converter = new GsonHttpMessageConverter();
+		converter.setGson(new GsonBuilder().setPrettyPrinting().create());
+		return converter;
 	}
 
 	public static void main(String[] args) {

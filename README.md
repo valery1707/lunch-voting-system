@@ -21,3 +21,9 @@ Explanation of technology choice:
 	* Alternatives: Tomcat embedded, Jetty
 	* Selected: Jetty
 	* Reason: Jetty has less footprint (~ 1.4 MiB, ~ 1.6 MiB with websocket implementation) than Tomcat (~ 3.1 MiB, 3.3 MiB with websocket implementation)
+1. JSON library
+	* Variants: Jackson, GSON, JSON.simple, JSONP
+	* Selected: GSON
+	* Reason: In some tests (see [1](http://blog.takipi.com/the-ultimate-json-library-json-simple-vs-gson-vs-jackson-vs-json/) and [2](http://ruedigermoeller.github.io/fast-serialization/json_bench.html))
+	GSON have less or comparable performance than Jackson, but its have very small footprint (~ 200 KiB) than Jackson (1.4 MiB).
+	If this project will need more performance in JSON processing, we can migrate to Jackson in few lines of code
