@@ -3,7 +3,7 @@ package name.valery1707.interview.lunchVote;
 import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
@@ -49,6 +49,10 @@ public class Launcher {
 
 	public static void main(String[] args) {
 		LOG.info("Launcher started at {}", ZonedDateTime.now().format(ISO_OFFSET_DATE_TIME));
-		SpringApplication.run(Launcher.class, args);
+		new SpringApplicationBuilder()
+				.sources(Launcher.class)
+				.showBanner(false)
+				.build()
+				.run(args);
 	}
 }
