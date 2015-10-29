@@ -11,3 +11,13 @@ System description:
 	* If it is before 11:00 we assume that he changed his mind.
 	* If it is after 11:00 then it is too late, vote can't be changed
 * Each restaurant provides new menu each day.
+
+Explanation of technology choice:
+1. Build system
+	* Alternatives: Maven, Gradle, ANT, SBT
+	* Selected: Gradle
+	* Reason: Gradle is declarative build system for Java project, that designed to build not only Java projects, and have many possibilities for change behavior of build process
+1. Embedded servlet container
+	* Alternatives: Tomcat embedded, Jetty
+	* Selected: Jetty
+	* Reason: Jetty has less footprint (~ 1.4 MiB, ~ 1.6 MiB with websocket implementation) than Tomcat (~ 3.1 MiB, 3.3 MiB with websocket implementation)
