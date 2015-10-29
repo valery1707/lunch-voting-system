@@ -31,3 +31,8 @@ Explanation of technology choice:
 	* Variants: H2, HSQLDB, Apache Derby
 	* Selected: H2
 	* Reason: H2 database is more active project (HSQLDB released 4 version in last 2 years, Derby released 5 versions in last 2 years, H2 released more than 15 versions in last year) and it have less footprint than Derby.
+1. Database migration tool
+	* Variants: Flyway, Liquibase
+	* Selected: Flyway
+	* Reason: Flyway support SQL and Java migrations, that allow to realise any migration what can be needed. Liquibase generate SQL from XML form, but this form very complex.
+	SQL migration is simple and good decision.

@@ -10,16 +10,18 @@ public class DatabaseStatus {
 	private String username;
 	private int sessionId;
 	private int memoryUsed;
+	private String lastAppliedMigration;
 
 	public DatabaseStatus() {
 	}
 
-	public DatabaseStatus(String version, String databaseName, String username, int sessionId, int memoryUsed) {
+	public DatabaseStatus(String version, String databaseName, String username, int sessionId, int memoryUsed, String lastAppliedMigration) {
 		this.version = version;
 		this.databaseName = databaseName;
 		this.username = username;
 		this.sessionId = sessionId;
 		this.memoryUsed = memoryUsed;
+		this.lastAppliedMigration = lastAppliedMigration;
 	}
 
 	public String getVersion() {
@@ -62,8 +64,16 @@ public class DatabaseStatus {
 		this.memoryUsed = memoryUsed;
 	}
 
+	public String getLastAppliedMigration() {
+		return lastAppliedMigration;
+	}
+
+	public void setLastAppliedMigration(String lastAppliedMigration) {
+		this.lastAppliedMigration = lastAppliedMigration;
+	}
+
 	@Language("SQL")
-	public static final String QUERY = "SELECT H2VERSION(), DATABASE(), USER(), SESSION_ID(), MEMORY_USED()";
+	public static final String QUERY = "SELECT H2VERSION(), DATABASE(), USER(), SESSION_ID(), MEMORY_USED(), MAX(\"version\") FROM \"schema_version\"";
 	public static final RowMapper<DatabaseStatus> rowMapper = (rs, rowNum) ->
-			new DatabaseStatus(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getInt(5));
+			new DatabaseStatus(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getInt(5), rs.getString(6));
 }
