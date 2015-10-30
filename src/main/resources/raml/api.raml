@@ -1,0 +1,69 @@
+#%RAML 0.8
+title: Lunch vote system
+version: 1.0.0-SNAPSHOT
+protocols: [ HTTP ]
+baseUri: http://localhost:8080/api
+mediaType: application/json
+schemas:
+  - Restaurants: !include Restaurants.schema.json
+  - Restaurant: !include Restaurant.schema.json
+/restaurant:
+  get:
+    description: List of Restaurants
+    responses:
+      200:
+        body:
+          application/json:
+            schema: Restaurants
+  put:
+    description: Create new Restaurant
+    body:
+      application/json:
+        schema: Restaurant
+    responses:
+      201:
+        body:
+          application/json:
+            schema: Restaurant
+        headers:
+          Location:
+            description: URL of created Restaurant
+            type: string
+            required: true
+/restaurant/${id}:
+  get:
+    description: Get one Restaurant information
+    responses:
+      200:
+        body:
+          application/json:
+            schema: Restaurant
+      404:
+        description: Restaurant with id not found
+  delete:
+    description: Delete Restaurant by id
+    responses:
+      200:
+        description: Restaurant successfully deleted
+      404:
+        description: Restaurant with id not found
+  patch:
+    description: Update exists Restaurant with partial JSON information
+    body:
+      application/json:
+        schema: Restaurant
+    responses:
+      200:
+        description: Restaurant successfully patched
+      404:
+        description: Restaurant with id not found
+  put:
+    description: Update exists Restaurant with full JSON information
+    body:
+      application/json:
+        schema: Restaurant
+    responses:
+      200:
+        description: Restaurant successfully updated
+      404:
+        description: Restaurant with id not found

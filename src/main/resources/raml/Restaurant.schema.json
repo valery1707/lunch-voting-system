@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net",
+  "type": "object",
+  "properties": {
+    "id": {
+      "id": "http://jsonschema.net/id",
+      "type": "string"
+    },
+    "name": {
+      "id": "http://jsonschema.net/name",
+      "type": "string"
+    },
+    "dishes": {
+      "id": "http://jsonschema.net/dishes",
+      "type": "array",
+      "items": {
+        "id": "http://jsonschema.net/dishes/0",
+        "type": "object",
+        "properties": {
+          "id": {
+            "id": "http://jsonschema.net/dishes/0/id",
+            "type": "string"
+          },
+          "restaurant": {
+            "id": "http://jsonschema.net/dishes/0/restaurant",
+            "type": "string"
+          },
+          "name": {
+            "id": "http://jsonschema.net/dishes/0/name",
+            "type": "string"
+          },
+          "price": {
+            "id": "http://jsonschema.net/dishes/0/price",
+            "type": "number"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "dishes"
+  ]
+}
