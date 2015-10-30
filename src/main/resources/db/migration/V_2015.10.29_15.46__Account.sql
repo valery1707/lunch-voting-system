@@ -1,9 +1,9 @@
 CREATE TABLE account (
-		id         UUID NOT NULL CONSTRAINT pk$account PRIMARY KEY,
-		login      TEXT NOT NULL,
-		password   TEXT NOT NULL,
-		first_name TEXT NOT NULL,
-		last_name  TEXT NOT NULL
+		id         UUID         NOT NULL CONSTRAINT pk$account PRIMARY KEY,
+		login      VARCHAR(255) NOT NULL,
+		password   VARCHAR(32)  NOT NULL,
+		first_name VARCHAR(255) NOT NULL,
+		last_name  VARCHAR(255) NOT NULL
 );
 COMMENT ON TABLE account IS 'Accounts';
 
