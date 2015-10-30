@@ -2,15 +2,10 @@ package name.valery1707.interview.lunchVote.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.util.UUID;
 
 @Entity
 @SuppressWarnings("unused")
-public class Account {
-	@Id
-	private UUID id;
-
+public class Account extends ABaseEntity {
 	@Column
 	private String login;
 
@@ -22,14 +17,6 @@ public class Account {
 
 	@Column
 	private String lastName;
-
-	public UUID getId() {
-		return id;
-	}
-
-	public void setId(UUID id) {
-		this.id = id;
-	}
 
 	public String getLogin() {
 		return login;
