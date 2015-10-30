@@ -59,7 +59,9 @@ dependencies {
 	compile 'org.hibernate:hibernate-entitymanager:5.0.3.Final'
 
 	//JSON parse library
-	compile 'com.google.code.gson:gson:2.4'
+	compile 'com.fasterxml.jackson.core:jackson-annotations:2.6.3'
+	compile 'com.fasterxml.jackson.core:jackson-core:2.6.3'
+	compile 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
 
 	//Jetty
 	runtime 'org.eclipse.jetty:jetty-webapp:9.3.5.v20151012'
