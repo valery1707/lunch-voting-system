@@ -16,12 +16,23 @@ import static org.hibernate.boot.model.naming.Identifier.toIdentifier;
 public class DatabaseNamingStrategy extends PhysicalNamingStrategyStandardImpl {
 	@Override
 	public Identifier toPhysicalColumnName(Identifier name, JdbcEnvironment context) {
-		if (isAllUpperCase(name.getText())) {
-			return super.toPhysicalColumnName(name, context);
+		return super.toPhysicalColumnName(camelCaseToUnderscores(name), context);
+	}
+
+	@Override
+	public Identifier toPhysicalTableName(Identifier name, JdbcEnvironment context) {
+		return super.toPhysicalTableName(camelCaseToUnderscores(name), context);
+	}
+
+	private static Identifier camelCaseToUnderscores(Identifier src) {
+		if (isAllUpperCase(src.getText())) {
+			return src;
 		}
-		String nameWithUnderscore = Stream.of(splitByCharacterTypeCamelCase(name.getText()))
+		String nameWithUnderscore = Stream.of(splitByCharacterTypeCamelCase(src.getText()))
+				.filter(StringUtils::isNotBlank)
+				.filter(s -> !"_".equals(s))
 				.map(StringUtils::uncapitalize)
 				.collect(joining("_"));
-		return super.toPhysicalColumnName(toIdentifier(nameWithUnderscore, name.isQuoted()), context);
+		return toIdentifier(nameWithUnderscore, src.isQuoted());
 	}
 }
