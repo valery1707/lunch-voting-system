@@ -135,7 +135,9 @@ public class RestaurantControllerTest {
 	public void test_10_findById_notFound() throws Exception {
 		mvc.perform(get(URL_ROOT + "/{id}", UUID.randomUUID().toString()).with(accUser()))
 				.andExpect(status().isNotFound())
-				.andExpect(content().string(isEmptyOrNullString()));
+				.andExpect(content().string(isEmptyOrNullString()))
+				.andExpect(authenticated().withRoles("USER"))
+		;
 	}
 
 	@Test
@@ -150,6 +152,7 @@ public class RestaurantControllerTest {
 				.andExpect(jsonPath("$.dishes").exists())
 				.andExpect(jsonPath("$.dishes").isArray())
 				.andExpect(jsonPath("$.dishes", hasSize(2)))
+				.andExpect(authenticated().withRoles("USER"))
 				.andReturn().getResponse().getContentAsString();
 
 		Restaurant result = jsonToObject(Restaurant.class, content);
@@ -189,6 +192,7 @@ public class RestaurantControllerTest {
 		)
 				.andExpect(status().isForbidden())
 				.andExpect(content().string(isEmptyOrNullString()))
+				.andExpect(authenticated().withRoles("USER"))
 		;
 	}
 
@@ -209,6 +213,7 @@ public class RestaurantControllerTest {
 				.andExpect(jsonPath("$.id").exists())
 				.andExpect(jsonPath("$.id", not(RESTAURANT_MOE_BAR_ID)))
 				.andExpect(jsonPath("$.id", not(source.getId())))
+				.andExpect(authenticated().withRoles("ADMIN"))
 				.andReturn().getResponse().getContentAsString();
 		Restaurant result = jsonToObject(Restaurant.class, content);
 		assertThat(result.getName()).isEqualTo(source.getName());
@@ -225,6 +230,7 @@ public class RestaurantControllerTest {
 				.andExpect(jsonPath("$.dishes").exists())
 				.andExpect(jsonPath("$.dishes").isArray())
 				.andExpect(jsonPath("$.dishes", hasSize(result.getDishes().size())))
+				.andExpect(authenticated().withRoles("USER"))
 				.andReturn().getResponse().getContentAsString();
 
 		Restaurant saved = jsonToObject(Restaurant.class, content);
@@ -259,6 +265,7 @@ public class RestaurantControllerTest {
 				.andExpect(content().encoding(ENCODING))
 				.andExpect(jsonPath("$").isArray())
 				.andExpect(jsonPath("$", hasSize(3)))
+				.andExpect(authenticated().withRoles("USER"))
 				.andReturn().getResponse().getContentAsString();
 		Optional<Restaurant> optional = jsonToList(Restaurant.class, content).stream()
 				.filter(r -> !KNOWN_RESTAURANTS.contains(r.getId().toString()))
@@ -294,6 +301,7 @@ public class RestaurantControllerTest {
 		)
 				.andExpect(status().isForbidden())
 				.andExpect(content().string(isEmptyOrNullString()))
+				.andExpect(authenticated().withRoles("USER"))
 		;
 	}
 
@@ -307,6 +315,7 @@ public class RestaurantControllerTest {
 		)
 				.andExpect(status().isNotFound())
 				.andExpect(content().string(isEmptyOrNullString()))
+				.andExpect(authenticated().withRoles("ADMIN"))
 		;
 	}
 
@@ -339,6 +348,7 @@ public class RestaurantControllerTest {
 				.andExpect(jsonPath("$.id").value(created.getId().toString()))
 				.andExpect(jsonPath("$.dishes").isArray())
 				.andExpect(jsonPath("$.dishes", hasSize(updateSource.getDishes().size())))
+				.andExpect(authenticated().withRoles("ADMIN"))
 		;
 
 		//Read actual value
@@ -386,6 +396,7 @@ public class RestaurantControllerTest {
 		)
 				.andExpect(status().isForbidden())
 				.andExpect(content().string(isEmptyOrNullString()))
+				.andExpect(authenticated().withRoles("USER"))
 		;
 	}
 
@@ -399,6 +410,7 @@ public class RestaurantControllerTest {
 		)
 				.andExpect(status().isNotFound())
 				.andExpect(content().string(isEmptyOrNullString()))
+				.andExpect(authenticated().withRoles("ADMIN"))
 		;
 	}
 
@@ -429,6 +441,7 @@ public class RestaurantControllerTest {
 				.andExpect(jsonPath("$.id").value(created.getId().toString()))
 				.andExpect(jsonPath("$.dishes").isArray())
 				.andExpect(jsonPath("$.dishes", hasSize(created.getDishes().size() + updateSource.getDishes().size())))
+				.andExpect(authenticated().withRoles("ADMIN"))
 		;
 
 		//Read actual value
@@ -466,6 +479,7 @@ public class RestaurantControllerTest {
 		mvc.perform(delete(URL_ROOT + "/{id}", UUID.randomUUID().toString()).with(accUser()))
 				.andExpect(status().isForbidden())
 				.andExpect(content().string(isEmptyOrNullString()))
+				.andExpect(authenticated().withRoles("USER"))
 		;
 	}
 
@@ -473,7 +487,9 @@ public class RestaurantControllerTest {
 	public void test_50_deleteById_asAdmin_notFound() throws Exception {
 		mvc.perform(delete(URL_ROOT + "/{id}", UUID.randomUUID().toString()).with(accAdmin()))
 				.andExpect(status().isNotFound())
-				.andExpect(content().string(isEmptyOrNullString()));
+				.andExpect(content().string(isEmptyOrNullString()))
+				.andExpect(authenticated().withRoles("ADMIN"))
+		;
 	}
 
 	@Test
@@ -487,6 +503,7 @@ public class RestaurantControllerTest {
 				.andExpect(jsonPath("$").isMap())
 				.andExpect(jsonPath("$.id").exists())
 				.andExpect(jsonPath("$.id").value(restaurantCreatedId.toString()))
+				.andExpect(authenticated().withRoles("ADMIN"))
 		;
 
 		test_10_findAll_user();
