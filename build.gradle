@@ -36,6 +36,11 @@ buildscript {
 }
 apply plugin: 'spring-boot'
 
+apply plugin: 'jacoco'
+jacoco {
+	toolVersion = "0.7.5.201505241946"
+}
+
 dependencies {
 	//Logging
 	compile "org.slf4j:slf4j-api:${slf4j}"

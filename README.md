@@ -40,6 +40,7 @@ Voting system for deciding where to have lunch.
 ### Useful gradle commands
 1. Run project from console: `./gradlew bootRun`
 1. Build executable jar: `./gradlew build`
+1. Make code coverage report: `./gradlew clean build jacocoTestReport`
 
 ### CURL commands example
 System after start have some build-in users:
