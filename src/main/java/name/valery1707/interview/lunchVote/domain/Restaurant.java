@@ -13,7 +13,7 @@ public class Restaurant extends ABaseEntity {
 	@Column
 	private String name;
 
-	@OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Dish> dishes = new HashSet<>(0);
 
 	public String getName() {

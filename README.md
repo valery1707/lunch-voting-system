@@ -2,7 +2,7 @@ Simple service with JSON API using Hibernate/Spring/SpringMVC **without frontend
 
 Voting system for deciding where to have lunch.
 
-System description:
+### System description:
 * 2 types of users: admin and regular users
 * Admin can input a restaurant and it's lunch menu of the day (2-5 items usually, just a dish name and price)
 * Users can vote on which restaurant they want to have lunch at
@@ -12,7 +12,7 @@ System description:
 	* If it is after 11:00 then it is too late, vote can't be changed
 * Each restaurant provides new menu each day.
 
-Explanation of technology choice:
+### Explanation of technology choice:
 1. Build system
 	* Alternatives: Maven, Gradle, ANT, SBT
 	* Selected: Gradle
@@ -36,3 +36,65 @@ Explanation of technology choice:
 	* Selected: Flyway
 	* Reason: Flyway support SQL and Java migrations, that allow to realise any migration what can be needed. Liquibase generate SQL from XML form, but this form very complex.
 	SQL migration is simple and good decision.
+
+### Useful gradle commands
+1. Run project from console: `./gradlew bootRun`
+1. Build executable jar: `./gradlew build`
+
+### CURL commands example
+##### Some good things
+1. Query list of all restaurant:
+```bash
+curl -i -H "Accept: application/json" http://localhost:8080/api/restaurant
+```
+1. Get information about one Restaurant by id:
+```bash
+curl -i -H "Accept: application/json" http://localhost:8080/api/restaurant/78a9353f-7e08-40a6-ad70-af2664a37a36 
+```
+1. Create new restaurant with some dishes:
+```bash
+curl -i \
+  -H "Content-Type: application/json" \
+  -X PUT \
+  -d '{"name": "Created from CURL",
+    "dishes": [
+      {"name": "Curl dish 1", "price": 1}, 
+      {"name": "Curl dish 2", "price": 2.5}
+    ]
+  }' http://localhost:8080/api/restaurant
+```
+1. Update restaurant: change only name
+```bash
+curl -i \
+  -H "Content-Type: application/json" \
+  -X PATCH \
+  -d '{"name": "Updated from curl"}' \
+  http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
+curl -i -H "Accept: application/json" http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
+```
+1. Update restaurant: change one dish price
+```bash
+curl -i \
+  -H "Content-Type: application/json" \
+  -X PATCH \
+  -d '{
+    "dishes": [
+      {"id": "6b2edfa5-0894-4fca-aed0-511171f650f5", "price": 500}
+    ]
+  }' \
+  http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
+curl -i -H "Accept: application/json" http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
+```
+1. Update restaurant: add new dish
+```bash
+curl -i \
+  -H "Content-Type: application/json" \
+  -X PATCH \
+  -d '{
+    "dishes": [
+      {"name": "New dish", "price": 500}
+    ]
+  }' \
+  http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
+curl -i -H "Accept: application/json" http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
+```

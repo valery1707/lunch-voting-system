@@ -1,5 +1,7 @@
 package name.valery1707.interview.lunchVote.api;
 
+import name.valery1707.interview.lunchVote.domain.Dish;
+import name.valery1707.interview.lunchVote.domain.IBaseEntity;
 import name.valery1707.interview.lunchVote.domain.Restaurant;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,8 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromRequest;
 
 @RestController
@@ -27,9 +34,9 @@ public class RestaurantController {
 	@RequestMapping(value = "", method = {RequestMethod.PUT, RequestMethod.POST})
 	public ResponseEntity<Restaurant> create(@RequestBody Restaurant restaurant, HttpServletRequest request) {
 		//Protect id and links from incorrect user input
-		restaurant.setRandomId();
+		restaurant.setId(null);
 		restaurant.getDishes().forEach(dish -> {
-			dish.setRandomId();
+			dish.setId(null);
 			dish.setRestaurant(restaurant);
 		});
 		//Save into database
@@ -59,6 +66,7 @@ public class RestaurantController {
 		if (entity == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
+		repo.delete(entity);
 		return ResponseEntity.ok(entity);
 	}
 
@@ -68,7 +76,31 @@ public class RestaurantController {
 		if (saved == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
-		//todo Copy all untouched fields from saved to patch
+
+		//Copy all untouched fields from saved to patch
+		if (isBlank(patch.getName())) {
+			patch.setName(saved.getName());
+		}
+		patch.setId(saved.getId());
+
+		//Remove all not owr dishes
+		Map<UUID, Dish> dishes = saved.getDishes().stream().collect(toMap(IBaseEntity::getId, Function.<Dish>identity()));
+
+		//Copy all untouched fields from saved to patch
+		patch.getDishes().stream()
+				.filter(dish -> dish.getId() != null)
+				.forEach(dishPatch -> {
+					Dish dishSaved = dishes.get(dishPatch.getId());
+					if (isBlank(dishPatch.getName())) {
+						dishPatch.setName(dishSaved.getName());
+					}
+					if (dishPatch.getPrice() == null) {
+						dishPatch.setPrice(dishSaved.getPrice());
+					}
+				});
+		//Copy all untouched dishes
+		patch.getDishes().addAll(saved.getDishes().stream().filter(dish -> !patch.getDishes().contains(dish)).collect(toSet()));
+
 		return updateById(id, patch);
 	}
 
@@ -78,6 +110,9 @@ public class RestaurantController {
 		if (saved == null) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
+		update.setId(saved.getId());
+		update.getDishes().removeIf(dish -> dish.getId() != null && !saved.getDishes().contains(dish));
+		update.getDishes().forEach(dish -> dish.setRestaurant(saved));
 		//todo Validate entity
 		update = repo.saveAndFlush(update);
 		return ResponseEntity.ok(update);

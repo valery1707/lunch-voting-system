@@ -14,7 +14,7 @@ public class Dish extends ABaseEntity {
 	private String name;
 
 	@Column
-	private double price;
+	private Double price;
 
 	public Restaurant getRestaurant() {
 		return restaurant;
@@ -32,11 +32,11 @@ public class Dish extends ABaseEntity {
 		this.name = name;
 	}
 
-	public double getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 
-	public void setPrice(double price) {
+	public void setPrice(Double price) {
 		this.price = price;
 	}
 }

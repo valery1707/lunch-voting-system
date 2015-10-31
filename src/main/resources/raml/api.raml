@@ -55,6 +55,9 @@ schemas:
     responses:
       200:
         description: Restaurant successfully patched
+        body:
+          application/json:
+            schema: Restaurant
       404:
         description: Restaurant with id not found
   put:
@@ -65,5 +68,8 @@ schemas:
     responses:
       200:
         description: Restaurant successfully updated
+        body:
+          application/json:
+            schema: Restaurant
       404:
         description: Restaurant with id not found
