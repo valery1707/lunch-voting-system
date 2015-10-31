@@ -272,7 +272,6 @@ public class RestaurantControllerTest {
 						.contentType(CONTENT_TYPE)
 						.characterEncoding(ENCODING)
 						.content(objectToJson(restaurant("new")))
-						.with(accUser())
 		)
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl(URL_PREFIX + "/login"))

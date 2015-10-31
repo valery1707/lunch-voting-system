@@ -11,18 +11,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
 @Component
 @Scope(scopeName = SCOPE_SINGLETON)
 public class AuthenticationService implements UserDetailsService {
-	//todo Hierarchy: org.springframework.security.access.expression.SecurityExpressionRoot.getAuthoritySet()
 	public static final SimpleGrantedAuthority ROLE_USER = new SimpleGrantedAuthority("ROLE_USER");
 	public static final SimpleGrantedAuthority ROLE_ADMIN = new SimpleGrantedAuthority("ROLE_ADMIN");
 	private static final Set<SimpleGrantedAuthority> AUTH_USER = Collections.singleton(ROLE_USER);
-	private static final Set<SimpleGrantedAuthority> AUTH_ADMIN = new HashSet<>(Arrays.asList(ROLE_USER, ROLE_ADMIN));
+	private static final Set<SimpleGrantedAuthority> AUTH_ADMIN = Collections.singleton(ROLE_ADMIN);
 
 	@Inject
 	private AccountRepo repo;

@@ -6,8 +6,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.time.ZonedDateTime;
@@ -17,8 +15,6 @@ import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 @Configuration
 @EnableAutoConfiguration
 @EnableWebMvc
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 @ComponentScan
 public class Launcher {
 	private static final Logger LOG = LoggerFactory.getLogger(Launcher.class);
