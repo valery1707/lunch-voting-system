@@ -346,7 +346,38 @@ public class RestaurantControllerTest {
 	}
 
 	@Test
-	public void test_41_patchById() throws Exception {
+	public void test_41_patchById_unauthorized() throws Exception {
+		mvc.perform(patch(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(restaurant("new")))
+		)
+				.andExpect(status().isFound())
+				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
+//				.andExpect(status().isUnauthorized())
+//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+//				.andExpect(content().encoding(ENCODING))
+//				.andExpect(jsonPath("$").isMap())
+//				.andExpect(jsonPath("$.message").value("Bad credentials"))
+//				.andExpect(jsonPath("$.path").value(URL_ROOT))
+		;
+	}
+
+	@Test
+	public void test_41_patchById_asUser() throws Exception {
+		mvc.perform(patch(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(restaurant("new")))
+						.with(accUser())
+		)
+				.andExpect(status().isForbidden())
+				.andExpect(content().string(isEmptyOrNullString()))
+		;
+	}
+
+	@Test
+	public void test_41_patchById_asAdmin() throws Exception {
 		//Read original value
 		Restaurant created = findRestaurantCreated();
 
@@ -391,14 +422,36 @@ public class RestaurantControllerTest {
 	}
 
 	@Test
-	public void test_50_deleteById_notFound() throws Exception {
+	public void test_50_deleteById_unauthorized() throws Exception {
+		mvc.perform(delete(URL_ROOT + "/{id}", UUID.randomUUID().toString()))
+				.andExpect(status().isFound())
+				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
+//				.andExpect(status().isUnauthorized())
+//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+//				.andExpect(content().encoding(ENCODING))
+//				.andExpect(jsonPath("$").isMap())
+//				.andExpect(jsonPath("$.message").value("Bad credentials"))
+//				.andExpect(jsonPath("$.path").value(URL_ROOT))
+		;
+	}
+
+	@Test
+	public void test_50_deleteById_asUser() throws Exception {
+		mvc.perform(delete(URL_ROOT + "/{id}", UUID.randomUUID().toString()).with(accUser()))
+				.andExpect(status().isForbidden())
+				.andExpect(content().string(isEmptyOrNullString()))
+		;
+	}
+
+	@Test
+	public void test_50_deleteById_asAdmin_notFound() throws Exception {
 		mvc.perform(delete(URL_ROOT + "/{id}", UUID.randomUUID().toString()).with(accAdmin()))
 				.andExpect(status().isNotFound())
 				.andExpect(content().string(isEmptyOrNullString()));
 	}
 
 	@Test
-	public void test_50_deleteById_exists() throws Exception {
+	public void test_50_deleteById_asAdmin_exists() throws Exception {
 		UUID restaurantCreatedId = findRestaurantCreated().getId();
 
 		mvc.perform(delete(URL_ROOT + "/{id}", restaurantCreatedId.toString()).with(accAdmin()))
