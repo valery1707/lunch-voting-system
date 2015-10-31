@@ -30,6 +30,7 @@ import static org.junit.Assert.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -88,6 +89,7 @@ public class RestaurantControllerTest {
 		mvc.perform(get(URL_ROOT).with(csrf().useInvalidToken()))
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
+				.andExpect(unauthenticated())
 //				.andExpect(status().isUnauthorized())
 //				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 //				.andExpect(content().encoding(ENCODING))
@@ -122,6 +124,7 @@ public class RestaurantControllerTest {
 		mvc.perform(get(URL_ROOT + "/{id}", UUID.randomUUID().toString()))
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
+				.andExpect(unauthenticated())
 //				.andExpect(status().isUnauthorized())
 //				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 //				.andExpect(content().encoding(ENCODING))
@@ -173,6 +176,7 @@ public class RestaurantControllerTest {
 		)
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
+				.andExpect(unauthenticated())
 //				.andExpect(status().isUnauthorized())
 //				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 //				.andExpect(content().encoding(ENCODING))
@@ -282,6 +286,7 @@ public class RestaurantControllerTest {
 		)
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
+				.andExpect(unauthenticated())
 //				.andExpect(status().isUnauthorized())
 //				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 //				.andExpect(content().encoding(ENCODING))
@@ -377,6 +382,7 @@ public class RestaurantControllerTest {
 		)
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
+				.andExpect(unauthenticated())
 //				.andExpect(status().isUnauthorized())
 //				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 //				.andExpect(content().encoding(ENCODING))
@@ -465,6 +471,7 @@ public class RestaurantControllerTest {
 		mvc.perform(delete(URL_ROOT + "/{id}", UUID.randomUUID().toString()))
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
+				.andExpect(unauthenticated())
 //				.andExpect(status().isUnauthorized())
 //				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 //				.andExpect(content().encoding(ENCODING))

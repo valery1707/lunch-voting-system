@@ -34,7 +34,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		super.configure(http);
+		http
+				.anonymous().authorities("ROLE_GUEST")
+				.and()
+				.authorizeRequests()
+				.anyRequest().hasRole("GUEST")
+				.and()
+				.formLogin().and()
+				.httpBasic();
 		if (!enableCsrf) {
 			http.csrf().disable();
 		}

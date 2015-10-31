@@ -16,12 +16,12 @@ public class DatabaseStatus {
 	}
 
 	public DatabaseStatus(String version, String databaseName, String username, int sessionId, int memoryUsed, String lastAppliedMigration) {
-		this.version = version;
-		this.databaseName = databaseName;
-		this.username = username;
-		this.sessionId = sessionId;
-		this.memoryUsed = memoryUsed;
-		this.lastAppliedMigration = lastAppliedMigration;
+		setVersion(version);
+		setDatabaseName(databaseName);
+		setUsername(username);
+		setSessionId(sessionId);
+		setMemoryUsed(memoryUsed);
+		setLastAppliedMigration(lastAppliedMigration);
 	}
 
 	public String getVersion() {
