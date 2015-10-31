@@ -5,6 +5,7 @@ import name.valery1707.interview.lunchVote.domain.IBaseEntity;
 import name.valery1707.interview.lunchVote.domain.Restaurant;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
@@ -21,6 +22,7 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 
 @RestController
 @RequestMapping("/api/restaurant")
+@PreAuthorize("hasRole('ROLE_USER')")
 public class RestaurantController {
 
 	@Inject
@@ -31,6 +33,7 @@ public class RestaurantController {
 		return repo.findAll();
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "", method = {RequestMethod.PUT, RequestMethod.POST})
 	public ResponseEntity<Restaurant> create(@RequestBody Restaurant restaurant, HttpServletRequest request) {
 		//Protect id and links from incorrect user input
@@ -60,6 +63,7 @@ public class RestaurantController {
 		return ResponseEntity.ok(entity);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Restaurant> deleteById(@PathVariable UUID id) {
 		Restaurant entity = repo.findOne(id);
@@ -70,6 +74,7 @@ public class RestaurantController {
 		return ResponseEntity.ok(entity);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
 	public ResponseEntity<Restaurant> patchById(@PathVariable("id") UUID id, @RequestBody Restaurant patch) {
 		Restaurant saved = repo.findOne(id);
@@ -104,6 +109,7 @@ public class RestaurantController {
 		return updateById(id, patch);
 	}
 
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<Restaurant> updateById(@PathVariable("id") UUID id, @RequestBody Restaurant update) {
 		Restaurant saved = repo.findOne(id);

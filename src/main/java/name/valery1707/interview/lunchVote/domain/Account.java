@@ -18,6 +18,9 @@ public class Account extends ABaseEntity {
 	@Column
 	private String lastName;
 
+	@Column
+	private boolean isAdmin;
+
 	public String getLogin() {
 		return login;
 	}
@@ -48,5 +51,13 @@ public class Account extends ABaseEntity {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+
+	public void setIsAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
 	}
 }

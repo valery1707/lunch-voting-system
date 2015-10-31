@@ -42,19 +42,31 @@ Voting system for deciding where to have lunch.
 1. Build executable jar: `./gradlew build`
 
 ### CURL commands example
+System after start have some build-in users:
+1. login: `admin`, password: `admin`, role: `admin`
+1. login: `user_1`, password: `password one`, role: `user`
+1. login: `user_2`, password: `password two`, role: `user`
+
 ##### Some good things
 1. Query list of all restaurant:
 ```bash
-curl -i -H "Accept: application/json" http://localhost:8080/api/restaurant
+curl -i \
+  -H "Accept: application/json" \
+  -u "user_1:password one" \
+  http://localhost:8080/api/restaurant
 ```
 1. Get information about one Restaurant by id:
 ```bash
-curl -i -H "Accept: application/json" http://localhost:8080/api/restaurant/78a9353f-7e08-40a6-ad70-af2664a37a36 
+curl -i \
+  -H "Accept: application/json" \
+  -u "user_1:password one" \
+  http://localhost:8080/api/restaurant/78a9353f-7e08-40a6-ad70-af2664a37a36 
 ```
 1. Create new restaurant with some dishes:
 ```bash
 curl -i \
   -H "Content-Type: application/json" \
+  -u "admin:admin" \
   -X PUT \
   -d '{"name": "Created from CURL",
     "dishes": [
@@ -67,15 +79,20 @@ curl -i \
 ```bash
 curl -i \
   -H "Content-Type: application/json" \
+  -u "admin:admin" \
   -X PATCH \
   -d '{"name": "Updated from curl"}' \
   http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
-curl -i -H "Accept: application/json" http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
+curl -i \
+  -H "Accept: application/json" \
+  -u "user_1:password one" \
+  http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
 ```
 1. Update restaurant: change one dish price
 ```bash
 curl -i \
   -H "Content-Type: application/json" \
+  -u "admin:admin" \
   -X PATCH \
   -d '{
     "dishes": [
@@ -83,18 +100,25 @@ curl -i \
     ]
   }' \
   http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
-curl -i -H "Accept: application/json" http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
+curl -i \
+  -H "Accept: application/json" \
+  -u "user_1:password one" \
+  http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
 ```
 1. Update restaurant: add new dish
 ```bash
 curl -i \
   -H "Content-Type: application/json" \
+  -u "admin:admin" \
   -X PATCH \
   -d '{
     "dishes": [
-      {"name": "New dish", "price": 500}
+      {"name": "New dish", "price": 600}
     ]
   }' \
   http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
-curl -i -H "Accept: application/json" http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
+curl -i \
+  -H "Accept: application/json" \
+  -u "user_1:password one" \
+  http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
 ```

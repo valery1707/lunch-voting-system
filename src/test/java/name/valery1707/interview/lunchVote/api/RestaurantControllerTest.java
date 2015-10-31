@@ -12,9 +12,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -25,6 +27,10 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertTrue;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -32,11 +38,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringApplicationConfiguration(classes = Launcher.class)
 @WebAppConfiguration
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class RestaurantControllerTest {
 
 	public static final MediaType CONTENT_TYPE = MediaType.APPLICATION_JSON;
 	public static final String ENCODING = "UTF-8";
-	public static final String URL_PREFIX = "http://localhost/";
+	public static final String URL_PREFIX = "http://localhost";
 	public static final String URL_ROOT = "/api/restaurant";
 
 	@Inject
@@ -47,7 +54,11 @@ public class RestaurantControllerTest {
 
 	@Before
 	public void setUp() {
-		mvc = MockMvcBuilders.webAppContextSetup(context).build();
+		mvc = MockMvcBuilders
+				.webAppContextSetup(context)
+				.apply(springSecurity())
+				.defaultRequest(get("/").with(csrf()))
+				.build();
 		mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 	}
@@ -64,15 +75,38 @@ public class RestaurantControllerTest {
 		return mapper.writeValueAsString(src);
 	}
 
+	private static RequestPostProcessor accAdmin() {
+		return httpBasic("admin", "admin");
+	}
+
+	private static RequestPostProcessor accUser() {
+		return httpBasic("user_1", "password one");
+	}
+
 	@Test
-	public void test_10_findAll() throws Exception {
-		String content = mvc.perform(get(URL_ROOT))
+	public void test_10_findAll_unauthorized() throws Exception {
+		mvc.perform(get(URL_ROOT).with(csrf().useInvalidToken()))
+				.andExpect(status().isFound())
+				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
+//				.andExpect(status().isUnauthorized())
+//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+//				.andExpect(content().encoding(ENCODING))
+//				.andExpect(jsonPath("$").isMap())
+//				.andExpect(jsonPath("$.message").value("Bad credentials"))
+//				.andExpect(jsonPath("$.path").value(URL_ROOT))
+		;
+	}
+
+	@Test
+	public void test_10_findAll_user() throws Exception {
+		String content = mvc.perform(get(URL_ROOT).with(accUser()))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
 				.andExpect(jsonPath("$").isArray())
 				.andExpect(jsonPath("$", hasSize(2)))
 				.andExpect(jsonPath("$[*].id").value(containsInAnyOrder(RESTAURANT_MOE_BAR_ID, RESTAURANT_HELL_KITCHEN_ID)))
+				.andExpect(authenticated().withRoles("USER"))
 				.andReturn().getResponse().getContentAsString();
 
 		List<Restaurant> result = jsonToList(Restaurant.class, content);
@@ -84,15 +118,29 @@ public class RestaurantControllerTest {
 	private static final Set<String> KNOWN_RESTAURANTS = new HashSet<>(Arrays.asList(RESTAURANT_MOE_BAR_ID, RESTAURANT_HELL_KITCHEN_ID));
 
 	@Test
-	public void test_10_findById_notFound() throws Exception {
+	public void test_10_findById_unauthorized() throws Exception {
 		mvc.perform(get(URL_ROOT + "/{id}", UUID.randomUUID().toString()))
+				.andExpect(status().isFound())
+				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
+//				.andExpect(status().isUnauthorized())
+//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+//				.andExpect(content().encoding(ENCODING))
+//				.andExpect(jsonPath("$").isMap())
+//				.andExpect(jsonPath("$.message").value("Bad credentials"))
+//				.andExpect(jsonPath("$.path").value(URL_ROOT))
+		;
+	}
+
+	@Test
+	public void test_10_findById_notFound() throws Exception {
+		mvc.perform(get(URL_ROOT + "/{id}", UUID.randomUUID().toString()).with(accUser()))
 				.andExpect(status().isNotFound())
 				.andExpect(content().string(isEmptyOrNullString()));
 	}
 
 	@Test
 	public void test_10_findById_exists() throws Exception {
-		String content = mvc.perform(get(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID))
+		String content = mvc.perform(get(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID).with(accUser()))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -114,12 +162,44 @@ public class RestaurantControllerTest {
 	}
 
 	@Test
-	public void test_20_create() throws Exception {
+	public void test_20_create_unauthorized() throws Exception {
+		mvc.perform(post(URL_ROOT)
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(restaurant("new")))
+		)
+				.andExpect(status().isFound())
+				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
+//				.andExpect(status().isUnauthorized())
+//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+//				.andExpect(content().encoding(ENCODING))
+//				.andExpect(jsonPath("$").isMap())
+//				.andExpect(jsonPath("$.message").value("Bad credentials"))
+//				.andExpect(jsonPath("$.path").value(URL_ROOT))
+		;
+	}
+
+	@Test
+	public void test_20_create_asUser() throws Exception {
+		mvc.perform(post(URL_ROOT)
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(restaurant("new")))
+						.with(accUser())
+		)
+				.andExpect(status().isForbidden())
+				.andExpect(content().string(isEmptyOrNullString()))
+		;
+	}
+
+	@Test
+	public void test_20_create_asAdmin() throws Exception {
 		Restaurant source = restaurant("Created from Test", dish("dish1", 1.0), dish("dish 2", 2.0));
 		String content = mvc.perform(post(URL_ROOT)
 						.contentType(CONTENT_TYPE)
 						.characterEncoding(ENCODING)
 						.content(objectToJson(source))
+						.with(accAdmin())
 		)
 				.andExpect(status().isCreated())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
@@ -135,7 +215,7 @@ public class RestaurantControllerTest {
 		assertThat(result.getDishes()).hasSameSizeAs(source.getDishes());
 
 
-		content = mvc.perform(get(URL_ROOT + "/{id}", result.getId()))
+		content = mvc.perform(get(URL_ROOT + "/{id}", result.getId()).with(accUser()))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -173,7 +253,7 @@ public class RestaurantControllerTest {
 	}
 
 	private Restaurant findRestaurantCreated() throws Exception {
-		String content = mvc.perform(get(URL_ROOT))
+		String content = mvc.perform(get(URL_ROOT).with(accUser()))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -187,7 +267,39 @@ public class RestaurantControllerTest {
 	}
 
 	@Test
-	public void test_40_updateById() throws Exception {
+	public void test_40_updateById_unauthorized() throws Exception {
+		mvc.perform(put(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(restaurant("new")))
+						.with(accUser())
+		)
+				.andExpect(status().isFound())
+				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
+//				.andExpect(status().isUnauthorized())
+//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+//				.andExpect(content().encoding(ENCODING))
+//				.andExpect(jsonPath("$").isMap())
+//				.andExpect(jsonPath("$.message").value("Bad credentials"))
+//				.andExpect(jsonPath("$.path").value(URL_ROOT))
+		;
+	}
+
+	@Test
+	public void test_40_updateById_asUser() throws Exception {
+		mvc.perform(put(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(restaurant("new")))
+						.with(accUser())
+		)
+				.andExpect(status().isForbidden())
+				.andExpect(content().string(isEmptyOrNullString()))
+		;
+	}
+
+	@Test
+	public void test_40_updateById_asAdmin() throws Exception {
 		//Read original value
 		Restaurant created = findRestaurantCreated();
 
@@ -206,6 +318,7 @@ public class RestaurantControllerTest {
 						.contentType(CONTENT_TYPE)
 						.characterEncoding(ENCODING)
 						.content(objectToJson(updateSource))
+						.with(accAdmin())
 		)
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
@@ -251,6 +364,7 @@ public class RestaurantControllerTest {
 						.contentType(CONTENT_TYPE)
 						.characterEncoding(ENCODING)
 						.content(objectToJson(updateSource))
+						.with(accAdmin())
 		)
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
@@ -279,7 +393,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_50_deleteById_notFound() throws Exception {
-		mvc.perform(delete(URL_ROOT + "/{id}", UUID.randomUUID().toString()))
+		mvc.perform(delete(URL_ROOT + "/{id}", UUID.randomUUID().toString()).with(accAdmin()))
 				.andExpect(status().isNotFound())
 				.andExpect(content().string(isEmptyOrNullString()));
 	}
@@ -288,7 +402,7 @@ public class RestaurantControllerTest {
 	public void test_50_deleteById_exists() throws Exception {
 		UUID restaurantCreatedId = findRestaurantCreated().getId();
 
-		mvc.perform(delete(URL_ROOT + "/{id}", restaurantCreatedId.toString()))
+		mvc.perform(delete(URL_ROOT + "/{id}", restaurantCreatedId.toString()).with(accAdmin()))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -297,6 +411,6 @@ public class RestaurantControllerTest {
 				.andExpect(jsonPath("$.id").value(restaurantCreatedId.toString()))
 		;
 
-		test_10_findAll();
+		test_10_findAll_user();
 	}
 }
