@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/valery1707/lunch-voting-system.svg)](https://travis-ci.org/valery1707/lunch-voting-system)
+
 Simple service with JSON API using Hibernate/Spring/SpringMVC **without frontend**.
 
 Voting system for deciding where to have lunch.
