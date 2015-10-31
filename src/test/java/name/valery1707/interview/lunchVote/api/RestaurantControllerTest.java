@@ -298,6 +298,19 @@ public class RestaurantControllerTest {
 	}
 
 	@Test
+	public void test_41_updateById_asAdmin_notFound() throws Exception {
+		mvc.perform(put(URL_ROOT + "/{id}", UUID.randomUUID().toString())
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(restaurant("new")))
+						.with(accAdmin())
+		)
+				.andExpect(status().isNotFound())
+				.andExpect(content().string(isEmptyOrNullString()))
+		;
+	}
+
+	@Test
 	public void test_40_updateById_asAdmin() throws Exception {
 		//Read original value
 		Restaurant created = findRestaurantCreated();
@@ -372,6 +385,19 @@ public class RestaurantControllerTest {
 						.with(accUser())
 		)
 				.andExpect(status().isForbidden())
+				.andExpect(content().string(isEmptyOrNullString()))
+		;
+	}
+
+	@Test
+	public void test_41_patchById_asAdmin_notFound() throws Exception {
+		mvc.perform(patch(URL_ROOT + "/{id}", UUID.randomUUID().toString())
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(restaurant("new")))
+						.with(accAdmin())
+		)
+				.andExpect(status().isNotFound())
 				.andExpect(content().string(isEmptyOrNullString()))
 		;
 	}
