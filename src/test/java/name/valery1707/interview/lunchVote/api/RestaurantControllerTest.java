@@ -234,6 +234,50 @@ public class RestaurantControllerTest {
 	}
 
 	@Test
+	public void test_41_patchById() throws Exception {
+		//Read original value
+		Restaurant created = findRestaurantCreated();
+
+		//Read value for update
+		Restaurant updateSource = findRestaurantCreated();
+		//Make modification
+		updateSource.setName(updateSource.getName() + " {patch}");
+		Dish newDish = dish("from patch", 40.1);
+		updateSource.getDishes().clear();
+		updateSource.getDishes().add(newDish);
+
+		//Send modification
+		mvc.perform(patch(URL_ROOT + "/{id}", created.getId().toString())
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(updateSource))
+		)
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.id").value(created.getId().toString()))
+				.andExpect(jsonPath("$.dishes").isArray())
+				.andExpect(jsonPath("$.dishes", hasSize(created.getDishes().size() + updateSource.getDishes().size())))
+		;
+
+		//Read actual value
+		Restaurant updateResult = findRestaurantCreated();
+		assertThat(updateResult.getName())
+				.isEqualTo(updateSource.getName())
+				.isNotEqualTo(created.getName());
+		assertThat(updateResult.getDishes())
+				.containsAll(created.getDishes());
+		//New dish list contains newDish
+		assertTrue("newDish", updateResult.getDishes().stream()
+						.filter(dish -> !created.getDishes().contains(dish))
+						.allMatch(dish ->
+										dish.getName().equals(newDish.getName()) && dish.getPrice().equals(newDish.getPrice())
+						)
+		);
+	}
+
+	@Test
 	public void test_50_deleteById_notFound() throws Exception {
 		mvc.perform(delete(URL_ROOT + "/{id}", UUID.randomUUID().toString()))
 				.andExpect(status().isNotFound())
