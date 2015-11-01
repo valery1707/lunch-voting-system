@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "id": "http://jsonschema.net/timestamp",
+      "type": "integer"
+    },
+    "status": {
+      "id": "http://jsonschema.net/status",
+      "type": "integer"
+    },
+    "error": {
+      "id": "http://jsonschema.net/error",
+      "type": "string"
+    },
+    "exception": {
+      "id": "http://jsonschema.net/exception",
+      "type": "string"
+    },
+    "message": {
+      "id": "http://jsonschema.net/message",
+      "type": "string"
+    },
+    "path": {
+      "id": "http://jsonschema.net/path",
+      "type": "string"
+    }
+  },
+  "required": [
+    "timestamp",
+    "status",
+    "error",
+    "message",
+    "path"
+  ]
+}

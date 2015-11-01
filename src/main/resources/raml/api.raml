@@ -7,16 +7,33 @@ mediaType: application/json
 schemas:
   - Restaurants: !include Restaurants.schema.json
   - Restaurant: !include Restaurant.schema.json
+  - Error: !include Error.schema.json
+securitySchemes:
+  - basic:
+      description: Basic Authentication
+      type: Basic Authentication
 /restaurant:
   get:
     description: List of Restaurants
+    securedBy: [basic]
     responses:
       200:
         body:
           application/json:
             schema: Restaurants
+      401:
+        description: Authentication is required
+        body:
+          application/json:
+            schema: Error
+      403:
+        description: Access is denied
+        body:
+          application/json:
+            schema: Error
   put:
     description: Create new Restaurant
+    securedBy: [basic: { role: ADMIN }]
     body:
       application/json:
         schema: Restaurant
@@ -30,9 +47,20 @@ schemas:
             description: URL of created Restaurant
             type: string
             required: true
+      401:
+        description: Authentication is required
+        body:
+          application/json:
+            schema: Error
+      403:
+        description: Access is denied
+        body:
+          application/json:
+            schema: Error
 /restaurant/${id}:
   get:
     description: Get one Restaurant information
+    securedBy: [basic]
     responses:
       200:
         body:
@@ -40,15 +68,37 @@ schemas:
             schema: Restaurant
       404:
         description: Restaurant with id not found
+      401:
+        description: Authentication is required
+        body:
+          application/json:
+            schema: Error
+      403:
+        description: Access is denied
+        body:
+          application/json:
+            schema: Error
   delete:
     description: Delete Restaurant by id
+    securedBy: [basic: { role: ADMIN }]
     responses:
       200:
         description: Restaurant successfully deleted
       404:
         description: Restaurant with id not found
+      401:
+        description: Authentication is required
+        body:
+          application/json:
+            schema: Error
+      403:
+        description: Access is denied
+        body:
+          application/json:
+            schema: Error
   patch:
     description: Update exists Restaurant with partial JSON information
+    securedBy: [basic: { role: ADMIN }]
     body:
       application/json:
         schema: Restaurant
@@ -60,8 +110,19 @@ schemas:
             schema: Restaurant
       404:
         description: Restaurant with id not found
+      401:
+        description: Authentication is required
+        body:
+          application/json:
+            schema: Error
+      403:
+        description: Access is denied
+        body:
+          application/json:
+            schema: Error
   put:
     description: Update exists Restaurant with full JSON information
+    securedBy: [basic: { role: ADMIN }]
     body:
       application/json:
         schema: Restaurant
@@ -73,3 +134,13 @@ schemas:
             schema: Restaurant
       404:
         description: Restaurant with id not found
+      401:
+        description: Authentication is required
+        body:
+          application/json:
+            schema: Error
+      403:
+        description: Access is denied
+        body:
+          application/json:
+            schema: Error
