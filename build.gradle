@@ -71,6 +71,7 @@ dependencies {
 	compile "org.springframework.data:spring-data-jpa:1.9.0.RELEASE"
 	compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
 	compile 'org.hibernate:hibernate-entitymanager:5.0.3.Final'
+	compile 'org.hibernate:hibernate-java8:5.0.3.Final'
 
 	//JSON parse library
 	compile 'com.fasterxml.jackson.core:jackson-annotations:2.6.3'
