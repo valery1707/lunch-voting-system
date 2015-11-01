@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/valery1707/lunch-voting-system.svg)](https://travis-ci.org/valery1707/lunch-voting-system)
+[![Coverage Status](https://coveralls.io/repos/valery1707/lunch-voting-system/badge.svg?branch=master&service=github)](https://coveralls.io/github/valery1707/lunch-voting-system?branch=master)
 [![Dependency Status](https://www.versioneye.com/user/projects/5634dd1836d0ab0019001c05/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5634dd1836d0ab0019001c05)
 
 Simple service with JSON API using Hibernate/Spring/SpringMVC **without frontend**.
