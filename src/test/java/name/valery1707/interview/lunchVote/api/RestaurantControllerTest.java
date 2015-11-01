@@ -16,6 +16,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -85,9 +87,8 @@ public class RestaurantControllerTest {
 		return httpBasic("user_1", "password one");
 	}
 
-	@Test
-	public void test_10_findAll_unauthorized() throws Exception {
-		mvc.perform(get(URL_ROOT).with(csrf().useInvalidToken()))
+	protected ResultActions test_unauthorized(RequestBuilder requestBuilder) throws Exception {
+		return mvc.perform(requestBuilder)
 				.andExpect(status().isFound())
 				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
 				.andExpect(unauthenticated())
@@ -97,6 +98,12 @@ public class RestaurantControllerTest {
 //				.andExpect(jsonPath("$").isMap())
 //				.andExpect(jsonPath("$.message").value("Bad credentials"))
 //				.andExpect(jsonPath("$.path").value(URL_ROOT))
+				;
+	}
+
+	@Test
+	public void test_10_findAll_unauthorized() throws Exception {
+		test_unauthorized(get(URL_ROOT))
 		;
 	}
 
@@ -122,16 +129,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_10_findById_unauthorized() throws Exception {
-		mvc.perform(get(URL_ROOT + "/{id}", UUID.randomUUID().toString()))
-				.andExpect(status().isFound())
-				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
-				.andExpect(unauthenticated())
-//				.andExpect(status().isUnauthorized())
-//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
-//				.andExpect(content().encoding(ENCODING))
-//				.andExpect(jsonPath("$").isMap())
-//				.andExpect(jsonPath("$.message").value("Bad credentials"))
-//				.andExpect(jsonPath("$.path").value(URL_ROOT))
+		test_unauthorized(get(URL_ROOT + "/{id}", UUID.randomUUID().toString()))
 		;
 	}
 
@@ -170,20 +168,11 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_20_create_unauthorized() throws Exception {
-		mvc.perform(post(URL_ROOT)
+		test_unauthorized(post(URL_ROOT)
 						.contentType(CONTENT_TYPE)
 						.characterEncoding(ENCODING)
 						.content(objectToJson(restaurant("new")))
 		)
-				.andExpect(status().isFound())
-				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
-				.andExpect(unauthenticated())
-//				.andExpect(status().isUnauthorized())
-//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
-//				.andExpect(content().encoding(ENCODING))
-//				.andExpect(jsonPath("$").isMap())
-//				.andExpect(jsonPath("$.message").value("Bad credentials"))
-//				.andExpect(jsonPath("$.path").value(URL_ROOT))
 		;
 	}
 
@@ -280,20 +269,11 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_40_updateById_unauthorized() throws Exception {
-		mvc.perform(put(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
+		test_unauthorized(put(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
 						.contentType(CONTENT_TYPE)
 						.characterEncoding(ENCODING)
 						.content(objectToJson(restaurant("new")))
 		)
-				.andExpect(status().isFound())
-				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
-				.andExpect(unauthenticated())
-//				.andExpect(status().isUnauthorized())
-//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
-//				.andExpect(content().encoding(ENCODING))
-//				.andExpect(jsonPath("$").isMap())
-//				.andExpect(jsonPath("$.message").value("Bad credentials"))
-//				.andExpect(jsonPath("$.path").value(URL_ROOT))
 		;
 	}
 
@@ -376,20 +356,11 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_41_patchById_unauthorized() throws Exception {
-		mvc.perform(patch(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
+		test_unauthorized(patch(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
 						.contentType(CONTENT_TYPE)
 						.characterEncoding(ENCODING)
 						.content(objectToJson(restaurant("new")))
 		)
-				.andExpect(status().isFound())
-				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
-				.andExpect(unauthenticated())
-//				.andExpect(status().isUnauthorized())
-//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
-//				.andExpect(content().encoding(ENCODING))
-//				.andExpect(jsonPath("$").isMap())
-//				.andExpect(jsonPath("$.message").value("Bad credentials"))
-//				.andExpect(jsonPath("$.path").value(URL_ROOT))
 		;
 	}
 
@@ -469,16 +440,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_50_deleteById_unauthorized() throws Exception {
-		mvc.perform(delete(URL_ROOT + "/{id}", UUID.randomUUID().toString()))
-				.andExpect(status().isFound())
-				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
-				.andExpect(unauthenticated())
-//				.andExpect(status().isUnauthorized())
-//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
-//				.andExpect(content().encoding(ENCODING))
-//				.andExpect(jsonPath("$").isMap())
-//				.andExpect(jsonPath("$.message").value("Bad credentials"))
-//				.andExpect(jsonPath("$.path").value(URL_ROOT))
+		test_unauthorized(delete(URL_ROOT + "/{id}", UUID.randomUUID().toString()))
 		;
 	}
 
@@ -519,16 +481,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_60_voteScore_unauthorized() throws Exception {
-		mvc.perform(get(URL_ROOT + "/vote"))
-				.andExpect(status().isFound())
-				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
-				.andExpect(unauthenticated())
-//				.andExpect(status().isUnauthorized())
-//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
-//				.andExpect(content().encoding(ENCODING))
-//				.andExpect(jsonPath("$").isMap())
-//				.andExpect(jsonPath("$.message").value("Bad credentials"))
-//				.andExpect(jsonPath("$.path").value(URL_ROOT))
+		test_unauthorized(get(URL_ROOT + "/vote"))
 		;
 	}
 
@@ -571,16 +524,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_61_unauthorized() throws Exception {
-		mvc.perform(post(URL_ROOT + "/{id}/vote", RESTAURANT_MOE_BAR_ID))
-				.andExpect(status().isFound())
-				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
-				.andExpect(unauthenticated())
-//				.andExpect(status().isUnauthorized())
-//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
-//				.andExpect(content().encoding(ENCODING))
-//				.andExpect(jsonPath("$").isMap())
-//				.andExpect(jsonPath("$.message").value("Bad credentials"))
-//				.andExpect(jsonPath("$.path").value(URL_ROOT))
+		test_unauthorized(post(URL_ROOT + "/{id}/vote", RESTAURANT_MOE_BAR_ID))
 		;
 	}
 
