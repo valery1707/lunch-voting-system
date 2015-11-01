@@ -87,6 +87,10 @@ public class RestaurantControllerTest {
 		return httpBasic("user_1", "password one");
 	}
 
+	private static RequestPostProcessor accBadUser() {
+		return httpBasic("evil", "chaos");
+	}
+
 	protected ResultActions test_unauthorized(RequestBuilder requestBuilder) throws Exception {
 		return mvc.perform(requestBuilder)
 				.andExpect(status().isFound())
@@ -101,6 +105,18 @@ public class RestaurantControllerTest {
 				;
 	}
 
+	protected ResultActions test_badUser(RequestBuilder requestBuilder) throws Exception {
+		return mvc.perform(requestBuilder)
+				.andExpect(status().isUnauthorized())
+//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+//				.andExpect(content().encoding(ENCODING))
+//				.andExpect(jsonPath("$").isMap())
+//				.andExpect(jsonPath("$.message").value("Bad credentials"))
+//				.andExpect(jsonPath("$.path").value(startsWith(URL_ROOT)))
+				.andExpect(unauthenticated())
+				;
+	}
+
 	@Test
 	public void test_10_findAll_unauthorized() throws Exception {
 		test_unauthorized(get(URL_ROOT))
@@ -108,7 +124,12 @@ public class RestaurantControllerTest {
 	}
 
 	@Test
-	public void test_10_findAll_user() throws Exception {
+	public void test_10_findAll_asBadUser() throws Exception {
+		test_badUser(get(URL_ROOT).with(accBadUser()));
+	}
+
+	@Test
+	public void test_10_findAll_asUser() throws Exception {
 		String content = mvc.perform(get(URL_ROOT).with(accUser()))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
@@ -143,6 +164,11 @@ public class RestaurantControllerTest {
 	}
 
 	@Test
+	public void test_10_findById_exists_asBadUser() throws Exception {
+		test_badUser(get(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID).with(accBadUser()));
+	}
+
+	@Test
 	public void test_10_findById_exists() throws Exception {
 		String content = mvc.perform(get(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID).with(accUser()))
 				.andExpect(status().isOk())
@@ -174,6 +200,16 @@ public class RestaurantControllerTest {
 						.content(objectToJson(restaurant("new")))
 		)
 		;
+	}
+
+	@Test
+	public void test_20_create_asBadUser() throws Exception {
+		test_badUser(post(URL_ROOT)
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(restaurant("new")))
+						.with(accBadUser())
+		);
 	}
 
 	@Test
@@ -278,6 +314,16 @@ public class RestaurantControllerTest {
 	}
 
 	@Test
+	public void test_40_updateById_asBadUser() throws Exception {
+		test_badUser(put(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(restaurant("new")))
+						.with(accBadUser())
+		);
+	}
+
+	@Test
 	public void test_40_updateById_asUser() throws Exception {
 		mvc.perform(put(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
 						.contentType(CONTENT_TYPE)
@@ -362,6 +408,16 @@ public class RestaurantControllerTest {
 						.content(objectToJson(restaurant("new")))
 		)
 		;
+	}
+
+	@Test
+	public void test_41_patchById_asBadUser() throws Exception {
+		test_badUser(patch(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(restaurant("new")))
+						.with(accBadUser())
+		);
 	}
 
 	@Test
@@ -476,13 +532,18 @@ public class RestaurantControllerTest {
 				.andExpect(authenticated().withRoles("ADMIN"))
 		;
 
-		test_10_findAll_user();
+		test_10_findAll_asUser();
 	}
 
 	@Test
 	public void test_60_voteScore_unauthorized() throws Exception {
 		test_unauthorized(get(URL_ROOT + "/vote"))
 		;
+	}
+
+	@Test
+	public void test_60_voteScore_asBadUser() throws Exception {
+		test_badUser(get(URL_ROOT + "/vote").with(accBadUser()));
 	}
 
 	@Test
@@ -523,9 +584,14 @@ public class RestaurantControllerTest {
 	}
 
 	@Test
-	public void test_61_unauthorized() throws Exception {
+	public void test_61_vote_unauthorized() throws Exception {
 		test_unauthorized(post(URL_ROOT + "/{id}/vote", RESTAURANT_MOE_BAR_ID))
 		;
+	}
+
+	@Test
+	public void test_61_vote_asBadUser() throws Exception {
+		test_badUser(post(URL_ROOT + "/{id}/vote", RESTAURANT_MOE_BAR_ID).with(accBadUser()));
 	}
 
 	@Test
