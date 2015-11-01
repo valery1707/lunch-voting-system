@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net",
+  "type": "array",
+  "items": {
+    "id": "http://jsonschema.net/0",
+    "type": "object",
+    "properties": {
+      "restaurantId": {
+        "id": "http://jsonschema.net/0/restaurantId",
+        "type": "string"
+      },
+      "restaurantName": {
+        "id": "http://jsonschema.net/0/restaurantName",
+        "type": "string"
+      },
+      "count": {
+        "id": "http://jsonschema.net/0/count",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "restaurantId",
+      "restaurantName",
+      "count"
+    ]
+  },
+  "required": [
+    "0"
+  ]
+}

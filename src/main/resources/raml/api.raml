@@ -2,17 +2,19 @@
 title: Lunch vote system
 version: 1.0.0-SNAPSHOT
 protocols: [ HTTP ]
-baseUri: http://localhost:8080/api
+baseUri: http://lunchvotesystem.servehttp.com:8080/
 mediaType: application/json
 schemas:
+  - Error: !include Error.schema.json
   - Restaurants: !include Restaurants.schema.json
   - Restaurant: !include Restaurant.schema.json
-  - Error: !include Error.schema.json
+  - VoteScore: !include VoteScore.schema.json
+  - VoteStatus: !include VoteStatus.schema.json
 securitySchemes:
   - basic:
       description: Basic Authentication
       type: Basic Authentication
-/restaurant:
+/api/restaurant:
   get:
     description: List of Restaurants
     securedBy: [basic]
@@ -57,90 +59,158 @@ securitySchemes:
         body:
           application/json:
             schema: Error
-/restaurant/${id}:
-  get:
-    description: Get one Restaurant information
-    securedBy: [basic]
-    responses:
-      200:
-        body:
-          application/json:
-            schema: Restaurant
-      404:
-        description: Restaurant with id not found
-      401:
-        description: Authentication is required
-        body:
-          application/json:
-            schema: Error
-      403:
-        description: Access is denied
-        body:
-          application/json:
-            schema: Error
-  delete:
-    description: Delete Restaurant by id
-    securedBy: [basic: { role: ADMIN }]
-    responses:
-      200:
-        description: Restaurant successfully deleted
-      404:
-        description: Restaurant with id not found
-      401:
-        description: Authentication is required
-        body:
-          application/json:
-            schema: Error
-      403:
-        description: Access is denied
-        body:
-          application/json:
-            schema: Error
-  patch:
-    description: Update exists Restaurant with partial JSON information
-    securedBy: [basic: { role: ADMIN }]
-    body:
-      application/json:
-        schema: Restaurant
-    responses:
-      200:
-        description: Restaurant successfully patched
-        body:
-          application/json:
-            schema: Restaurant
-      404:
-        description: Restaurant with id not found
-      401:
-        description: Authentication is required
-        body:
-          application/json:
-            schema: Error
-      403:
-        description: Access is denied
-        body:
-          application/json:
-            schema: Error
-  put:
-    description: Update exists Restaurant with full JSON information
-    securedBy: [basic: { role: ADMIN }]
-    body:
-      application/json:
-        schema: Restaurant
-    responses:
-      200:
-        description: Restaurant successfully updated
-        body:
-          application/json:
-            schema: Restaurant
-      404:
-        description: Restaurant with id not found
-      401:
-        description: Authentication is required
-        body:
-          application/json:
-            schema: Error
-      403:
-        description: Access is denied
-        body:
-          application/json:
-            schema: Error
+  /${id}:
+    get:
+      description: Get one Restaurant information
+      securedBy: [basic]
+      responses:
+        200:
+          body:
+            application/json:
+              schema: Restaurant
+        404:
+          description: Restaurant with id not found
+        401:
+          description: Authentication is required
+          body:
+            application/json:
+              schema: Error
+        403:
+          description: Access is denied
+          body:
+            application/json:
+              schema: Error
+    delete:
+      description: Delete Restaurant by id
+      securedBy: [basic: { role: ADMIN }]
+      responses:
+        200:
+          description: Restaurant successfully deleted
+        404:
+          description: Restaurant with id not found
+        401:
+          description: Authentication is required
+          body:
+            application/json:
+              schema: Error
+        403:
+          description: Access is denied
+          body:
+            application/json:
+              schema: Error
+    patch:
+      description: Update exists Restaurant with partial JSON information
+      securedBy: [basic: { role: ADMIN }]
+      body:
+        application/json:
+          schema: Restaurant
+      responses:
+        200:
+          description: Restaurant successfully patched
+          body:
+            application/json:
+              schema: Restaurant
+        404:
+          description: Restaurant with id not found
+        401:
+          description: Authentication is required
+          body:
+            application/json:
+              schema: Error
+        403:
+          description: Access is denied
+          body:
+            application/json:
+              schema: Error
+    put:
+      description: Update exists Restaurant with full JSON information
+      securedBy: [basic: { role: ADMIN }]
+      body:
+        application/json:
+          schema: Restaurant
+      responses:
+        200:
+          description: Restaurant successfully updated
+          body:
+            application/json:
+              schema: Restaurant
+        404:
+          description: Restaurant with id not found
+        401:
+          description: Authentication is required
+          body:
+            application/json:
+              schema: Error
+        403:
+          description: Access is denied
+          body:
+            application/json:
+              schema: Error
+    /vote:
+      post:
+        description: Update vote status for current restaurant and authorized account
+        securedBy: [basic]
+        queryParameters:
+          datetime:
+            description: Datetime for vote
+            default: current datetime
+            required: false
+            type: string
+            pattern: yyyy-MM-dd'T'HH:MM:ss.SSS'Z['ZZZ']'
+            example: 2015-10-21T10:30:21.000Z[GMT]
+        responses:
+          201:
+            description: Vote stored
+            body:
+              application/json:
+                schema: VoteStatus
+          202:
+            description: Vote updated
+            body:
+              application/json:
+                schema: VoteStatus
+          304:
+            description: Vote already saved and used now can not change it
+            body:
+              application/json:
+                schema: VoteStatus
+          404:
+            description: Restaurant with id not found
+          401:
+            description: Authentication is required
+            body:
+              application/json:
+                schema: Error
+          403:
+            description: Access is denied
+            body:
+              application/json:
+                schema: Error
+  /vote:
+    get:
+      description: Return vote score for some date
+      securedBy: [basic]
+      queryParameters:
+        date: 
+          description: Date for score status
+          default: current date
+          required: false
+          type: string
+          pattern: yyyy-MM-dd
+          example: 2015-11-01
+      responses:
+        200:
+          description: Vote score
+          body:
+            application/json:
+              schema: VoteScore
+        401:
+          description: Authentication is required
+          body:
+            application/json:
+              schema: Error
+        403:
+          description: Access is denied
+          body:
+            application/json:
+              schema: Error

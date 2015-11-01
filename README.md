@@ -128,3 +128,37 @@ curl -i \
   -u "user_1:password one" \
   http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
 ```
+1. Get vote score for current date:
+```bash
+curl -i \
+  -H "Accept: application/json" \
+  -u "user_1:password one" \
+  http://localhost:8080/api/restaurant/vote
+```
+1. Get vote score for selected date:
+```bash
+curl -i \
+  -H "Accept: application/json" \
+  -u "user_1:password one" \
+  http://localhost:8080/api/restaurant/vote?date=2015-10-31
+```
+1. Vote for restaurant:
+```bash
+curl -i \
+  -H "Accept: application/json" \
+  -u "user_1:password one" \
+  -X POST \
+  http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86/vote
+```
+1. Vote for restaurant at specified dateTime (for test purpose):
+```bash
+curl -i -g \
+  -H "Accept: application/json" \
+  -u "user_1:password one" \
+  -X POST \
+  http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86/vote?datetime=2015-10-21T10:30:21.000Z[GMT]
+curl -i \
+  -H "Accept: application/json" \
+  -u "user_1:password one" \
+  http://localhost:8080/api/restaurant/vote?date=2015-10-21
+```

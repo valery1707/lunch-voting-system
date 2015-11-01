@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net",
+  "type": "object",
+  "properties": {
+    "restaurantId": {
+      "id": "http://jsonschema.net/restaurantId",
+      "type": "string"
+    },
+    "dateTime": {
+      "id": "http://jsonschema.net/dateTime",
+      "type": "number"
+    }
+  },
+  "required": [
+    "restaurantId",
+    "dateTime"
+  ]
+}

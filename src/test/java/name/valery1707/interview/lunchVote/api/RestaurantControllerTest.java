@@ -22,6 +22,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.time.ZoneId;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -514,5 +515,140 @@ public class RestaurantControllerTest {
 		;
 
 		test_10_findAll_user();
+	}
+
+	@Test
+	public void test_60_voteScore_unauthorized() throws Exception {
+		mvc.perform(get(URL_ROOT + "/vote"))
+				.andExpect(status().isFound())
+				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
+				.andExpect(unauthenticated())
+//				.andExpect(status().isUnauthorized())
+//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+//				.andExpect(content().encoding(ENCODING))
+//				.andExpect(jsonPath("$").isMap())
+//				.andExpect(jsonPath("$.message").value("Bad credentials"))
+//				.andExpect(jsonPath("$.path").value(URL_ROOT))
+		;
+	}
+
+	@Test
+	public void test_60_voteScore_malformedDate() throws Exception {
+		mvc.perform(get(URL_ROOT + "/vote").with(accUser()).param("date", "2015.10.21"))
+				.andExpect(status().isBadRequest())
+//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+//				.andExpect(content().encoding(ENCODING))
+//				.andExpect(jsonPath("$").isMap())
+//				.andExpect(jsonPath("$.path").value(URL_ROOT + "/vote"))
+				.andExpect(authenticated().withRoles("USER"))
+		;
+	}
+
+	@Test
+	public void test_60_voteScore_now() throws Exception {
+		mvc.perform(get(URL_ROOT + "/vote").with(accUser()))
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isArray())
+				.andExpect(jsonPath("$", hasSize(1)))
+				.andExpect(jsonPath("$[*].restaurantId").value(containsInAnyOrder(RESTAURANT_HELL_KITCHEN_ID)))
+				.andExpect(authenticated().withRoles("USER"))
+		;
+	}
+
+	@Test
+	public void test_60_voteScore_marty() throws Exception {
+		mvc.perform(get(URL_ROOT + "/vote").with(accUser()).param("date", "2015-10-21"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isArray())
+				.andExpect(jsonPath("$", hasSize(0)))
+				.andExpect(authenticated().withRoles("USER"))
+		;
+	}
+
+	@Test
+	public void test_61_unauthorized() throws Exception {
+		mvc.perform(post(URL_ROOT + "/{id}/vote", RESTAURANT_MOE_BAR_ID))
+				.andExpect(status().isFound())
+				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
+				.andExpect(unauthenticated())
+//				.andExpect(status().isUnauthorized())
+//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+//				.andExpect(content().encoding(ENCODING))
+//				.andExpect(jsonPath("$").isMap())
+//				.andExpect(jsonPath("$.message").value("Bad credentials"))
+//				.andExpect(jsonPath("$.path").value(URL_ROOT))
+		;
+	}
+
+	@Test
+	public void test_61_vote_malformedDate() throws Exception {
+		mvc.perform(post(URL_ROOT + "/{id}/vote", RESTAURANT_MOE_BAR_ID).with(accUser()).param("datetime", "2015.10.21"))
+				.andExpect(status().isBadRequest())
+//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+//				.andExpect(content().encoding(ENCODING))
+//				.andExpect(jsonPath("$").isMap())
+//				.andExpect(jsonPath("$.path").value(URL_ROOT + "/vote"))
+				.andExpect(authenticated().withRoles("USER"))
+		;
+	}
+
+	@Test
+	public void test_61_vote_notFound() throws Exception {
+		mvc.perform(post(URL_ROOT + "/{id}/vote", UUID.randomUUID().toString()).with(accUser()))
+				.andExpect(status().isNotFound())
+				.andExpect(content().string(isEmptyOrNullString()))
+				.andExpect(authenticated().withRoles("USER"))
+		;
+	}
+
+	@Test
+	public void test_61_vote_exists_now() throws Exception {
+		mvc.perform(post(URL_ROOT + "/{id}/vote", RESTAURANT_MOE_BAR_ID).with(accUser()))
+				.andExpect(status().isCreated())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.restaurantId").value(RESTAURANT_MOE_BAR_ID))
+				.andExpect(jsonPath("$.dateTime").isNumber())
+				.andExpect(authenticated().withRoles("USER"))
+		;
+	}
+
+	@Test
+	public void test_61_vote_exists_doc() throws Exception {
+		//First try
+		mvc.perform(post(URL_ROOT + "/{id}/vote", RESTAURANT_MOE_BAR_ID).with(accUser()).param("datetime", "1885-09-02T10:30:21.000Z[" + ZoneId.systemDefault().toString() + "]"))
+				.andExpect(status().isCreated())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.restaurantId").value(RESTAURANT_MOE_BAR_ID))
+				.andExpect(jsonPath("$.dateTime").isNumber())
+				.andExpect(authenticated().withRoles("USER"))
+		;
+		//Second try
+		mvc.perform(post(URL_ROOT + "/{id}/vote", RESTAURANT_HELL_KITCHEN_ID).with(accUser()).param("datetime", "1885-09-02T10:40:21.000Z[" + ZoneId.systemDefault().toString() + "]"))
+				.andExpect(status().isAccepted())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.restaurantId").value(RESTAURANT_HELL_KITCHEN_ID))
+				.andExpect(jsonPath("$.dateTime").isNumber())
+				.andExpect(authenticated().withRoles("USER"))
+		;
+		//After max hour
+		mvc.perform(post(URL_ROOT + "/{id}/vote", RESTAURANT_HELL_KITCHEN_ID).with(accUser()).param("datetime", "1885-09-02T11:00:21.000Z[" + ZoneId.systemDefault().toString() + "]"))
+				.andExpect(status().isNotModified())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.restaurantId").value(RESTAURANT_HELL_KITCHEN_ID))
+				.andExpect(jsonPath("$.dateTime").isNumber())
+				.andExpect(authenticated().withRoles("USER"))
+		;
 	}
 }
