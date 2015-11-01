@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net",
+  "type": "object",
+  "properties": {
+    "version": {
+      "id": "http://jsonschema.net/version",
+      "type": "string"
+    },
+    "databaseName": {
+      "id": "http://jsonschema.net/databaseName",
+      "type": "string"
+    },
+    "username": {
+      "id": "http://jsonschema.net/username",
+      "type": "string"
+    },
+    "sessionId": {
+      "id": "http://jsonschema.net/sessionId",
+      "type": "integer"
+    },
+    "memoryUsed": {
+      "id": "http://jsonschema.net/memoryUsed",
+      "type": "integer"
+    },
+    "lastAppliedMigration": {
+      "id": "http://jsonschema.net/lastAppliedMigration",
+      "type": "string"
+    }
+  },
+  "required": [
+    "version",
+    "databaseName",
+    "username",
+    "sessionId",
+    "memoryUsed",
+    "lastAppliedMigration"
+  ]
+}

@@ -6,6 +6,9 @@ baseUri: http://lunchvotesystem.servehttp.com:8080/
 mediaType: application/json
 schemas:
   - Error: !include Error.schema.json
+  - Hello: !include Hello.schema.json
+  - StatusDatabase: !include StatusDatabase.schema.json
+  - Accounts: !include Accounts.schema.json
   - Restaurants: !include Restaurants.schema.json
   - Restaurant: !include Restaurant.schema.json
   - VoteScore: !include VoteScore.schema.json
@@ -14,6 +17,41 @@ securitySchemes:
   - basic:
       description: Basic Authentication
       type: Basic Authentication
+/hello:
+  get:
+    description: Very simple REST service, that always send 'Hello' JSON in response
+    responses:
+      200:
+        body:
+          application/json:
+            schema: Hello
+/status:
+  /database:
+    get:
+      description: Show status of Database subsystem
+      responses:
+        200:
+          body:
+            application/json:
+              schema: StatusDatabase
+/account:
+  get:
+    description: Simple list of exists accounts
+    responses:
+      200:
+        body:
+          application/json:
+            schema: Accounts
+      401:
+        description: Authentication is required
+        body:
+          application/json:
+            schema: Error
+      403:
+        description: Access is denied
+        body:
+          application/json:
+            schema: Error
 /api/restaurant:
   get:
     description: List of Restaurants

@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net",
+  "type": "array",
+  "items": {
+    "id": "http://jsonschema.net/2",
+    "type": "object",
+    "properties": {
+      "id": {
+        "id": "http://jsonschema.net/2/id",
+        "type": "string"
+      },
+      "login": {
+        "id": "http://jsonschema.net/2/login",
+        "type": "string"
+      },
+      "password": {
+        "id": "http://jsonschema.net/2/password",
+        "type": "string"
+      },
+      "firstName": {
+        "id": "http://jsonschema.net/2/firstName",
+        "type": "string"
+      },
+      "lastName": {
+        "id": "http://jsonschema.net/2/lastName",
+        "type": "string"
+      },
+      "admin": {
+        "id": "http://jsonschema.net/2/admin",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "login",
+      "password",
+      "firstName",
+      "lastName",
+      "admin"
+    ]
+  },
+  "required": [
+    "2"
+  ]
+}

@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Launcher.class)
 @WebAppConfiguration
-public class SampleControllerTest {
+public class HelloControllerTest {
 	@Inject
 	private WebApplicationContext context;
 

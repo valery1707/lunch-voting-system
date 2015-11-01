@@ -1,10 +1,10 @@
-package name.valery1707.interview.lunchVote.domain;
+package name.valery1707.interview.lunchVote.dto;
 
-public class HelloEntity {
+public class Hello {
 	private String message;
 
-	public HelloEntity(String message) {
-		this.message = message;
+	public Hello(String message) {
+		setMessage(message);
 	}
 
 	public String getMessage() {

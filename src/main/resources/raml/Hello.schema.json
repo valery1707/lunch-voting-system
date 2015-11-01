@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net",
+  "type": "object",
+  "properties": {
+    "message": {
+      "id": "http://jsonschema.net/message",
+      "type": "string"
+    }
+  },
+  "required": [
+    "message"
+  ]
+}
