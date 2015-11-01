@@ -35,7 +35,7 @@ public class HelloControllerTest {
 
 	@Test
 	public void testHome() throws Exception {
-		this.mvc.perform(get("/sample"))
+		this.mvc.perform(get("/hello"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				.andExpect(content().string(containsString("Hello")));
