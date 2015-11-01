@@ -37,6 +37,7 @@ securitySchemes:
 /account:
   get:
     description: Simple list of exists accounts
+    securedBy: [basic: { role: ADMIN }]
     responses:
       200:
         body:
