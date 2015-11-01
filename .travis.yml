@@ -5,3 +5,19 @@ jdk:
 
 after_success:
 - ./gradlew jacocoTestReport coveralls
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "UbeRvuU4y2osE/xQCC1LKUBndJjfPmM6Y6sDSljLq8y9kE08y+C2ZBuIY7c9GrChvdCbFwwT622dTMb89rveZSQd+cep+5y96BJ9HXBr62QOc0G+9Uc0YAnG7dgtbWFkrHPTAiXLRzYsSj18Mksqz7z1ngiswgKQK4rwtdDdLqMYwp5raaxhZETBVAMRSnBup4yQEgq3B7CsejLEMOr9uEy/HWJkJvS6/Ae+UcICoJBT9caHnP34ZDgHYROxmn8bByO812YORCutaC1A58cKdsfTRwYqEXdXr3/UzXV89w5AW2ntT3TFXgnef6GxN/D1+4Mk+VXnhqM3k4HV72vUgwxEC7KN/VELsChWvtFOOHb9rJyWpiZvFi4H6PaEy/ZhJv0cI4FYl7qVzO5qJoBXYMV/iP/HwMLkYmR9uIkBi1PxAMDrd4PL38URZY9Xp5NUjrDZOGhAo0BY4tWlOKZ0wRWfIxnzF9On+sdOCh+qZehPSbkUDVcOBd2OZ2Jugaa+MohlVOC8RGbPlNYoJJD3fKuIHxtGQ7kxfoZwLIcCgIBcWONKktClbEs68BUxvvOH0HedVbShg3GNXX/xPHq+o7l/z6SoUUsI/AHsNkonMthc7LSrZqg3r3+IMMsyaA0n6DSh5vyj9PH6JkkbEIYVKvYMY4rJglDZvpIH6Kc7D+Q="
+
+addons:
+  coverity_scan:
+    project:
+      name: "valery1707/lunch-voting-system"
+      description: "Build submitted via Travis CI"
+    notification_email: valery1707@gmail.com
+    build_command_prepend: "./gradlew clean"
+    build_command:   "./gradlew classes testClasses"
+    branch_pattern: master
