@@ -87,6 +87,10 @@ public class RestaurantControllerTest {
 		return httpBasic("user_1", "password one");
 	}
 
+	private static RequestPostProcessor accUser2() {
+		return httpBasic("user_2", "password two");
+	}
+
 	private static RequestPostProcessor accBadUser() {
 		return httpBasic("evil", "chaos");
 	}
@@ -660,5 +664,38 @@ public class RestaurantControllerTest {
 				.andExpect(jsonPath("$.dateTime").isNumber())
 				.andExpect(authenticated().withRoles("USER"))
 		;
+	}
+
+	@Test
+	public void test_65_removeRestaurant_withVote() throws Exception {
+		//Create new Restaurant
+		test_20_create_asAdmin();
+		Restaurant created = findRestaurantCreated();
+		String createdId = created.getId().toString();
+
+		//Vote for him
+		mvc.perform(post(URL_ROOT + "/{id}/vote", createdId).with(accUser2()))
+				.andExpect(status().isCreated())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.restaurantId").value(createdId))
+				.andExpect(jsonPath("$.dateTime").isNumber())
+				.andExpect(authenticated().withRoles("USER"))
+		;
+
+		//Check vote is exists
+		mvc.perform(get(URL_ROOT + "/vote").with(accUser2()))
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isArray())
+				.andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))))
+				.andExpect(jsonPath("$[*].restaurantId").value(hasItem(createdId)))
+				.andExpect(authenticated().withRoles("USER"))
+		;
+
+		//Delete restaurant
+		test_50_deleteById_asAdmin_exists();
 	}
 }
