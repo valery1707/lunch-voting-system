@@ -286,6 +286,47 @@ public class RestaurantControllerTest {
 				.containsOnlyElementsOf(result.getDishes());
 	}
 
+	@Test
+	public void test_20_create_asAdmin_withBugs() throws Exception {
+		//Without name in Restaurant
+		mvc.perform(post(URL_ROOT)
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(restaurant(null, dish("dish1", 1.0), dish("dish 2", 2.0))))
+						.with(accAdmin())
+		)
+				.andExpect(status().isConflict())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.valid").exists())
+				.andExpect(jsonPath("$.valid").isBoolean())
+				.andExpect(jsonPath("$.valid").value(false))
+				.andExpect(jsonPath("$.errors").exists())
+				.andExpect(jsonPath("$.errors").isArray())
+				.andExpect(jsonPath("$.errors[*].fieldName").value(hasItem("name")))
+				.andExpect(authenticated().withRoles("ADMIN"));
+
+		//Without price in Dish
+		mvc.perform(post(URL_ROOT)
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(restaurant("Created from Test", dish("dish1", null), dish("dish 2", 2.0))))
+						.with(accAdmin())
+		)
+				.andExpect(status().isConflict())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.valid").exists())
+				.andExpect(jsonPath("$.valid").isBoolean())
+				.andExpect(jsonPath("$.valid").value(false))
+				.andExpect(jsonPath("$.errors").exists())
+				.andExpect(jsonPath("$.errors").isArray())
+				.andExpect(jsonPath("$.errors[*].fieldName").value(hasItem("dishes[].price")))
+				.andExpect(authenticated().withRoles("ADMIN"));
+	}
+
 	private static Restaurant restaurant(String name, Dish... dishes) {
 		Restaurant restaurant = new Restaurant();
 		restaurant.setRandomId();
