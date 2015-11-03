@@ -140,7 +140,7 @@
       .list-group-item:hover {
         background-color: #f5f5f5;
       }
-    </style></head><body data-spy="scroll" data-target="#sidebar"><div class="container"><div class="row"><div class="col-md-9" role="main"><div class="page-header"><h1>Lunch vote system API documentation <small>version 1.0.0-SNAPSHOT</small></h1><p>http://lunchvotesystem.servehttp.com:8080/</p></div><div class="panel panel-default"><div class="panel-heading"><h3 id="hello" class="panel-title">/hello</h3></div><div class="panel-body"><div class="panel-group"><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_hello"><span class="parent"></span>/hello</a> <span class="methods"><a href="#hello_get"><span class="badge badge_get">get</span></a></span></h4></div><div id="panel_hello" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#hello_get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Very simple REST service, that always send &#39;Hello&#39; JSON in response</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="hello_get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent"></span>/hello</h4></div><div class="modal-body"><div class="alert alert-info"><p>Very simple REST service, that always send &#39;Hello&#39; JSON in response</p></div><ul class="nav nav-tabs"><li><a href="#hello_get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane" id="hello_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+    </style></head><body data-spy="scroll" data-target="#sidebar"><div class="container"><div class="row"><div class="col-md-9" role="main"><div class="page-header"><h1>Lunch vote system API documentation <small>version 1.0.1-SNAPSHOT</small></h1><p>http://lunchvotesystem.servehttp.com:8080/</p></div><div class="panel panel-default"><div class="panel-heading"><h3 id="hello" class="panel-title">/hello</h3></div><div class="panel-body"><div class="panel-group"><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_hello"><span class="parent"></span>/hello</a> <span class="methods"><a href="#hello_get"><span class="badge badge_get">get</span></a></span></h4></div><div id="panel_hello" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#hello_get'" class="list-group-item"><span class="badge badge_get">get</span><div class="method_description"><p>Very simple REST service, that always send &#39;Hello&#39; JSON in response</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="hello_get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get</span> <span class="parent"></span>/hello</h4></div><div class="modal-body"><div class="alert alert-info"><p>Very simple REST service, that always send &#39;Hello&#39; JSON in response</p></div><ul class="nav nav-tabs"><li><a href="#hello_get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane" id="hello_get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
   "$schema": "http://json-schema.org/draft-04/schema#",
   "id": "http://jsonschema.net",
   "type": "object",
@@ -486,45 +486,83 @@
   "id": "http://jsonschema.net",
   "type": "object",
   "properties": {
-    "id": {
-      "id": "http://jsonschema.net/id",
-      "type": "string"
+    "valid": {
+      "id": "http://jsonschema.net/valid",
+      "type": "boolean"
     },
-    "name": {
-      "id": "http://jsonschema.net/name",
-      "type": "string"
-    },
-    "dishes": {
-      "id": "http://jsonschema.net/dishes",
+    "errors": {
+      "id": "http://jsonschema.net/errors",
       "type": "array",
       "items": {
-        "id": "http://jsonschema.net/dishes/0",
+        "id": "http://jsonschema.net/errors/1",
         "type": "object",
         "properties": {
-          "id": {
-            "id": "http://jsonschema.net/dishes/0/id",
+          "fieldName": {
+            "id": "http://jsonschema.net/errors/1/fieldName",
             "type": "string"
           },
-          "restaurant": {
-            "id": "http://jsonschema.net/dishes/0/restaurant",
+          "messageCode": {
+            "id": "http://jsonschema.net/errors/1/messageCode",
             "type": "string"
           },
-          "name": {
-            "id": "http://jsonschema.net/dishes/0/name",
-            "type": "string"
-          },
-          "price": {
-            "id": "http://jsonschema.net/dishes/0/price",
-            "type": "number"
+          "params": {
+            "id": "http://jsonschema.net/errors/1/params",
+            "type": "array"
+          }
+        },
+        "required": [
+          "messageCode"
+        ]
+      }
+    },
+    "result": {
+      "id": "http://jsonschema.net/result",
+      "type": "object",
+      "properties": {
+        "id": {
+          "id": "http://jsonschema.net/result/id",
+          "type": "string"
+        },
+        "name": {
+          "id": "http://jsonschema.net/result/name",
+          "type": "string"
+        },
+        "dishes": {
+          "id": "http://jsonschema.net/result/dishes",
+          "type": "array",
+          "items": {
+            "id": "http://jsonschema.net/result/dishes/5",
+            "type": "object",
+            "properties": {
+              "id": {
+                "id": "http://jsonschema.net/result/dishes/5/id",
+                "type": "string"
+              },
+              "restaurant": {
+                "id": "http://jsonschema.net/result/dishes/5/restaurant",
+                "type": "string"
+              },
+              "name": {
+                "id": "http://jsonschema.net/result/dishes/5/name",
+                "type": "string"
+              },
+              "price": {
+                "id": "http://jsonschema.net/result/dishes/5/price",
+                "type": "number"
+              }
+            }
           }
         }
-      }
+      },
+      "required": [
+        "id",
+        "name",
+        "dishes"
+      ]
     }
   },
   "required": [
-    "id",
-    "name",
-    "dishes"
+    "valid"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Authentication is required</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -599,6 +637,89 @@
     "error",
     "message",
     "path"
+  ]
+}</code></pre><h2>HTTP status code <a href="http://httpstatus.es/409" target="_blank">409</a></h2><p>Restaurant information does not pass validation</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net",
+  "type": "object",
+  "properties": {
+    "valid": {
+      "id": "http://jsonschema.net/valid",
+      "type": "boolean"
+    },
+    "errors": {
+      "id": "http://jsonschema.net/errors",
+      "type": "array",
+      "items": {
+        "id": "http://jsonschema.net/errors/1",
+        "type": "object",
+        "properties": {
+          "fieldName": {
+            "id": "http://jsonschema.net/errors/1/fieldName",
+            "type": "string"
+          },
+          "messageCode": {
+            "id": "http://jsonschema.net/errors/1/messageCode",
+            "type": "string"
+          },
+          "params": {
+            "id": "http://jsonschema.net/errors/1/params",
+            "type": "array"
+          }
+        },
+        "required": [
+          "messageCode"
+        ]
+      }
+    },
+    "result": {
+      "id": "http://jsonschema.net/result",
+      "type": "object",
+      "properties": {
+        "id": {
+          "id": "http://jsonschema.net/result/id",
+          "type": "string"
+        },
+        "name": {
+          "id": "http://jsonschema.net/result/name",
+          "type": "string"
+        },
+        "dishes": {
+          "id": "http://jsonschema.net/result/dishes",
+          "type": "array",
+          "items": {
+            "id": "http://jsonschema.net/result/dishes/5",
+            "type": "object",
+            "properties": {
+              "id": {
+                "id": "http://jsonschema.net/result/dishes/5/id",
+                "type": "string"
+              },
+              "restaurant": {
+                "id": "http://jsonschema.net/result/dishes/5/restaurant",
+                "type": "string"
+              },
+              "name": {
+                "id": "http://jsonschema.net/result/dishes/5/name",
+                "type": "string"
+              },
+              "price": {
+                "id": "http://jsonschema.net/result/dishes/5/price",
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "dishes"
+      ]
+    }
+  },
+  "required": [
+    "valid"
   ]
 }</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_api_restaurant___id_"><span class="parent">/api/restaurant</span>/${id}</a> <span class="methods"><a href="#api_restaurant___id__get"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#api_restaurant___id__delete"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#api_restaurant___id__patch"><span class="badge badge_patch">patch <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a> <a href="#api_restaurant___id__put"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a></span></h4></div><div id="panel_api_restaurant___id_" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#api_restaurant___id__get'" class="list-group-item"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"><p>Get one Restaurant information</p></div><div class="clearfix"></div></div><div onclick="window.location.href = '#api_restaurant___id__delete'" class="list-group-item"><span class="badge badge_delete">delete <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"><p>Delete Restaurant by id</p></div><div class="clearfix"></div></div><div onclick="window.location.href = '#api_restaurant___id__patch'" class="list-group-item"><span class="badge badge_patch">patch <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"><p>Update exists Restaurant with partial JSON information</p></div><div class="clearfix"></div></div><div onclick="window.location.href = '#api_restaurant___id__put'" class="list-group-item"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"><p>Update exists Restaurant with full JSON information</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="api_restaurant___id__get"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_get">get <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/api/restaurant</span>/${id}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Get one Restaurant information</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by basic<p>Basic Authentication</p></div><ul class="nav nav-tabs"><li class="active"><a href="#api_restaurant___id__get_request" data-toggle="tab">Request</a></li><li><a href="#api_restaurant___id__get_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="api_restaurant___id__get_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul></div><div class="tab-pane" id="api_restaurant___id__get_response"><h2>HTTP status code <a href="http://httpstatus.es/200" target="_blank">200</a></h2><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -843,45 +964,83 @@
   "id": "http://jsonschema.net",
   "type": "object",
   "properties": {
-    "id": {
-      "id": "http://jsonschema.net/id",
-      "type": "string"
+    "valid": {
+      "id": "http://jsonschema.net/valid",
+      "type": "boolean"
     },
-    "name": {
-      "id": "http://jsonschema.net/name",
-      "type": "string"
-    },
-    "dishes": {
-      "id": "http://jsonschema.net/dishes",
+    "errors": {
+      "id": "http://jsonschema.net/errors",
       "type": "array",
       "items": {
-        "id": "http://jsonschema.net/dishes/0",
+        "id": "http://jsonschema.net/errors/1",
         "type": "object",
         "properties": {
-          "id": {
-            "id": "http://jsonschema.net/dishes/0/id",
+          "fieldName": {
+            "id": "http://jsonschema.net/errors/1/fieldName",
             "type": "string"
           },
-          "restaurant": {
-            "id": "http://jsonschema.net/dishes/0/restaurant",
+          "messageCode": {
+            "id": "http://jsonschema.net/errors/1/messageCode",
             "type": "string"
           },
-          "name": {
-            "id": "http://jsonschema.net/dishes/0/name",
-            "type": "string"
-          },
-          "price": {
-            "id": "http://jsonschema.net/dishes/0/price",
-            "type": "number"
+          "params": {
+            "id": "http://jsonschema.net/errors/1/params",
+            "type": "array"
+          }
+        },
+        "required": [
+          "messageCode"
+        ]
+      }
+    },
+    "result": {
+      "id": "http://jsonschema.net/result",
+      "type": "object",
+      "properties": {
+        "id": {
+          "id": "http://jsonschema.net/result/id",
+          "type": "string"
+        },
+        "name": {
+          "id": "http://jsonschema.net/result/name",
+          "type": "string"
+        },
+        "dishes": {
+          "id": "http://jsonschema.net/result/dishes",
+          "type": "array",
+          "items": {
+            "id": "http://jsonschema.net/result/dishes/5",
+            "type": "object",
+            "properties": {
+              "id": {
+                "id": "http://jsonschema.net/result/dishes/5/id",
+                "type": "string"
+              },
+              "restaurant": {
+                "id": "http://jsonschema.net/result/dishes/5/restaurant",
+                "type": "string"
+              },
+              "name": {
+                "id": "http://jsonschema.net/result/dishes/5/name",
+                "type": "string"
+              },
+              "price": {
+                "id": "http://jsonschema.net/result/dishes/5/price",
+                "type": "number"
+              }
+            }
           }
         }
-      }
+      },
+      "required": [
+        "id",
+        "name",
+        "dishes"
+      ]
     }
   },
   "required": [
-    "id",
-    "name",
-    "dishes"
+    "valid"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Authentication is required</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -957,7 +1116,90 @@
     "message",
     "path"
   ]
-}</code></pre><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><p>Restaurant with id not found</p></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="api_restaurant___id__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/api/restaurant</span>/${id}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Update exists Restaurant with full JSON information</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by [object Object]</div><ul class="nav nav-tabs"><li class="active"><a href="#api_restaurant___id__put_request" data-toggle="tab">Request</a></li><li><a href="#api_restaurant___id__put_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="api_restaurant___id__put_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+}</code></pre><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><p>Restaurant with id not found</p><h2>HTTP status code <a href="http://httpstatus.es/409" target="_blank">409</a></h2><p>Restaurant information does not pass validation</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net",
+  "type": "object",
+  "properties": {
+    "valid": {
+      "id": "http://jsonschema.net/valid",
+      "type": "boolean"
+    },
+    "errors": {
+      "id": "http://jsonschema.net/errors",
+      "type": "array",
+      "items": {
+        "id": "http://jsonschema.net/errors/1",
+        "type": "object",
+        "properties": {
+          "fieldName": {
+            "id": "http://jsonschema.net/errors/1/fieldName",
+            "type": "string"
+          },
+          "messageCode": {
+            "id": "http://jsonschema.net/errors/1/messageCode",
+            "type": "string"
+          },
+          "params": {
+            "id": "http://jsonschema.net/errors/1/params",
+            "type": "array"
+          }
+        },
+        "required": [
+          "messageCode"
+        ]
+      }
+    },
+    "result": {
+      "id": "http://jsonschema.net/result",
+      "type": "object",
+      "properties": {
+        "id": {
+          "id": "http://jsonschema.net/result/id",
+          "type": "string"
+        },
+        "name": {
+          "id": "http://jsonschema.net/result/name",
+          "type": "string"
+        },
+        "dishes": {
+          "id": "http://jsonschema.net/result/dishes",
+          "type": "array",
+          "items": {
+            "id": "http://jsonschema.net/result/dishes/5",
+            "type": "object",
+            "properties": {
+              "id": {
+                "id": "http://jsonschema.net/result/dishes/5/id",
+                "type": "string"
+              },
+              "restaurant": {
+                "id": "http://jsonschema.net/result/dishes/5/restaurant",
+                "type": "string"
+              },
+              "name": {
+                "id": "http://jsonschema.net/result/dishes/5/name",
+                "type": "string"
+              },
+              "price": {
+                "id": "http://jsonschema.net/result/dishes/5/price",
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "dishes"
+      ]
+    }
+  },
+  "required": [
+    "valid"
+  ]
+}</code></pre></div></div></div></div></div></div><div class="modal fade" tabindex="0" id="api_restaurant___id__put"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_put">put <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/api/restaurant</span>/${id}</h4></div><div class="modal-body"><div class="alert alert-info"><p>Update exists Restaurant with full JSON information</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by [object Object]</div><ul class="nav nav-tabs"><li class="active"><a href="#api_restaurant___id__put_request" data-toggle="tab">Request</a></li><li><a href="#api_restaurant___id__put_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="api_restaurant___id__put_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
   "$schema": "http://json-schema.org/draft-04/schema#",
   "id": "http://jsonschema.net",
   "type": "object",
@@ -1007,45 +1249,83 @@
   "id": "http://jsonschema.net",
   "type": "object",
   "properties": {
-    "id": {
-      "id": "http://jsonschema.net/id",
-      "type": "string"
+    "valid": {
+      "id": "http://jsonschema.net/valid",
+      "type": "boolean"
     },
-    "name": {
-      "id": "http://jsonschema.net/name",
-      "type": "string"
-    },
-    "dishes": {
-      "id": "http://jsonschema.net/dishes",
+    "errors": {
+      "id": "http://jsonschema.net/errors",
       "type": "array",
       "items": {
-        "id": "http://jsonschema.net/dishes/0",
+        "id": "http://jsonschema.net/errors/1",
         "type": "object",
         "properties": {
-          "id": {
-            "id": "http://jsonschema.net/dishes/0/id",
+          "fieldName": {
+            "id": "http://jsonschema.net/errors/1/fieldName",
             "type": "string"
           },
-          "restaurant": {
-            "id": "http://jsonschema.net/dishes/0/restaurant",
+          "messageCode": {
+            "id": "http://jsonschema.net/errors/1/messageCode",
             "type": "string"
           },
-          "name": {
-            "id": "http://jsonschema.net/dishes/0/name",
-            "type": "string"
-          },
-          "price": {
-            "id": "http://jsonschema.net/dishes/0/price",
-            "type": "number"
+          "params": {
+            "id": "http://jsonschema.net/errors/1/params",
+            "type": "array"
+          }
+        },
+        "required": [
+          "messageCode"
+        ]
+      }
+    },
+    "result": {
+      "id": "http://jsonschema.net/result",
+      "type": "object",
+      "properties": {
+        "id": {
+          "id": "http://jsonschema.net/result/id",
+          "type": "string"
+        },
+        "name": {
+          "id": "http://jsonschema.net/result/name",
+          "type": "string"
+        },
+        "dishes": {
+          "id": "http://jsonschema.net/result/dishes",
+          "type": "array",
+          "items": {
+            "id": "http://jsonschema.net/result/dishes/5",
+            "type": "object",
+            "properties": {
+              "id": {
+                "id": "http://jsonschema.net/result/dishes/5/id",
+                "type": "string"
+              },
+              "restaurant": {
+                "id": "http://jsonschema.net/result/dishes/5/restaurant",
+                "type": "string"
+              },
+              "name": {
+                "id": "http://jsonschema.net/result/dishes/5/name",
+                "type": "string"
+              },
+              "price": {
+                "id": "http://jsonschema.net/result/dishes/5/price",
+                "type": "number"
+              }
+            }
           }
         }
-      }
+      },
+      "required": [
+        "id",
+        "name",
+        "dishes"
+      ]
     }
   },
   "required": [
-    "id",
-    "name",
-    "dishes"
+    "valid"
   ]
 }</code></pre><h2>HTTP status code <a href="http://httpstatus.es/401" target="_blank">401</a></h2><p>Authentication is required</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
   "$schema": "http://json-schema.org/draft-04/schema#",
@@ -1121,7 +1401,90 @@
     "message",
     "path"
   ]
-}</code></pre><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><p>Restaurant with id not found</p></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_api_restaurant___id__vote"><span class="parent">/api/restaurant/${id}</span>/vote</a> <span class="methods"><a href="#api_restaurant___id__vote_post"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a></span></h4></div><div id="panel_api_restaurant___id__vote" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#api_restaurant___id__vote_post'" class="list-group-item"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"><p>Update vote status for current restaurant and authorized account</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="api_restaurant___id__vote_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/api/restaurant/${id}</span>/vote</h4></div><div class="modal-body"><div class="alert alert-info"><p>Update vote status for current restaurant and authorized account</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by basic<p>Basic Authentication</p></div><ul class="nav nav-tabs"><li class="active"><a href="#api_restaurant___id__vote_post_request" data-toggle="tab">Request</a></li><li><a href="#api_restaurant___id__vote_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="api_restaurant___id__vote_post_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul><h3>Query Parameters</h3><ul><li><strong>datetime</strong>: <em>(string - default: current datetime - pattern: yyyy-MM-dd'T'HH:MM:ss.SSS'Z['ZZZ']')</em><p>Datetime for vote</p><p><strong>Example</strong>:</p><pre>2015-10-21T10:30:21.000Z[GMT]</pre></li></ul></div><div class="tab-pane" id="api_restaurant___id__vote_post_response"><h2>HTTP status code <a href="http://httpstatus.es/201" target="_blank">201</a></h2><p>Vote stored</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+}</code></pre><h2>HTTP status code <a href="http://httpstatus.es/404" target="_blank">404</a></h2><p>Restaurant with id not found</p><h2>HTTP status code <a href="http://httpstatus.es/409" target="_blank">409</a></h2><p>Restaurant information does not pass validation</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net",
+  "type": "object",
+  "properties": {
+    "valid": {
+      "id": "http://jsonschema.net/valid",
+      "type": "boolean"
+    },
+    "errors": {
+      "id": "http://jsonschema.net/errors",
+      "type": "array",
+      "items": {
+        "id": "http://jsonschema.net/errors/1",
+        "type": "object",
+        "properties": {
+          "fieldName": {
+            "id": "http://jsonschema.net/errors/1/fieldName",
+            "type": "string"
+          },
+          "messageCode": {
+            "id": "http://jsonschema.net/errors/1/messageCode",
+            "type": "string"
+          },
+          "params": {
+            "id": "http://jsonschema.net/errors/1/params",
+            "type": "array"
+          }
+        },
+        "required": [
+          "messageCode"
+        ]
+      }
+    },
+    "result": {
+      "id": "http://jsonschema.net/result",
+      "type": "object",
+      "properties": {
+        "id": {
+          "id": "http://jsonschema.net/result/id",
+          "type": "string"
+        },
+        "name": {
+          "id": "http://jsonschema.net/result/name",
+          "type": "string"
+        },
+        "dishes": {
+          "id": "http://jsonschema.net/result/dishes",
+          "type": "array",
+          "items": {
+            "id": "http://jsonschema.net/result/dishes/5",
+            "type": "object",
+            "properties": {
+              "id": {
+                "id": "http://jsonschema.net/result/dishes/5/id",
+                "type": "string"
+              },
+              "restaurant": {
+                "id": "http://jsonschema.net/result/dishes/5/restaurant",
+                "type": "string"
+              },
+              "name": {
+                "id": "http://jsonschema.net/result/dishes/5/name",
+                "type": "string"
+              },
+              "price": {
+                "id": "http://jsonschema.net/result/dishes/5/price",
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "dishes"
+      ]
+    }
+  },
+  "required": [
+    "valid"
+  ]
+}</code></pre></div></div></div></div></div></div></div><div class="panel panel-white"><div class="panel-heading"><h4 class="panel-title"><a class="collapsed" data-toggle="collapse" href="#panel_api_restaurant___id__vote"><span class="parent">/api/restaurant/${id}</span>/vote</a> <span class="methods"><a href="#api_restaurant___id__vote_post"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span></a></span></h4></div><div id="panel_api_restaurant___id__vote" class="panel-collapse collapse"><div class="panel-body"><div class="list-group"><div onclick="window.location.href = '#api_restaurant___id__vote_post'" class="list-group-item"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span><div class="method_description"><p>Update vote status for current restaurant and authorized account</p></div><div class="clearfix"></div></div></div></div></div><div class="modal fade" tabindex="0" id="api_restaurant___id__vote_post"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button><h4 class="modal-title" id="myModalLabel"><span class="badge badge_post">post <span class="glyphicon glyphicon-lock" title="Authentication required"></span></span> <span class="parent">/api/restaurant/${id}</span>/vote</h4></div><div class="modal-body"><div class="alert alert-info"><p>Update vote status for current restaurant and authorized account</p></div><div class="alert alert-warning"><span class="glyphicon glyphicon-lock" title="Authentication required"></span> Secured by basic<p>Basic Authentication</p></div><ul class="nav nav-tabs"><li class="active"><a href="#api_restaurant___id__vote_post_request" data-toggle="tab">Request</a></li><li><a href="#api_restaurant___id__vote_post_response" data-toggle="tab">Response</a></li></ul><div class="tab-content"><div class="tab-pane active" id="api_restaurant___id__vote_post_request"><h3>URI Parameters</h3><ul><li><strong>id</strong>: <em>required (string)</em></li></ul><h3>Query Parameters</h3><ul><li><strong>datetime</strong>: <em>(string - default: current datetime - pattern: yyyy-MM-dd'T'HH:MM:ss.SSS'Z['ZZZ']')</em><p>Datetime for vote</p><p><strong>Example</strong>:</p><pre>2015-10-21T10:30:21.000Z[GMT]</pre></li></ul></div><div class="tab-pane" id="api_restaurant___id__vote_post_response"><h2>HTTP status code <a href="http://httpstatus.es/201" target="_blank">201</a></h2><p>Vote stored</p><h3>Body</h3><p><strong>Type: application/json</strong></p><p><strong>Schema</strong>:</p><pre><code>{
   "$schema": "http://json-schema.org/draft-04/schema#",
   "id": "http://jsonschema.net",
   "type": "object",
