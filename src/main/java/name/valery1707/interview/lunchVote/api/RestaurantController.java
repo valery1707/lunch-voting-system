@@ -5,7 +5,6 @@ import name.valery1707.interview.lunchVote.domain.*;
 import name.valery1707.interview.lunchVote.dto.VoteScore;
 import name.valery1707.interview.lunchVote.dto.VoteStatus;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,9 +40,6 @@ public class RestaurantController {
 
 	@Inject
 	private RestaurantRepo repo;
-
-	@Inject
-	private PagingAndSortingRepository<Restaurant, UUID> baseRepo;
 
 	@Inject
 	private Validator validator;

@@ -4,6 +4,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ public class Restaurant extends ABaseEntity {
 
 	@OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Size(min = 1)
+	@Valid
 	private Set<Dish> dishes = new HashSet<>(0);
 
 	public String getName() {

@@ -174,3 +174,16 @@ curl -i \
     ]
   }' http://localhost:8080/api/restaurant
 ```
+1. Add new dish without price to exists restaurant
+```bash
+curl -i \
+  -H "Content-Type: application/json" \
+  -u "admin:admin" \
+  -X PATCH \
+  -d '{
+    "dishes": [
+      {"name": "New dish"}
+    ]
+  }' \
+  http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
+```
