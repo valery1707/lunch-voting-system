@@ -1,6 +1,6 @@
 #%RAML 0.8
 title: Lunch vote system
-version: 1.0.0-SNAPSHOT
+version: 1.0.1-SNAPSHOT
 protocols: [ HTTP ]
 baseUri: http://lunchvotesystem.servehttp.com:8080/
 mediaType: application/json
@@ -9,8 +9,9 @@ schemas:
   - Hello: !include Hello.schema.json
   - StatusDatabase: !include StatusDatabase.schema.json
   - Accounts: !include Accounts.schema.json
-  - Restaurants: !include Restaurants.schema.json
   - Restaurant: !include Restaurant.schema.json
+  - Restaurant_List: !include Restaurant_List.schema.json
+  - Restaurant_Result: !include Restaurant_Result.schema.json
   - VoteScore: !include VoteScore.schema.json
   - VoteStatus: !include VoteStatus.schema.json
 securitySchemes:
@@ -61,7 +62,7 @@ securitySchemes:
       200:
         body:
           application/json:
-            schema: Restaurants
+            schema: Restaurant_List
       401:
         description: Authentication is required
         body:
@@ -82,12 +83,17 @@ securitySchemes:
       201:
         body:
           application/json:
-            schema: Restaurant
+            schema: Restaurant_Result
         headers:
           Location:
             description: URL of created Restaurant
             type: string
             required: true
+      409:
+        description: Restaurant information does not pass validation
+        body:
+          application/json:
+            schema: Restaurant_Result
       401:
         description: Authentication is required
         body:
@@ -148,7 +154,12 @@ securitySchemes:
           description: Restaurant successfully patched
           body:
             application/json:
-              schema: Restaurant
+              schema: Restaurant_Result
+        409:
+          description: Restaurant information does not pass validation
+          body:
+            application/json:
+              schema: Restaurant_Result
         404:
           description: Restaurant with id not found
         401:
@@ -172,7 +183,12 @@ securitySchemes:
           description: Restaurant successfully updated
           body:
             application/json:
-              schema: Restaurant
+              schema: Restaurant_Result
+        409:
+          description: Restaurant information does not pass validation
+          body:
+            application/json:
+              schema: Restaurant_Result
         404:
           description: Restaurant with id not found
         401:

@@ -14,7 +14,7 @@ project.targetCompatibility = '1.8'
 jar {
 	baseName = 'lunch-voting-system'
 	group = "name.valery1707.interview"
-	version = '1.0.0-SNAPSHOT'
+	version = '1.0.1-SNAPSHOT'
 }
 
 apply plugin: 'application'
@@ -95,6 +95,11 @@ dependencies {
 	compile 'com.google.code.findbugs:jsr305:3.0.1'
 	compile 'org.jetbrains:annotations:15.0'
 	compile 'javax.inject:javax.inject:1'
+
+	//Validation
+	compile 'javax.validation:validation-api:1.1.0.Final'
+	compile 'org.hibernate:hibernate-validator:5.2.2.Final'
+	compile 'javax.el:javax.el-api:3.0.0'
 
 	//Testing
 	testCompile "junit:junit:4.+"

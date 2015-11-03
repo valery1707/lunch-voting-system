@@ -2,6 +2,7 @@ package name.valery1707.interview.lunchVote.api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 import name.valery1707.interview.lunchVote.Launcher;
 import name.valery1707.interview.lunchVote.domain.Dish;
 import name.valery1707.interview.lunchVote.domain.Restaurant;
@@ -77,6 +78,15 @@ public class RestaurantControllerTest {
 
 	private <T> String objectToJson(T src) throws IOException {
 		return mapper.writeValueAsString(src);
+	}
+
+	private String jsonExtract(String jsonPath, String src) throws IOException {
+		Object obj = JsonPath.read(src, jsonPath);
+		return objectToJson(obj);
+	}
+
+	private String extractResult(String src) throws IOException {
+		return jsonExtract("$.result", src);
 	}
 
 	private static RequestPostProcessor accAdmin() {
@@ -244,12 +254,14 @@ public class RestaurantControllerTest {
 				.andExpect(content().encoding(ENCODING))
 				.andExpect(redirectedUrlPattern(URL_PREFIX + URL_ROOT + "/*"))
 				.andExpect(jsonPath("$").isMap())
-				.andExpect(jsonPath("$.id").exists())
-				.andExpect(jsonPath("$.id", not(RESTAURANT_MOE_BAR_ID)))
-				.andExpect(jsonPath("$.id", not(source.getId())))
+				.andExpect(jsonPath("$.result").exists())
+				.andExpect(jsonPath("$.result").isMap())
+				.andExpect(jsonPath("$.result.id").exists())
+				.andExpect(jsonPath("$.result.id", not(RESTAURANT_MOE_BAR_ID)))
+				.andExpect(jsonPath("$.result.id", not(source.getId())))
 				.andExpect(authenticated().withRoles("ADMIN"))
 				.andReturn().getResponse().getContentAsString();
-		Restaurant result = jsonToObject(Restaurant.class, content);
+		Restaurant result = jsonToObject(Restaurant.class, extractResult(content));
 		assertThat(result.getName()).isEqualTo(source.getName());
 		assertThat(result.getDishes()).hasSameSizeAs(source.getDishes());
 
@@ -381,9 +393,11 @@ public class RestaurantControllerTest {
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
 				.andExpect(jsonPath("$").isMap())
-				.andExpect(jsonPath("$.id").value(created.getId().toString()))
-				.andExpect(jsonPath("$.dishes").isArray())
-				.andExpect(jsonPath("$.dishes", hasSize(updateSource.getDishes().size())))
+				.andExpect(jsonPath("$.result").exists())
+				.andExpect(jsonPath("$.result").isMap())
+				.andExpect(jsonPath("$.result.id").value(created.getId().toString()))
+				.andExpect(jsonPath("$.result.dishes").isArray())
+				.andExpect(jsonPath("$.result.dishes", hasSize(updateSource.getDishes().size())))
 				.andExpect(authenticated().withRoles("ADMIN"))
 		;
 
@@ -476,9 +490,11 @@ public class RestaurantControllerTest {
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
 				.andExpect(jsonPath("$").isMap())
-				.andExpect(jsonPath("$.id").value(created.getId().toString()))
-				.andExpect(jsonPath("$.dishes").isArray())
-				.andExpect(jsonPath("$.dishes", hasSize(created.getDishes().size() + updateSource.getDishes().size())))
+				.andExpect(jsonPath("$.result").exists())
+				.andExpect(jsonPath("$.result").isMap())
+				.andExpect(jsonPath("$.result.id").value(created.getId().toString()))
+				.andExpect(jsonPath("$.result.dishes").isArray())
+				.andExpect(jsonPath("$.result.dishes", hasSize(created.getDishes().size() + updateSource.getDishes().size())))
 				.andExpect(authenticated().withRoles("ADMIN"))
 		;
 

@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net",
+  "type": "object",
+  "properties": {
+    "valid": {
+      "id": "http://jsonschema.net/valid",
+      "type": "boolean"
+    },
+    "errors": {
+      "id": "http://jsonschema.net/errors",
+      "type": "array",
+      "items": {
+        "id": "http://jsonschema.net/errors/1",
+        "type": "object",
+        "properties": {
+          "fieldName": {
+            "id": "http://jsonschema.net/errors/1/fieldName",
+            "type": "string"
+          },
+          "messageCode": {
+            "id": "http://jsonschema.net/errors/1/messageCode",
+            "type": "string"
+          },
+          "params": {
+            "id": "http://jsonschema.net/errors/1/params",
+            "type": "array"
+          }
+        },
+        "required": [
+          "messageCode"
+        ]
+      }
+    },
+    "result": {
+      "id": "http://jsonschema.net/result",
+      "type": "object",
+      "properties": {
+        "id": {
+          "id": "http://jsonschema.net/result/id",
+          "type": "string"
+        },
+        "name": {
+          "id": "http://jsonschema.net/result/name",
+          "type": "string"
+        },
+        "dishes": {
+          "id": "http://jsonschema.net/result/dishes",
+          "type": "array",
+          "items": {
+            "id": "http://jsonschema.net/result/dishes/5",
+            "type": "object",
+            "properties": {
+              "id": {
+                "id": "http://jsonschema.net/result/dishes/5/id",
+                "type": "string"
+              },
+              "restaurant": {
+                "id": "http://jsonschema.net/result/dishes/5/restaurant",
+                "type": "string"
+              },
+              "name": {
+                "id": "http://jsonschema.net/result/dishes/5/name",
+                "type": "string"
+              },
+              "price": {
+                "id": "http://jsonschema.net/result/dishes/5/price",
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "dishes"
+      ]
+    }
+  },
+  "required": [
+    "valid"
+  ]
+}

@@ -4,6 +4,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,9 +13,12 @@ import java.util.Set;
 @SuppressWarnings("unused")
 public class Restaurant extends ABaseEntity {
 	@Column
+	@NotNull
+	@Size(min = 1, max = 255)
 	private String name;
 
 	@OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Size(min = 1)
 	private Set<Dish> dishes = new HashSet<>(0);
 
 	public String getName() {

@@ -162,3 +162,15 @@ curl -i \
   -u "user_1:password one" \
   http://localhost:8080/api/restaurant/vote?date=2015-10-21
 ```
+##### Some evil things
+1. Create restaurant with empty name
+```bash
+curl -i \
+  -H "Content-Type: application/json" \
+  -u "admin:admin" \
+  -X PUT \
+  -d '{"name": "",
+    "dishes": [
+    ]
+  }' http://localhost:8080/api/restaurant
+```

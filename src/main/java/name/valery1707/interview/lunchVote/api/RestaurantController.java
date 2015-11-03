@@ -1,17 +1,23 @@
 package name.valery1707.interview.lunchVote.api;
 
+import name.valery1707.interview.lunchVote.common.RestResult;
 import name.valery1707.interview.lunchVote.domain.*;
 import name.valery1707.interview.lunchVote.dto.VoteScore;
 import name.valery1707.interview.lunchVote.dto.VoteStatus;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -36,6 +42,51 @@ public class RestaurantController {
 	@Inject
 	private RestaurantRepo repo;
 
+	@Inject
+	private PagingAndSortingRepository<Restaurant, UUID> baseRepo;
+
+	@Inject
+	private Validator validator;
+
+	protected BindingResult validate(Object target, String objectName) {
+		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(target, objectName);
+		validator.validate(target, errors);
+		return errors;
+	}
+
+	protected <R> ResponseEntity<RestResult<R>> created(URI location, R body) {
+		return ResponseEntity
+				.created(location)
+				.body(new RestResult<>(body));
+	}
+
+	protected <R extends IBaseEntity> ResponseEntity<RestResult<R>> created(R body, HttpServletRequest request, String idSegment) {
+		return created(
+				fromRequest(request)
+						.pathSegment(idSegment)
+						.build()
+						.expand(body.getId())
+						.toUri()
+				, body);
+	}
+
+	protected <R> ResponseEntity<RestResult<R>> updated(R body) {
+		return ResponseEntity.ok(new RestResult<>(body));
+	}
+
+	protected <R> ResponseEntity<RestResult<R>> invalid(BindingResult validate) {
+		RestResult<R> result = new RestResult<>(false, null);
+		validate.getFieldErrors().forEach(fieldError -> result.addError(fieldError.getField(), fieldError.getDefaultMessage(), fieldError.getArguments()));
+		validate.getGlobalErrors().forEach(objectError -> result.addError("", objectError.getDefaultMessage(), objectError.getArguments()));
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(result);
+	}
+
+	protected <R> ResponseEntity<R> notFound() {
+		return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body(null);
+	}
+
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public List<Restaurant> findAll() {
 		return repo.findAll();
@@ -43,7 +94,12 @@ public class RestaurantController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "", method = {RequestMethod.PUT, RequestMethod.POST})
-	public ResponseEntity<Restaurant> create(@RequestBody Restaurant restaurant, HttpServletRequest request) {
+	public ResponseEntity<RestResult<Restaurant>> create(@RequestBody Restaurant restaurant, HttpServletRequest request) {
+		BindingResult validate = validate(restaurant, "restaurant");
+		if (validate.hasErrors()) {
+			return invalid(validate);
+		}
+
 		//Protect id and links from incorrect user input
 		restaurant.setId(null);
 		restaurant.getDishes().forEach(dish -> {
@@ -53,20 +109,14 @@ public class RestaurantController {
 		//Save into database
 		Restaurant saved = repo.saveAndFlush(restaurant);
 		//Response
-		return ResponseEntity
-				.created(fromRequest(request)
-						.pathSegment("{id}")
-						.build()
-						.expand(saved.getId())
-						.toUri())
-				.body(saved);
+		return created(saved, request, "/{id}");
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Restaurant> findById(@PathVariable UUID id) {
 		Restaurant entity = repo.findOne(id);
 		if (entity == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+			return notFound();
 		}
 		return ResponseEntity.ok(entity);
 	}
@@ -76,7 +126,7 @@ public class RestaurantController {
 	public ResponseEntity<Restaurant> deleteById(@PathVariable UUID id) {
 		Restaurant entity = repo.findOne(id);
 		if (entity == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+			return notFound();
 		}
 		repo.delete(entity);
 		return ResponseEntity.ok(entity);
@@ -84,10 +134,10 @@ public class RestaurantController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-	public ResponseEntity<Restaurant> patchById(@PathVariable("id") UUID id, @RequestBody Restaurant patch) {
+	public ResponseEntity<RestResult<Restaurant>> patchById(@PathVariable("id") UUID id, @RequestBody Restaurant patch) {
 		Restaurant saved = repo.findOne(id);
 		if (saved == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+			return notFound();
 		}
 
 		//Copy all untouched fields from saved to patch
@@ -119,17 +169,22 @@ public class RestaurantController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-	public ResponseEntity<Restaurant> updateById(@PathVariable("id") UUID id, @RequestBody Restaurant update) {
+	public ResponseEntity<RestResult<Restaurant>> updateById(@PathVariable("id") UUID id, @RequestBody Restaurant update) {
 		Restaurant saved = repo.findOne(id);
 		if (saved == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+			return notFound();
 		}
+
+		BindingResult validate = validate(update, "restaurant");
+		if (validate.hasErrors()) {
+			return invalid(validate);
+		}
+
 		update.setId(saved.getId());
 		update.getDishes().removeIf(dish -> dish.getId() != null && !saved.getDishes().contains(dish));
 		update.getDishes().forEach(dish -> dish.setRestaurant(saved));
-		//todo Validate entity
 		update = repo.saveAndFlush(update);
-		return ResponseEntity.ok(update);
+		return updated(update);
 	}
 
 	@Inject
@@ -160,7 +215,7 @@ public class RestaurantController {
 	public ResponseEntity<VoteStatus> vote(@PathVariable("id") UUID restaurantId, @RequestParam @DateTimeFormat(iso = DATE_TIME) Optional<ZonedDateTime> datetime, Principal principal) {
 		Restaurant restaurant = repo.findOne(restaurantId);
 		if (restaurant == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+			return notFound();
 		}
 
 		ZonedDateTime now = datetime.filter(o -> voteAllowPassDate).orElseGet(ZonedDateTime::now).withZoneSameInstant(ZoneId.systemDefault());
