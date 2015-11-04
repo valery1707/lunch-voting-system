@@ -1,4 +1,4 @@
-package name.valery1707.interview.lunchVote.domain;
+package name.valery1707.interview.lunchVote.dto;
 
 import org.intellij.lang.annotations.Language;
 import org.springframework.jdbc.core.RowMapper;

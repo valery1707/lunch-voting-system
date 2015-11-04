@@ -1,6 +1,6 @@
 package name.valery1707.interview.lunchVote.api;
 
-import name.valery1707.interview.lunchVote.domain.DatabaseStatus;
+import name.valery1707.interview.lunchVote.dto.DatabaseStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
