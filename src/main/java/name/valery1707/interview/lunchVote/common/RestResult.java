@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class RestResult<T> {
 	private boolean valid;
 	private List<ErrorMessage> errors = new ArrayList<>();
@@ -14,8 +15,8 @@ public class RestResult<T> {
 
 	public RestResult(boolean valid, T result) {
 		this();
-		this.valid = valid;
-		this.result = result;
+		setValid(valid);
+		setResult(result);
 	}
 
 	public RestResult(T result) {
