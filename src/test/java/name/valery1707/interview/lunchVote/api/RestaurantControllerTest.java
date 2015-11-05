@@ -624,6 +624,74 @@ public class RestaurantControllerTest {
 	}
 
 	@Test
+	public void test_41_patchById_asAdmin_partial() throws Exception {
+		//Read original value
+		Restaurant created = findRestaurantCreated();
+
+		//Read value for update
+		Restaurant updateSource = findRestaurantCreated();
+		//Make modification
+		updateSource.setName(null);//Do not send name
+		Iterator<Dish> iterator = updateSource.getDishes().iterator();
+		//Patch only dish price
+		if (iterator.hasNext()) {
+			Dish dish = iterator.next();
+			dish.setName(null);//Do not send name
+			dish.setPrice(dish.getPrice() * 2);
+		}
+		//Patch only dish name
+		if (iterator.hasNext()) {
+			Dish dish = iterator.next();
+			dish.setName(dish.getName() + " {partially patched}");
+			dish.setPrice(null);//Do not send price
+		}
+		//Add new dish
+		Dish newDish = dish("from partial patch", 142.1);
+		updateSource.getDishes().add(newDish);
+		//Send dish with ID generated on client side
+		Dish dishWithIncorrectId = dish("dish with id from client", 10.0);
+		dishWithIncorrectId.setRandomId();
+		updateSource.getDishes().add(dishWithIncorrectId);
+		//Send dish with ID generated on client side
+		Dish partialDishWithIncorrectId = dish("partial dish with id from client", null);
+		partialDishWithIncorrectId.setRandomId();
+		updateSource.getDishes().add(partialDishWithIncorrectId);
+
+		//Send modification
+		mvc.perform(patch(URL_ROOT + "/{id}", created.getId().toString())
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(updateSource))
+						.with(accAdmin())
+		)
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.result").exists())
+				.andExpect(jsonPath("$.result").isMap())
+				.andExpect(jsonPath("$.result.id").value(created.getId().toString()))
+				.andExpect(jsonPath("$.result.dishes").isArray())
+				.andExpect(jsonPath("$.result.dishes", hasSize(updateSource.getDishes().size() - 2)))
+				.andExpect(authenticated().withRoles("ADMIN"))
+		;
+
+		//Read actual value
+		Restaurant updateResult = findRestaurantCreated();
+		assertThat(updateResult.getName())
+				.isEqualTo(created.getName());
+		assertThat(updateResult.getDishes())
+				.containsAll(created.getDishes());
+		//New dish list contains newDish
+		assertTrue("newDish", updateResult.getDishes().stream()
+						.filter(dish -> !created.getDishes().contains(dish))
+						.allMatch(dish ->
+										dish.getName().equals(newDish.getName()) && dish.getPrice().equals(newDish.getPrice())
+						)
+		);
+	}
+
+	@Test
 	public void test_50_deleteById_unauthorized() throws Exception {
 		test_unauthorized(delete(URL_ROOT + "/{id}", UUID.randomUUID().toString()))
 		;

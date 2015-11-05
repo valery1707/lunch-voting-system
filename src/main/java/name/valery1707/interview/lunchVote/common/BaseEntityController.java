@@ -160,14 +160,14 @@ public abstract class BaseEntityController<T extends IBaseEntity> {
 			return notFound();
 		}
 
+		update.setId(saved.getId());
+		deepCleanNested(saved, update);
+		deepFixBackReference(update);
+
 		BindingResult validate = validate(update, "root");
 		if (validate.hasErrors()) {
 			return invalid(validate);
 		}
-
-		update.setId(saved.getId());
-		deepCleanNested(saved, update);
-		deepFixBackReference(update);
 
 		update = repository.save(update);
 		return updated(update);

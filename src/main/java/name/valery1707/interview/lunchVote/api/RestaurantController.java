@@ -58,7 +58,7 @@ public class RestaurantController extends BaseEntityController<Restaurant> {
 		//Copy all untouched fields from saved to patch
 		Map<UUID, Dish> dishes = src.getDishes().stream().collect(toMap(IBaseEntity::getId, Function.<Dish>identity()));
 		dst.getDishes().stream()
-				.filter(dish -> dish.getId() != null)
+				.filter(dish -> dishes.containsKey(dish.getId()))
 				.forEach(dishPatch -> {
 					Dish dishSaved = dishes.get(dishPatch.getId());
 					if (isBlank(dishPatch.getName())) {
