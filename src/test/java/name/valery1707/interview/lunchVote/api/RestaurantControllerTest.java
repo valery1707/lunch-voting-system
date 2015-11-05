@@ -395,7 +395,7 @@ public class RestaurantControllerTest {
 	}
 
 	@Test
-	public void test_41_updateById_asAdmin_notFound() throws Exception {
+	public void test_40_updateById_asAdmin_notFound() throws Exception {
 		mvc.perform(put(URL_ROOT + "/{id}", UUID.randomUUID().toString())
 						.contentType(CONTENT_TYPE)
 						.characterEncoding(ENCODING)
@@ -457,6 +457,74 @@ public class RestaurantControllerTest {
 										dish.getName().equals(newDish.getName()) && dish.getPrice().equals(newDish.getPrice())
 						)
 		);
+	}
+
+	@Test
+	public void test_40_updateById_asAdmin_withBugs() throws Exception {
+		Restaurant created;
+
+		//Without name in Restaurant
+		created = findRestaurantCreated();
+		created.setName(null);
+		mvc.perform(put(URL_ROOT + "/{id}", created.getId().toString())
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(created))
+						.with(accAdmin())
+		)
+				.andExpect(status().isConflict())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.valid").exists())
+				.andExpect(jsonPath("$.valid").isBoolean())
+				.andExpect(jsonPath("$.valid").value(false))
+				.andExpect(jsonPath("$.errors").exists())
+				.andExpect(jsonPath("$.errors").isArray())
+				.andExpect(jsonPath("$.errors[*].fieldName").value(hasItem("name")))
+				.andExpect(authenticated().withRoles("ADMIN"));
+
+		//Without price in Dish
+		created = findRestaurantCreated();
+		created.getDishes().iterator().next().setPrice(null);
+		mvc.perform(put(URL_ROOT + "/{id}", created.getId().toString())
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(created))
+						.with(accAdmin())
+		)
+				.andExpect(status().isConflict())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.valid").exists())
+				.andExpect(jsonPath("$.valid").isBoolean())
+				.andExpect(jsonPath("$.valid").value(false))
+				.andExpect(jsonPath("$.errors").exists())
+				.andExpect(jsonPath("$.errors").isArray())
+				.andExpect(jsonPath("$.errors[*].fieldName").value(hasItem("dishes[].price")))
+				.andExpect(authenticated().withRoles("ADMIN"));
+
+		//Without name in Dish
+		created = findRestaurantCreated();
+		created.getDishes().iterator().next().setName(null);
+		mvc.perform(put(URL_ROOT + "/{id}", created.getId().toString())
+						.contentType(CONTENT_TYPE)
+						.characterEncoding(ENCODING)
+						.content(objectToJson(created))
+						.with(accAdmin())
+		)
+				.andExpect(status().isConflict())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.valid").exists())
+				.andExpect(jsonPath("$.valid").isBoolean())
+				.andExpect(jsonPath("$.valid").value(false))
+				.andExpect(jsonPath("$.errors").exists())
+				.andExpect(jsonPath("$.errors").isArray())
+				.andExpect(jsonPath("$.errors[*].fieldName").value(hasItem("dishes[].name")))
+				.andExpect(authenticated().withRoles("ADMIN"));
 	}
 
 	@Test
