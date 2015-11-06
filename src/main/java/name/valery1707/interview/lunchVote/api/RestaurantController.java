@@ -2,7 +2,9 @@ package name.valery1707.interview.lunchVote.api;
 
 import name.valery1707.interview.lunchVote.common.BaseEntityController;
 import name.valery1707.interview.lunchVote.common.RestResult;
-import name.valery1707.interview.lunchVote.domain.*;
+import name.valery1707.interview.lunchVote.domain.Account;
+import name.valery1707.interview.lunchVote.domain.Restaurant;
+import name.valery1707.interview.lunchVote.domain.Vote;
 import name.valery1707.interview.lunchVote.dto.VoteScore;
 import name.valery1707.interview.lunchVote.dto.VoteStatus;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,13 +21,11 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
 
-import static java.util.stream.Collectors.*;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
 import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME;
 
@@ -36,47 +36,6 @@ public class RestaurantController extends BaseEntityController<Restaurant> {
 
 	@Inject
 	private RestaurantRepo repo;
-
-	@Override
-	protected void deepClearId(Restaurant root) {
-		root.setId(null);
-		root.getDishes().forEach(dish -> dish.setId(null));
-	}
-
-	@Override
-	protected void deepFixBackReference(Restaurant root) {
-		root.getDishes().forEach(dish -> dish.setRestaurant(root));
-	}
-
-	@Override
-	protected void deepPatch(Restaurant src, Restaurant dst) {
-		if (isBlank(dst.getName())) {
-			dst.setName(src.getName());
-		}
-
-		//region Dishes
-		//Copy all untouched fields from saved to patch
-		Map<UUID, Dish> dishes = src.getDishes().stream().collect(toMap(IBaseEntity::getId, Function.<Dish>identity()));
-		dst.getDishes().stream()
-				.filter(dish -> dishes.containsKey(dish.getId()))
-				.forEach(dishPatch -> {
-					Dish dishSaved = dishes.get(dishPatch.getId());
-					if (isBlank(dishPatch.getName())) {
-						dishPatch.setName(dishSaved.getName());
-					}
-					if (dishPatch.getPrice() == null) {
-						dishPatch.setPrice(dishSaved.getPrice());
-					}
-				});
-		//Copy all untouched dishes
-		dst.getDishes().addAll(src.getDishes().stream().filter(dish -> !dst.getDishes().contains(dish)).collect(toSet()));
-		//endregion
-	}
-
-	@Override
-	protected void deepCleanNested(Restaurant src, Restaurant dst) {
-		dst.getDishes().removeIf(dish -> dish.getId() != null && !src.getDishes().contains(dish));
-	}
 
 	@Override
 	@PreAuthorize("hasRole('ROLE_USER')")

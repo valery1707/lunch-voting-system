@@ -29,6 +29,9 @@ public abstract class BaseEntityController<T extends IBaseEntity> {
 	@Inject
 	private Validator validator;
 
+	@Inject
+	private EntityUtilsBean entityUtils;
+
 	protected BindingResult validate(Object target, String objectName) {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(target, objectName);
 		validator.validate(target, errors);
@@ -73,14 +76,18 @@ public abstract class BaseEntityController<T extends IBaseEntity> {
 	 *
 	 * @param root Root entity
 	 */
-	protected abstract void deepClearId(T root);
+	protected void deepClearId(T root) {
+		entityUtils.deepClearId(root);
+	}
 
 	/**
 	 * Correctly set back reference links in nested collections
 	 *
 	 * @param root Root entity
 	 */
-	protected abstract void deepFixBackReference(T root);
+	protected void deepFixBackReference(T root) {
+		entityUtils.deepFixBackReference(root);
+	}
 
 	/**
 	 * Copy values for all null fields in {@code dst} from corresponding field from {@code src}
@@ -88,7 +95,9 @@ public abstract class BaseEntityController<T extends IBaseEntity> {
 	 * @param src Current entity values from database
 	 * @param dst Entity with partially filled fields
 	 */
-	protected abstract void deepPatch(T src, T dst);
+	protected void deepPatch(T src, T dst) {
+		entityUtils.deepPatch(src, dst);
+	}
 
 	/**
 	 * Remove from {@code dst} nested collections entity with id and does not exists in save nested collection in {@code src}
@@ -96,7 +105,9 @@ public abstract class BaseEntityController<T extends IBaseEntity> {
 	 * @param src Current entity values from database
 	 * @param dst Entity prepared for save
 	 */
-	protected abstract void deepCleanNested(T src, T dst);
+	protected void deepCleanNested(T src, T dst) {
+		entityUtils.deepCleanNested(src, dst);
+	}
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public List<T> findAll() {
