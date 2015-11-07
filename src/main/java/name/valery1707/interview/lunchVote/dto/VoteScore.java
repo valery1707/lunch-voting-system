@@ -1,9 +1,10 @@
 package name.valery1707.interview.lunchVote.dto;
 
 import name.valery1707.interview.lunchVote.domain.Restaurant;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Comparator;
-import java.util.Objects;
 import java.util.UUID;
 
 public class VoteScore {
@@ -42,17 +43,25 @@ public class VoteScore {
 		if (this == o) {
 			return true;
 		}
+
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		VoteScore voteScore = (VoteScore) o;
-		return Objects.equals(getRestaurantId(), voteScore.getRestaurantId()) &&
-			   Objects.equals(getRestaurantName(), voteScore.getRestaurantName()) &&
-			   Objects.equals(getCount(), voteScore.getCount());
+
+		VoteScore that = (VoteScore) o;
+		return new EqualsBuilder()
+				.append(getRestaurantId(), that.getRestaurantId())
+				.append(getRestaurantName(), that.getRestaurantName())
+				.append(getCount(), that.getCount())
+				.build();
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(getRestaurantId(), getRestaurantName(), getCount());
+		return new HashCodeBuilder(67, 91)
+				.append(getRestaurantId())
+				.append(getRestaurantName())
+				.append(getCount())
+				.hashCode();
 	}
 }
