@@ -16,6 +16,7 @@ public class DatabaseStatus {
 	}
 
 	public DatabaseStatus(String version, String databaseName, String username, int sessionId, int memoryUsed, String lastAppliedMigration) {
+		this();
 		setVersion(version);
 		setDatabaseName(databaseName);
 		setUsername(username);
