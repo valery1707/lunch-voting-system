@@ -1,0 +1,214 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://jsonschema.net",
+  "type": "object",
+  "properties": {
+    "content": {
+      "id": "http://jsonschema.net/content",
+      "type": "array",
+      "items": {
+        "id": "http://jsonschema.net/content/0",
+        "type": "object",
+        "properties": {
+          "id": {
+            "id": "http://jsonschema.net/content/0/id",
+            "type": "string"
+          },
+          "name": {
+            "id": "http://jsonschema.net/content/0/name",
+            "type": "string"
+          },
+          "dishes": {
+            "id": "http://jsonschema.net/content/0/dishes",
+            "type": "array",
+            "items": [
+              {
+                "id": "http://jsonschema.net/content/0/dishes/0",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "id": "http://jsonschema.net/content/0/dishes/0/id",
+                    "type": "string"
+                  },
+                  "restaurant": {
+                    "id": "http://jsonschema.net/content/0/dishes/0/restaurant",
+                    "type": "string"
+                  },
+                  "name": {
+                    "id": "http://jsonschema.net/content/0/dishes/0/name",
+                    "type": "string"
+                  },
+                  "price": {
+                    "id": "http://jsonschema.net/content/0/dishes/0/price",
+                    "type": "number"
+                  }
+                }
+              },
+              {
+                "id": "http://jsonschema.net/content/0/dishes/1",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "id": "http://jsonschema.net/content/0/dishes/1/id",
+                    "type": "string"
+                  },
+                  "restaurant": {
+                    "id": "http://jsonschema.net/content/0/dishes/1/restaurant",
+                    "type": "string"
+                  },
+                  "name": {
+                    "id": "http://jsonschema.net/content/0/dishes/1/name",
+                    "type": "string"
+                  },
+                  "price": {
+                    "id": "http://jsonschema.net/content/0/dishes/1/price",
+                    "type": "number"
+                  }
+                }
+              },
+              {
+                "id": "http://jsonschema.net/content/0/dishes/2",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "id": "http://jsonschema.net/content/0/dishes/2/id",
+                    "type": "string"
+                  },
+                  "restaurant": {
+                    "id": "http://jsonschema.net/content/0/dishes/2/restaurant",
+                    "type": "string"
+                  },
+                  "name": {
+                    "id": "http://jsonschema.net/content/0/dishes/2/name",
+                    "type": "string"
+                  },
+                  "price": {
+                    "id": "http://jsonschema.net/content/0/dishes/2/price",
+                    "type": "number"
+                  }
+                }
+              },
+              {
+                "id": "http://jsonschema.net/content/0/dishes/3",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "id": "http://jsonschema.net/content/0/dishes/3/id",
+                    "type": "string"
+                  },
+                  "restaurant": {
+                    "id": "http://jsonschema.net/content/0/dishes/3/restaurant",
+                    "type": "string"
+                  },
+                  "name": {
+                    "id": "http://jsonschema.net/content/0/dishes/3/name",
+                    "type": "string"
+                  },
+                  "price": {
+                    "id": "http://jsonschema.net/content/0/dishes/3/price",
+                    "type": "number"
+                  }
+                }
+              },
+              {
+                "id": "http://jsonschema.net/content/0/dishes/4",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "id": "http://jsonschema.net/content/0/dishes/4/id",
+                    "type": "string"
+                  },
+                  "restaurant": {
+                    "id": "http://jsonschema.net/content/0/dishes/4/restaurant",
+                    "type": "string"
+                  },
+                  "name": {
+                    "id": "http://jsonschema.net/content/0/dishes/4/name",
+                    "type": "string"
+                  },
+                  "price": {
+                    "id": "http://jsonschema.net/content/0/dishes/4/price",
+                    "type": "number"
+                  }
+                }
+              },
+              {
+                "id": "http://jsonschema.net/content/0/dishes/5",
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "id": "http://jsonschema.net/content/0/dishes/5/id",
+                    "type": "string"
+                  },
+                  "restaurant": {
+                    "id": "http://jsonschema.net/content/0/dishes/5/restaurant",
+                    "type": "string"
+                  },
+                  "name": {
+                    "id": "http://jsonschema.net/content/0/dishes/5/name",
+                    "type": "string"
+                  },
+                  "price": {
+                    "id": "http://jsonschema.net/content/0/dishes/5/price",
+                    "type": "number"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "dishes"
+        ]
+      },
+      "required": [
+        "0"
+      ]
+    },
+    "first": {
+      "id": "http://jsonschema.net/first",
+      "type": "boolean"
+    },
+    "last": {
+      "id": "http://jsonschema.net/last",
+      "type": "boolean"
+    },
+    "totalElements": {
+      "id": "http://jsonschema.net/totalElements",
+      "type": "integer"
+    },
+    "totalPages": {
+      "id": "http://jsonschema.net/totalPages",
+      "type": "integer"
+    },
+    "size": {
+      "id": "http://jsonschema.net/size",
+      "type": "integer"
+    },
+    "number": {
+      "id": "http://jsonschema.net/number",
+      "type": "integer"
+    },
+    "sort": {
+      "id": "http://jsonschema.net/sort",
+      "type": "null"
+      },
+    "numberOfElements": {
+      "id": "http://jsonschema.net/numberOfElements",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "content",
+    "last",
+    "totalElements",
+    "totalPages",
+    "size",
+    "number",
+    "sort",
+    "first",
+    "numberOfElements"
+  ]
+}

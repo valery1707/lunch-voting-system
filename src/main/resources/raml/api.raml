@@ -10,7 +10,7 @@ schemas:
   - StatusDatabase: !include StatusDatabase.schema.json
   - Accounts: !include Accounts.schema.json
   - Restaurant: !include Restaurant.schema.json
-  - Restaurant_List: !include Restaurant_List.schema.json
+  - Restaurant_Page: !include Restaurant_Page.schema.json
   - Restaurant_Result: !include Restaurant_Result.schema.json
   - VoteScore: !include VoteScore.schema.json
   - VoteStatus: !include VoteStatus.schema.json
@@ -58,11 +58,22 @@ securitySchemes:
   get:
     description: List of Restaurants
     securedBy: [basic]
+    queryParameters:
+      size:
+        description: Page size
+        default: 20
+        required: false
+        type: number
+      page:
+        description: Page number (0-based)
+        default: 0
+        required: false
+        type: number
     responses:
       200:
         body:
           application/json:
-            schema: Restaurant_List
+            schema: Restaurant_Page
       401:
         description: Authentication is required
         body:

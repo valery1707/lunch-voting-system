@@ -1,6 +1,8 @@
 package name.valery1707.interview.lunchVote.common;
 
 import name.valery1707.interview.lunchVote.domain.IBaseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
-import static name.valery1707.interview.lunchVote.common.Utils.iterableToList;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromRequest;
 
 public abstract class BaseEntityController<T extends IBaseEntity> {
@@ -110,8 +110,8 @@ public abstract class BaseEntityController<T extends IBaseEntity> {
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public List<T> findAll() {
-		return iterableToList(repository.findAll());
+	public Page<T> findAll(Pageable pageable) {
+		return repository.findAll(pageable);
 	}
 
 	@RequestMapping(value = "", method = {RequestMethod.PUT, RequestMethod.POST})

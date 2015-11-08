@@ -89,6 +89,10 @@ public class RestaurantControllerTest {
 		return jsonExtract("$.result", src);
 	}
 
+	private String extractContent(String src) throws IOException {
+		return jsonExtract("$.content", src);
+	}
+
 	private static RequestPostProcessor accAdmin() {
 		return httpBasic("admin", "admin");
 	}
@@ -148,14 +152,58 @@ public class RestaurantControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
-				.andExpect(jsonPath("$").isArray())
-				.andExpect(jsonPath("$", hasSize(2)))
-				.andExpect(jsonPath("$[*].id").value(containsInAnyOrder(RESTAURANT_MOE_BAR_ID, RESTAURANT_HELL_KITCHEN_ID)))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.first").isBoolean())
+				.andExpect(jsonPath("$.first").value(true))
+				.andExpect(jsonPath("$.last").isBoolean())
+				.andExpect(jsonPath("$.last").value(true))
+				.andExpect(jsonPath("$.totalElements").isNumber())
+				.andExpect(jsonPath("$.totalElements").value(2))
+				.andExpect(jsonPath("$.totalPages").isNumber())
+				.andExpect(jsonPath("$.totalPages").value(1))
+				.andExpect(jsonPath("$.size").isNumber())
+				.andExpect(jsonPath("$.size").value(20))
+				.andExpect(jsonPath("$.numberOfElements").isNumber())
+				.andExpect(jsonPath("$.numberOfElements").value(2))
+				.andExpect(jsonPath("$.content").exists())
+				.andExpect(jsonPath("$.content").isArray())
+				.andExpect(jsonPath("$.content", hasSize(2)))
+				.andExpect(jsonPath("$.content[*].id").value(containsInAnyOrder(RESTAURANT_MOE_BAR_ID, RESTAURANT_HELL_KITCHEN_ID)))
 				.andExpect(authenticated().withRoles("USER"))
 				.andReturn().getResponse().getContentAsString();
 
-		List<Restaurant> result = jsonToList(Restaurant.class, content);
+		List<Restaurant> result = jsonToList(Restaurant.class, extractContent(content));
 		assertThat(result).hasSize(2);
+	}
+
+	@Test
+	public void test_10_findAll_asUser_paged() throws Exception {
+		String content = mvc.perform(get(URL_ROOT).with(accUser()).param("size", "1"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.first").isBoolean())
+				.andExpect(jsonPath("$.first").value(true))
+				.andExpect(jsonPath("$.last").isBoolean())
+				.andExpect(jsonPath("$.last").value(false))
+				.andExpect(jsonPath("$.totalElements").isNumber())
+				.andExpect(jsonPath("$.totalElements").value(2))
+				.andExpect(jsonPath("$.totalPages").isNumber())
+				.andExpect(jsonPath("$.totalPages").value(2))
+				.andExpect(jsonPath("$.size").isNumber())
+				.andExpect(jsonPath("$.size").value(1))
+				.andExpect(jsonPath("$.numberOfElements").isNumber())
+				.andExpect(jsonPath("$.numberOfElements").value(1))
+				.andExpect(jsonPath("$.content").exists())
+				.andExpect(jsonPath("$.content").isArray())
+				.andExpect(jsonPath("$.content", hasSize(1)))
+				.andExpect(jsonPath("$.content[*].id").value(anyOf(hasItem(RESTAURANT_MOE_BAR_ID), hasItem(RESTAURANT_HELL_KITCHEN_ID))))
+				.andExpect(authenticated().withRoles("USER"))
+				.andReturn().getResponse().getContentAsString();
+
+		List<Restaurant> result = jsonToList(Restaurant.class, extractContent(content));
+		assertThat(result).hasSize(1);
 	}
 
 	private static final String RESTAURANT_MOE_BAR_ID = "60d4f411-4cff-4f60-b392-46bed14c5f86";
@@ -350,11 +398,24 @@ public class RestaurantControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
-				.andExpect(jsonPath("$").isArray())
-				.andExpect(jsonPath("$", hasSize(3)))
+				.andExpect(jsonPath("$.first").isBoolean())
+				.andExpect(jsonPath("$.first").value(true))
+				.andExpect(jsonPath("$.last").isBoolean())
+				.andExpect(jsonPath("$.last").value(true))
+				.andExpect(jsonPath("$.totalElements").isNumber())
+				.andExpect(jsonPath("$.totalElements").value(3))
+				.andExpect(jsonPath("$.totalPages").isNumber())
+				.andExpect(jsonPath("$.totalPages").value(1))
+				.andExpect(jsonPath("$.size").isNumber())
+				.andExpect(jsonPath("$.size").value(20))
+				.andExpect(jsonPath("$.numberOfElements").isNumber())
+				.andExpect(jsonPath("$.numberOfElements").value(3))
+				.andExpect(jsonPath("$.content").exists())
+				.andExpect(jsonPath("$.content").isArray())
+				.andExpect(jsonPath("$.content", hasSize(3)))
 				.andExpect(authenticated().withRoles("USER"))
 				.andReturn().getResponse().getContentAsString();
-		Optional<Restaurant> optional = jsonToList(Restaurant.class, content).stream()
+		Optional<Restaurant> optional = jsonToList(Restaurant.class, extractContent(content)).stream()
 				.filter(r -> !KNOWN_RESTAURANTS.contains(r.getId().toString()))
 				.findAny();
 		return optional.get();

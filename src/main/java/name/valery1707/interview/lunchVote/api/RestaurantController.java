@@ -8,6 +8,8 @@ import name.valery1707.interview.lunchVote.domain.Vote;
 import name.valery1707.interview.lunchVote.dto.VoteScore;
 import name.valery1707.interview.lunchVote.dto.VoteStatus;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,8 +41,8 @@ public class RestaurantController extends BaseEntityController<Restaurant> {
 
 	@Override
 	@PreAuthorize("hasRole('ROLE_USER')")
-	public List<Restaurant> findAll() {
-		return super.findAll();
+	public Page<Restaurant> findAll(Pageable pageable) {
+		return super.findAll(pageable);
 	}
 
 	@Override
