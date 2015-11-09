@@ -46,6 +46,7 @@ Voting system for deciding where to have lunch.
 1. Run project from console: `./gradlew bootRun`
 1. Build executable jar: `./gradlew build`
 1. Make code coverage report: `./gradlew clean build jacocoTestReport`
+1. Run mutation testing: `./gradlew pitest`
 
 ### CURL commands example
 System after start have some build-in users:

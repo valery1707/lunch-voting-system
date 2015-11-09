@@ -11,10 +11,11 @@ apply plugin: 'java'
 project.sourceCompatibility = '1.8'
 project.targetCompatibility = '1.8'
 
+project.group = 'name.valery1707.interview'
+project.version = '1.0.1-SNAPSHOT'
+
 jar {
 	baseName = 'lunch-voting-system'
-	group = "name.valery1707.interview"
-	version = '1.0.1-SNAPSHOT'
 }
 
 apply plugin: 'application'
@@ -43,6 +44,13 @@ jacocoTestReport {
 		html.enabled = true
 	}
 }
+
+buildscript {
+	dependencies {
+		classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.1.6'
+	}
+}
+apply plugin: "info.solidsoft.pitest"
 
 dependencies {
 	//Logging
