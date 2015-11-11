@@ -31,7 +31,7 @@ Voting system for deciding where to have lunch.
 	* Selected: GSON
 	* Reason: In some tests (see [1](http://blog.takipi.com/the-ultimate-json-library-json-simple-vs-gson-vs-jackson-vs-json/) and [2](http://ruedigermoeller.github.io/fast-serialization/json_bench.html))
 	GSON have less or comparable performance than Jackson, but its have very small footprint (~ 200 KiB) than Jackson (1.4 MiB).
-	If this project will need more performance in JSON processing, we can migrate to Jackson in few lines of code
+	I decide use Jackson for correctly marshall entity objects with cycles.
 1. Database (select only from in-memory pure Java database)
 	* Variants: H2, HSQLDB, Apache Derby
 	* Selected: H2
