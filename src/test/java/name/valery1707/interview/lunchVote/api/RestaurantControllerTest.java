@@ -8,6 +8,7 @@ import name.valery1707.interview.lunchVote.domain.Dish;
 import name.valery1707.interview.lunchVote.domain.Restaurant;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -178,7 +179,9 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_10_findAll_asUser_paged() throws Exception {
-		String content = mvc.perform(get(URL_ROOT).with(accUser()).param("size", "1"))
+		String content = mvc.perform(get(URL_ROOT).with(accUser())
+				.param("size", "1")
+		)
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -204,6 +207,74 @@ public class RestaurantControllerTest {
 
 		List<Restaurant> result = jsonToList(Restaurant.class, extractContent(content));
 		assertThat(result).hasSize(1);
+	}
+
+	@Test
+	public void test_10_findAll_asUser_sortedByDirectFields() throws Exception {
+		String content = mvc.perform(get(URL_ROOT).with(accUser())
+				.param("sort", "name,ASC")
+		)
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.first").isBoolean())
+				.andExpect(jsonPath("$.first").value(true))
+				.andExpect(jsonPath("$.last").isBoolean())
+				.andExpect(jsonPath("$.last").value(true))
+				.andExpect(jsonPath("$.totalElements").isNumber())
+				.andExpect(jsonPath("$.totalElements").value(2))
+				.andExpect(jsonPath("$.totalPages").isNumber())
+				.andExpect(jsonPath("$.totalPages").value(1))
+				.andExpect(jsonPath("$.size").isNumber())
+				.andExpect(jsonPath("$.size").value(20))
+				.andExpect(jsonPath("$.numberOfElements").isNumber())
+				.andExpect(jsonPath("$.numberOfElements").value(2))
+				.andExpect(jsonPath("$.content").exists())
+				.andExpect(jsonPath("$.content").isArray())
+				.andExpect(jsonPath("$.content", hasSize(2)))
+				.andExpect(jsonPath("$.content[*].id").value(contains(RESTAURANT_HELL_KITCHEN_ID, RESTAURANT_MOE_BAR_ID)))
+				.andExpect(authenticated().withRoles("USER"))
+				.andReturn().getResponse().getContentAsString();
+
+		System.out.println("content = " + content);
+		List<Restaurant> result = jsonToList(Restaurant.class, extractContent(content));
+		assertThat(result).hasSize(2);
+	}
+
+	@Ignore("With sorting by nested fields repository will return not distinct root entities.")
+	@Test
+	public void test_10_findAll_asUser_sortedByNestedFields() throws Exception {
+		String content = mvc.perform(get(URL_ROOT).with(accUser())
+				.param("sort", "name,ASC")
+				.param("sort", "dishes.name,dishes.price,ASC")
+		)
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.first").isBoolean())
+				.andExpect(jsonPath("$.first").value(true))
+				.andExpect(jsonPath("$.last").isBoolean())
+				.andExpect(jsonPath("$.last").value(true))
+				.andExpect(jsonPath("$.totalElements").isNumber())
+				.andExpect(jsonPath("$.totalElements").value(2))
+				.andExpect(jsonPath("$.totalPages").isNumber())
+				.andExpect(jsonPath("$.totalPages").value(1))
+				.andExpect(jsonPath("$.size").isNumber())
+				.andExpect(jsonPath("$.size").value(20))
+				.andExpect(jsonPath("$.numberOfElements").isNumber())
+				.andExpect(jsonPath("$.numberOfElements").value(2))
+				.andExpect(jsonPath("$.content").exists())
+				.andExpect(jsonPath("$.content").isArray())
+				.andExpect(jsonPath("$.content", hasSize(2)))
+				.andExpect(jsonPath("$.content[*].id").value(contains(RESTAURANT_HELL_KITCHEN_ID, RESTAURANT_MOE_BAR_ID)))
+				.andExpect(authenticated().withRoles("USER"))
+				.andReturn().getResponse().getContentAsString();
+
+		System.out.println("content = " + content);
+		List<Restaurant> result = jsonToList(Restaurant.class, extractContent(content));
+		assertThat(result).hasSize(2);
 	}
 
 	private static final String RESTAURANT_MOE_BAR_ID = "60d4f411-4cff-4f60-b392-46bed14c5f86";

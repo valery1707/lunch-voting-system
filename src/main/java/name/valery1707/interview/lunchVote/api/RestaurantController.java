@@ -10,6 +10,8 @@ import name.valery1707.interview.lunchVote.dto.VoteStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +43,7 @@ public class RestaurantController extends BaseEntityController<Restaurant> {
 
 	@Override
 	@PreAuthorize("hasRole('ROLE_USER')")
-	public Page<Restaurant> findAll(Pageable pageable) {
+	public Page<Restaurant> findAll(@PageableDefault(size = 20) @SortDefault("name") Pageable pageable) {
 		return super.findAll(pageable);
 	}
 
