@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.persistence.criteria.*;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.PluralAttribute;
@@ -289,35 +290,46 @@ public class EntityUtilsBean {
 	public <T extends IBaseEntity> Specification<T> simpleFilter(Class<T> entityClass, String filter) {
 		Matcher matcher = SIMPLE_FILTER_PATTERN.matcher(filter);
 		Assert.state(matcher.matches(), "Incorrect filter format: " + filter);
-		String fieldName = matcher.group(1);
+		String fieldPath = matcher.group(1);
 		String operation = matcher.group(2);
 		String valueRaw = matcher.group(3);
+		String[] joinPath = fieldPath.split("\\.");
+		String fieldName = joinPath[joinPath.length - 1];
+		String[] joinPathFinal = Arrays.copyOf(joinPath, joinPath.length - 1);
 
-		Attribute<? super T, ?> attribute = findAttribute(entityClass, "", fieldName);
+		findAttribute(entityClass, fieldPath);
 		//todo Convert value from String to required type
 
 		return (root, query, cb) -> {
+			query.distinct(true);
+			Join<T, ?> join = null;
+			for (String fieldName1 : joinPathFinal) {
+				join = join == null
+						? root.join(fieldName1, JoinType.LEFT)
+						: join.join(fieldName1, JoinType.LEFT);
+			}
+			Path<String> field = join == null ? root.get(fieldName) : join.get(fieldName);
 			switch (operation) {
 				case "<":
-					return cb.lessThan(root.get(fieldName), valueRaw);
+					return cb.lessThan(field, valueRaw);
 				case "<=":
-					return cb.lessThanOrEqualTo(root.get(fieldName), valueRaw);
+					return cb.lessThanOrEqualTo(field, valueRaw);
 				case "=":
-					return cb.equal(root.get(fieldName), valueRaw);
+					return cb.equal(field, valueRaw);
 				case "=>":
-					return cb.greaterThanOrEqualTo(root.get(fieldName), valueRaw);
+					return cb.greaterThanOrEqualTo(field, valueRaw);
 				case ">":
-					return cb.greaterThan(root.get(fieldName), valueRaw);
+					return cb.greaterThan(field, valueRaw);
 				case "!=":
-					return cb.notEqual(root.get(fieldName), valueRaw);
+					return cb.notEqual(field, valueRaw);
 				case "~":
-					return cb.like(cb.lower(root.get(fieldName)), toLikePattern(valueRaw).toLowerCase(), '\\');
+					return cb.like(cb.lower(field), toLikePattern(valueRaw).toLowerCase(), '\\');
 				case "!~":
-					return cb.notLike(cb.lower(root.get(fieldName)), toLikePattern(valueRaw).toLowerCase(), '\\');
+					return cb.notLike(cb.lower(field), toLikePattern(valueRaw).toLowerCase(), '\\');
 				case "~!":
-					return cb.like(root.get(fieldName), toLikePattern(valueRaw), '\\');
+					return cb.like(field, toLikePattern(valueRaw), '\\');
 				case "!~!":
-					return cb.notLike(root.get(fieldName), toLikePattern(valueRaw), '\\');
+					return cb.notLike(field, toLikePattern(valueRaw), '\\');
 				default:
 					throw new IllegalStateException(String.format("Unknown operation '%s' in filter: %s", operation, filter));
 			}
@@ -334,31 +346,30 @@ public class EntityUtilsBean {
 	 * @throws IllegalStateException If field does not found in entity
 	 */
 	@Nonnull
-	private <T extends IBaseEntity> Attribute<? super T, ?> findAttribute(Class<T> entityClass, String rootPath, String fieldPath) {
+	private <T extends IBaseEntity> Attribute<? super T, ?> findAttribute(Class<T> entityClass, String fieldPath) {
 		ManagedType<T> managedType = entityManager.getEntityManagerFactory().getMetamodel().managedType(entityClass);
 
 		String field, rest;
 		if (fieldPath.contains(".")) {
 			int i = fieldPath.indexOf('.');
 			field = fieldPath.substring(0, i);
-			rest = fieldPath.substring(i);
+			rest = fieldPath.substring(i + 1);
 		} else {
 			field = fieldPath;
 			rest = null;
 		}
 
-		String nestedPath = rootPath.isEmpty() ? field : rootPath + "." + field;
 		try {
 			Attribute<? super T, ?> attribute = managedType.getAttribute(field);
 			if (rest == null) {
 				return attribute;
 			} else if (attribute instanceof PluralAttribute<?, ?, ?>) {
-				return findAttribute(((PluralAttribute) attribute).getElementType().getJavaType(), nestedPath, rest);
+				return findAttribute(((PluralAttribute) attribute).getElementType().getJavaType(), rest);
 			} else {
-				throw new IllegalStateException(String.format("Unknown field [%s] within path [%s] for class [%s]", rest, fieldPath, entityClass.getCanonicalName()));
+				throw new IllegalStateException(String.format("Unknown field [%s] within class [%s]", rest, entityClass.getCanonicalName()));
 			}
 		} catch (IllegalArgumentException ex) {
-			throw new IllegalStateException(String.format("Unknown field [%s] within path [%s] for class [%s]", field, rootPath, entityClass.getCanonicalName()));
+			throw new IllegalStateException(String.format("Unknown field [%s] within class [%s]", field, entityClass.getCanonicalName()));
 		}
 	}
 
