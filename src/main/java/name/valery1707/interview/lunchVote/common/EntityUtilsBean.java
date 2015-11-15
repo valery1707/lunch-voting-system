@@ -303,7 +303,6 @@ public class EntityUtilsBean {
 		//todo Convert value from String to required type
 
 		return (root, query, cb) -> {
-			query.distinct(true);
 			Join<T, ?> join = null;
 			for (String fieldName1 : joinPathFinal) {
 				join = join == null

@@ -4,6 +4,7 @@ import name.valery1707.interview.lunchVote.domain.IBaseEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
+import static name.valery1707.interview.lunchVote.common.SimpleDistinctSpec.distinct;
 import static name.valery1707.interview.lunchVote.common.Utils.getGenericType;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromRequest;
 
@@ -122,9 +124,10 @@ public abstract class BaseEntityController<T extends IBaseEntity, REPO extends P
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public Page<T> findAll(Pageable pageable, @RequestParam(name = "filter", required = false) List<String> filters) {
-		Specification<T> spec = null;
+		Specification<T> spec = distinct();
 		if (filters != null) {
-			spec = entityUtils.simpleFilter(entityClass(), filters);
+			Specification<T> filter = entityUtils.simpleFilter(entityClass(), filters);
+			spec = Specifications.where(spec).and(filter);
 		}
 		return repository.findAll(spec, pageable);
 	}
