@@ -3,34 +3,45 @@ package name.valery1707.interview.lunchVote.common;
 import name.valery1707.interview.lunchVote.domain.IBaseEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
+import static name.valery1707.interview.lunchVote.common.Utils.getGenericType;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromRequest;
 
-public abstract class BaseEntityController<T extends IBaseEntity> {
+public abstract class BaseEntityController<T extends IBaseEntity, REPO extends PagingAndSortingRepository<T, UUID> & JpaSpecificationExecutor<T>> {
+
+	private final Class<T> entityClass;
 
 	@Inject
-	private PagingAndSortingRepository<T, UUID> repository;
+	private REPO repository;
 
 	@Inject
 	private Validator validator;
 
 	@Inject
 	private EntityUtilsBean entityUtils;
+
+	public BaseEntityController() {
+		entityClass = getGenericType(getClass(), BaseEntityController.class, "T");
+	}
+
+	protected Class<T> entityClass() {
+		return entityClass;
+	}
 
 	protected BindingResult validate(Object target, String objectName) {
 		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(target, objectName);
@@ -110,8 +121,12 @@ public abstract class BaseEntityController<T extends IBaseEntity> {
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public Page<T> findAll(Pageable pageable) {
-		return repository.findAll(pageable);
+	public Page<T> findAll(Pageable pageable, @RequestParam(name = "filter", required = false) List<String> filters) {
+		Specification<T> spec = null;
+		if (filters != null) {
+			spec = entityUtils.simpleFilter(entityClass(), filters);
+		}
+		return repository.findAll(spec, pageable);
 	}
 
 	@RequestMapping(value = "", method = {RequestMethod.PUT, RequestMethod.POST})

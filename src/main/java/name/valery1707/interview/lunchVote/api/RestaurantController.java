@@ -36,15 +36,15 @@ import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME
 @RestController
 @RequestMapping("/api/restaurant")
 @PreAuthorize("hasRole('ROLE_USER')")
-public class RestaurantController extends BaseEntityController<Restaurant> {
+public class RestaurantController extends BaseEntityController<Restaurant, RestaurantRepo> {
 
 	@Inject
 	private RestaurantRepo repo;
 
 	@Override
 	@PreAuthorize("hasRole('ROLE_USER')")
-	public Page<Restaurant> findAll(@PageableDefault(size = 20) @SortDefault("name") Pageable pageable) {
-		return super.findAll(pageable);
+	public Page<Restaurant> findAll(@PageableDefault(size = 20) @SortDefault("name") Pageable pageable, @RequestParam(name = "filter", required = false) List<String> filters) {
+		return super.findAll(pageable, filters);
 	}
 
 	@Override

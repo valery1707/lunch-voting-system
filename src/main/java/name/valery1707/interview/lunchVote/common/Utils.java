@@ -1,5 +1,9 @@
 package name.valery1707.interview.lunchVote.common;
 
+import org.springframework.core.ResolvableType;
+import org.springframework.util.Assert;
+
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -21,5 +25,21 @@ public final class Utils {
 			}
 			return list;
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> Class<T> getGenericType(Class<?> implementationClazz, Class<?> interfaceClass, String typeId) {
+		int typeIndex = -1;
+		TypeVariable<? extends Class<?>>[] typeParameters = interfaceClass.getTypeParameters();
+		for (int i = 0; i < typeParameters.length && typeIndex < 0; i++) {
+			TypeVariable<? extends Class<?>> typeVariable = typeParameters[i];
+			if (typeVariable.getName().equals(typeId)) {
+				typeIndex = i;
+			}
+		}
+		Assert.state(typeIndex >= 0);//todo Message
+
+		ResolvableType type = ResolvableType.forClass(interfaceClass, implementationClazz);
+		return (Class<T>) type.getGeneric(typeIndex).getRawClass();
 	}
 }

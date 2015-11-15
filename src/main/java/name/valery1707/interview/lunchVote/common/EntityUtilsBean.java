@@ -4,13 +4,18 @@ import name.valery1707.interview.lunchVote.domain.IBaseEntity;
 import org.hibernate.internal.util.collections.IdentitySet;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.PluralAttribute;
 import java.beans.PropertyDescriptor;
@@ -18,6 +23,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -258,6 +265,82 @@ public class EntityUtilsBean {
 				} catch (IllegalAccessException | InvocationTargetException ignored) {
 				}
 			}
+		}
+	}
+
+	public <T extends IBaseEntity> Specification<T> simpleFilter(Class<T> entityClass, List<String> filters) {
+//		noNullElements(filters, "Filters must not contain null element");
+		Specifications<T> spec = null;
+		for (String filter : filters) {
+			Specification<T> filterSpec = simpleFilter(entityClass, filter);
+			spec = spec == null ? Specifications.where(filterSpec) : spec.and(filterSpec);
+		}
+		return spec;
+	}
+
+	private static final Pattern SIMPLE_FILTER_PATTERN = Pattern.compile(
+			"^" +
+			"([\\w\\.]+);" +                 //Field name
+			"(<|<=|=|=>|>|~|!~|~!|!~!);" +   //Operation: LESS(<), LESS_OR_EQUAL(<=), EQUAL(=), GREATER_OR_EQUAL(=>), GREATER(>), NOT_EQUAL(!=), LIKE(~), NOT_LIKE(!~), CASE_SENSITIVE_LIKE(~!), CASE_SENSITIVE_NOT_LIKE(!~!)
+			//todo Between
+			"(.+)" +                         //Value
+			"$");
+
+	public <T extends IBaseEntity> Specification<T> simpleFilter(Class<T> entityClass, String filter) {
+		Matcher matcher = SIMPLE_FILTER_PATTERN.matcher(filter);
+		Assert.state(matcher.matches(), "Incorrect filter format: " + filter);
+		String fieldName = matcher.group(1);
+		String operation = matcher.group(2);
+		String valueRaw = matcher.group(3);
+
+		ManagedType<T> managedType = entityManager.getEntityManagerFactory().getMetamodel().managedType(entityClass);
+		Attribute<? super T, ?> attribute = managedType.getAttribute(fieldName);
+		//todo Convert value from String to required type
+
+		return (root, query, cb) -> {
+			switch (operation) {
+				case "<":
+					return cb.lessThan(root.get(fieldName), valueRaw);
+				case "<=":
+					return cb.lessThanOrEqualTo(root.get(fieldName), valueRaw);
+				case "=":
+					return cb.equal(root.get(fieldName), valueRaw);
+				case "=>":
+					return cb.greaterThanOrEqualTo(root.get(fieldName), valueRaw);
+				case ">":
+					return cb.greaterThan(root.get(fieldName), valueRaw);
+				case "!=":
+					return cb.notEqual(root.get(fieldName), valueRaw);
+				case "~":
+					return cb.like(cb.lower(root.get(fieldName)), toLikePattern(valueRaw).toLowerCase(), '\\');
+				case "!~":
+					return cb.notLike(cb.lower(root.get(fieldName)), toLikePattern(valueRaw).toLowerCase(), '\\');
+				case "~!":
+					return cb.like(root.get(fieldName), toLikePattern(valueRaw), '\\');
+				case "!~!":
+					return cb.notLike(root.get(fieldName), toLikePattern(valueRaw), '\\');
+				default:
+					throw new IllegalStateException(String.format("Unknown operation '%s' in filter: %s", operation, filter));
+			}
+		};
+	}
+
+	@Nonnull
+	static String toLikePattern(@Nullable String simplePattern) {
+		if (isBlank(simplePattern)) {
+			return "%";
+		}
+		boolean isFullPattern = simplePattern.contains("*") || simplePattern.contains("?");
+		String pattern = simplePattern
+				.replaceAll("%", "\\\\%")//escape
+				.replaceAll("\\*", "%")//replace
+				.replaceAll("_", "\\\\_")//escape
+				.replaceAll("\\?", "_")//replace
+				;
+		if (isFullPattern) {
+			return pattern;
+		} else {
+			return "%" + pattern + "%";
 		}
 	}
 }

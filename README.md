@@ -54,12 +54,33 @@ System after start have some build-in users:
 1. login: `user_2`, password: `password two`, role: `user`
 
 ##### Some good things
-1. Query list of all restaurant:
+1. Query first page of restaurants (default size: 20):
 ```bash
 curl -i \
   -H "Accept: application/json" \
   -u "user_1:password one" \
   http://localhost:8080/api/restaurant
+```
+1. Query second page of restaurants (size: 1):
+```bash
+curl -i \
+  -H "Accept: application/json" \
+  -u "user_1:password one" \
+  'http://localhost:8080/api/restaurant?size=1&page=1'
+```
+1. Query first page of restaurants with filter by name (size: 1):
+```bash
+curl -i \
+  -H "Accept: application/json" \
+  -u "user_1:password one" \
+  'http://localhost:8080/api/restaurant?filter=name;~;heLL'
+```
+1. Query first page of restaurants with two filters by name (size: 1):
+```bash
+curl -i \
+  -H "Accept: application/json" \
+  -u "user_1:password one" \
+  'http://localhost:8080/api/restaurant?filter=name;~;heLL&filter=name;~;bar'
 ```
 1. Get information about one Restaurant by id:
 ```bash
