@@ -275,7 +275,6 @@ public class RestaurantControllerTest {
 		assertThat(result).hasSize(2);
 	}
 
-	@Ignore("Exception not converted to response, and catched by test framework")
 	@Test
 	public void test_10_findAll_asUser_simpleFilter_direct_incorrectFilter() throws Exception {
 		mvc.perform(get(URL_ROOT).with(accUser())
@@ -294,7 +293,6 @@ public class RestaurantControllerTest {
 				.andReturn().getResponse().getContentAsString();
 	}
 
-	@Ignore("Exception not converted to response, and catched by test framework")
 	@Test
 	public void test_10_findAll_asUser_simpleFilter_direct_unknownField() throws Exception {
 		mvc.perform(get(URL_ROOT).with(accUser())
@@ -308,7 +306,7 @@ public class RestaurantControllerTest {
 				.andExpect(jsonPath("$.timestamp").isNotEmpty())
 				.andExpect(jsonPath("$.error").isString())
 				.andExpect(jsonPath("$.message").isString())
-				.andExpect(jsonPath("$.message").value(containsString("Incorrect filter format")))
+				.andExpect(jsonPath("$.message").value(containsString("Unknown field [description]")))
 				.andExpect(authenticated().withRoles("USER"))
 				.andReturn().getResponse().getContentAsString();
 	}

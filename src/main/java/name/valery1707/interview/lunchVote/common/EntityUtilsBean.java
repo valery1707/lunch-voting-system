@@ -293,8 +293,7 @@ public class EntityUtilsBean {
 		String operation = matcher.group(2);
 		String valueRaw = matcher.group(3);
 
-		ManagedType<T> managedType = entityManager.getEntityManagerFactory().getMetamodel().managedType(entityClass);
-		Attribute<? super T, ?> attribute = managedType.getAttribute(fieldName);
+		Attribute<? super T, ?> attribute = findAttribute(entityClass, "", fieldName);
 		//todo Convert value from String to required type
 
 		return (root, query, cb) -> {
@@ -323,6 +322,44 @@ public class EntityUtilsBean {
 					throw new IllegalStateException(String.format("Unknown operation '%s' in filter: %s", operation, filter));
 			}
 		};
+	}
+
+	/**
+	 * Deep search for field (every nested) and return attribute. If field dos not exists - throw IllegalStateException
+	 *
+	 * @param entityClass Entity class
+	 * @param fieldPath   Field name
+	 * @param <T>         Entity type
+	 * @return Attribute for given name
+	 * @throws IllegalStateException If field does not found in entity
+	 */
+	@Nonnull
+	private <T extends IBaseEntity> Attribute<? super T, ?> findAttribute(Class<T> entityClass, String rootPath, String fieldPath) {
+		ManagedType<T> managedType = entityManager.getEntityManagerFactory().getMetamodel().managedType(entityClass);
+
+		String field, rest;
+		if (fieldPath.contains(".")) {
+			int i = fieldPath.indexOf('.');
+			field = fieldPath.substring(0, i);
+			rest = fieldPath.substring(i);
+		} else {
+			field = fieldPath;
+			rest = null;
+		}
+
+		String nestedPath = rootPath.isEmpty() ? field : rootPath + "." + field;
+		try {
+			Attribute<? super T, ?> attribute = managedType.getAttribute(field);
+			if (rest == null) {
+				return attribute;
+			} else if (attribute instanceof PluralAttribute<?, ?, ?>) {
+				return findAttribute(((PluralAttribute) attribute).getElementType().getJavaType(), nestedPath, rest);
+			} else {
+				throw new IllegalStateException(String.format("Unknown field [%s] within path [%s] for class [%s]", rest, fieldPath, entityClass.getCanonicalName()));
+			}
+		} catch (IllegalArgumentException ex) {
+			throw new IllegalStateException(String.format("Unknown field [%s] within path [%s] for class [%s]", field, rootPath, entityClass.getCanonicalName()));
+		}
 	}
 
 	@Nonnull

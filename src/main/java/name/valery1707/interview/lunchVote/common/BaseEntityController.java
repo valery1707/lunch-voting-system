@@ -198,4 +198,12 @@ public abstract class BaseEntityController<T extends IBaseEntity, REPO extends P
 		update = repository.save(update);
 		return updated(update);
 	}
+
+	@ExceptionHandler(IllegalStateException.class)
+	@ResponseBody
+	public ResponseEntity<RestError> handleIllegalStateException(IllegalStateException ex, HttpServletRequest request) {
+		return ResponseEntity
+				.status(HttpStatus.INTERNAL_SERVER_ERROR)
+				.body(RestError.fromException(ex, request.getServletPath()));
+	}
 }
