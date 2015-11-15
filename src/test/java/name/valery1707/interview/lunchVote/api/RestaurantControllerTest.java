@@ -312,6 +312,35 @@ public class RestaurantControllerTest {
 	}
 
 	@Test
+	public void test_10_findAll_asUser_simpleFilter_direct_string_notFound() throws Exception {
+		mvc.perform(get(URL_ROOT).with(accUser())
+				.param("filter", "name;~;heLL")
+				.param("filter", "name;~;bar")
+		)
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.first").isBoolean())
+				.andExpect(jsonPath("$.first").value(true))
+				.andExpect(jsonPath("$.last").isBoolean())
+				.andExpect(jsonPath("$.last").value(true))
+				.andExpect(jsonPath("$.totalElements").isNumber())
+				.andExpect(jsonPath("$.totalElements").value(0))
+				.andExpect(jsonPath("$.totalPages").isNumber())
+				.andExpect(jsonPath("$.totalPages").value(0))
+				.andExpect(jsonPath("$.size").isNumber())
+				.andExpect(jsonPath("$.size").value(20))
+				.andExpect(jsonPath("$.numberOfElements").isNumber())
+				.andExpect(jsonPath("$.numberOfElements").value(0))
+				.andExpect(jsonPath("$.content").exists())
+				.andExpect(jsonPath("$.content").isArray())
+				.andExpect(jsonPath("$.content", hasSize(0)))
+				.andExpect(authenticated().withRoles("USER"))
+				.andReturn().getResponse().getContentAsString();
+	}
+
+	@Test
 	public void test_10_findAll_asUser_simpleFilter_direct_string_found() throws Exception {
 		String content = mvc.perform(get(URL_ROOT).with(accUser())
 				.param("filter", "name;~;heLL")
@@ -344,10 +373,9 @@ public class RestaurantControllerTest {
 	}
 
 	@Test
-	public void test_10_findAll_asUser_simpleFilter_direct_string_notFound() throws Exception {
+	public void test_10_findAll_asUser_simpleFilter_nested_string_notFound() throws Exception {
 		mvc.perform(get(URL_ROOT).with(accUser())
-				.param("filter", "name;~;heLL")
-				.param("filter", "name;~;bar")
+				.param("filter", "dishes.name;~;bread")
 		)
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
@@ -399,16 +427,15 @@ public class RestaurantControllerTest {
 				.andExpect(jsonPath("$.content[*].id").value(contains(RESTAURANT_MOE_BAR_ID)))
 				.andExpect(authenticated().withRoles("USER"))
 				.andReturn().getResponse().getContentAsString();
-		System.out.println("content = " + content);
 
 		List<Restaurant> result = jsonToList(Restaurant.class, extractContent(content));
 		assertThat(result).hasSize(1);
 	}
 
 	@Test
-	public void test_10_findAll_asUser_simpleFilter_nested_string_notFound() throws Exception {
-		mvc.perform(get(URL_ROOT).with(accUser())
-				.param("filter", "dishes.name;~;bread")
+	public void test_10_findAll_asUser_simpleFilter_nested_number_found() throws Exception {
+		String content = mvc.perform(get(URL_ROOT).with(accUser())
+				.param("filter", "dishes.price;<;4")
 		)
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
@@ -419,18 +446,22 @@ public class RestaurantControllerTest {
 				.andExpect(jsonPath("$.last").isBoolean())
 				.andExpect(jsonPath("$.last").value(true))
 				.andExpect(jsonPath("$.totalElements").isNumber())
-				.andExpect(jsonPath("$.totalElements").value(0))
+				.andExpect(jsonPath("$.totalElements").value(1))
 				.andExpect(jsonPath("$.totalPages").isNumber())
-				.andExpect(jsonPath("$.totalPages").value(0))
+				.andExpect(jsonPath("$.totalPages").value(1))
 				.andExpect(jsonPath("$.size").isNumber())
 				.andExpect(jsonPath("$.size").value(20))
 				.andExpect(jsonPath("$.numberOfElements").isNumber())
-				.andExpect(jsonPath("$.numberOfElements").value(0))
+				.andExpect(jsonPath("$.numberOfElements").value(1))
 				.andExpect(jsonPath("$.content").exists())
 				.andExpect(jsonPath("$.content").isArray())
-				.andExpect(jsonPath("$.content", hasSize(0)))
+				.andExpect(jsonPath("$.content", hasSize(1)))
+				.andExpect(jsonPath("$.content[*].id").value(contains(RESTAURANT_MOE_BAR_ID)))
 				.andExpect(authenticated().withRoles("USER"))
 				.andReturn().getResponse().getContentAsString();
+
+		List<Restaurant> result = jsonToList(Restaurant.class, extractContent(content));
+		assertThat(result).hasSize(1);
 	}
 
 	private static final String RESTAURANT_MOE_BAR_ID = "60d4f411-4cff-4f60-b392-46bed14c5f86";
