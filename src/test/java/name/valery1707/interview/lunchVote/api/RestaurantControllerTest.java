@@ -246,7 +246,7 @@ public class RestaurantControllerTest {
 	public void test_10_findAll_asUser_sortedByNestedFields() throws Exception {
 		String content = mvc.perform(get(URL_ROOT).with(accUser())
 				.param("sort", "name,ASC")
-				.param("sort", "dishes.name,dishes.price,ASC")
+				.param("sort", "dishes.name,dishes.price,DESC")
 		)
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
@@ -370,6 +370,39 @@ public class RestaurantControllerTest {
 
 		List<Restaurant> result = jsonToList(Restaurant.class, extractContent(content));
 		assertThat(result).hasSize(1);
+	}
+
+	@Test
+	public void test_10_findAll_asUser_simpleFilter_nested_unknownField() throws Exception {
+		mvc.perform(get(URL_ROOT).with(accUser())
+				.param("filter", "name.description;~;ha-ha")
+		)
+				.andExpect(status().isInternalServerError())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.timestamp").isNumber())
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.error").isString())
+				.andExpect(jsonPath("$.message").isString())
+				.andExpect(jsonPath("$.message").value(containsString("Unknown field [description]")))
+				.andExpect(authenticated().withRoles("USER"))
+				.andReturn().getResponse().getContentAsString();
+
+		mvc.perform(get(URL_ROOT).with(accUser())
+				.param("filter", "dishes.description;~;ha-ha")
+		)
+				.andExpect(status().isInternalServerError())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.timestamp").isNumber())
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.error").isString())
+				.andExpect(jsonPath("$.message").isString())
+				.andExpect(jsonPath("$.message").value(containsString("Unknown field [description]")))
+				.andExpect(authenticated().withRoles("USER"))
+				.andReturn().getResponse().getContentAsString();
 	}
 
 	@Test
