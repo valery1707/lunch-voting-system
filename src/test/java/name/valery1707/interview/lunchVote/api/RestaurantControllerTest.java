@@ -515,9 +515,9 @@ public class RestaurantControllerTest {
 	@Test
 	public void test_20_create_unauthorized() throws Exception {
 		test_unauthorized(post(URL_ROOT)
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(restaurant("new")))
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(restaurant("new")))
 		)
 		;
 	}
@@ -525,20 +525,20 @@ public class RestaurantControllerTest {
 	@Test
 	public void test_20_create_asBadUser() throws Exception {
 		test_badUser(post(URL_ROOT)
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(restaurant("new")))
-						.with(accBadUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(restaurant("new")))
+				.with(accBadUser())
 		);
 	}
 
 	@Test
 	public void test_20_create_asUser() throws Exception {
 		mvc.perform(post(URL_ROOT)
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(restaurant("new")))
-						.with(accUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(restaurant("new")))
+				.with(accUser())
 		)
 				.andExpect(status().isForbidden())
 				.andExpect(content().string(isEmptyOrNullString()))
@@ -550,10 +550,10 @@ public class RestaurantControllerTest {
 	public void test_20_create_asAdmin() throws Exception {
 		Restaurant source = restaurant("Created from Test", dish("dish1", 1.0), dish("dish 2", 2.0));
 		String content = mvc.perform(post(URL_ROOT)
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(source))
-						.with(accAdmin())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(source))
+				.with(accAdmin())
 		)
 				.andExpect(status().isCreated())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
@@ -596,10 +596,10 @@ public class RestaurantControllerTest {
 	public void test_20_create_asAdmin_withBugs() throws Exception {
 		//Without name in Restaurant
 		mvc.perform(post(URL_ROOT)
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(restaurant(null, dish("dish1", 1.0), dish("dish 2", 2.0))))
-						.with(accAdmin())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(restaurant(null, dish("dish1", 1.0), dish("dish 2", 2.0))))
+				.with(accAdmin())
 		)
 				.andExpect(status().isConflict())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
@@ -615,10 +615,10 @@ public class RestaurantControllerTest {
 
 		//Without price in Dish
 		mvc.perform(post(URL_ROOT)
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(restaurant("Created from Test", dish("dish1", null), dish("dish 2", 2.0))))
-						.with(accAdmin())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(restaurant("Created from Test", dish("dish1", null), dish("dish 2", 2.0))))
+				.with(accAdmin())
 		)
 				.andExpect(status().isConflict())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
@@ -682,9 +682,9 @@ public class RestaurantControllerTest {
 	@Test
 	public void test_40_updateById_unauthorized() throws Exception {
 		test_unauthorized(put(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(restaurant("new")))
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(restaurant("new")))
 		)
 		;
 	}
@@ -692,20 +692,20 @@ public class RestaurantControllerTest {
 	@Test
 	public void test_40_updateById_asBadUser() throws Exception {
 		test_badUser(put(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(restaurant("new")))
-						.with(accBadUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(restaurant("new")))
+				.with(accBadUser())
 		);
 	}
 
 	@Test
 	public void test_40_updateById_asUser() throws Exception {
 		mvc.perform(put(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(restaurant("new")))
-						.with(accUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(restaurant("new")))
+				.with(accUser())
 		)
 				.andExpect(status().isForbidden())
 				.andExpect(content().string(isEmptyOrNullString()))
@@ -716,10 +716,10 @@ public class RestaurantControllerTest {
 	@Test
 	public void test_40_updateById_asAdmin_notFound() throws Exception {
 		mvc.perform(put(URL_ROOT + "/{id}", UUID.randomUUID().toString())
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(restaurant("new")))
-						.with(accAdmin())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(restaurant("new")))
+				.with(accAdmin())
 		)
 				.andExpect(status().isNotFound())
 				.andExpect(content().string(isEmptyOrNullString()))
@@ -744,10 +744,10 @@ public class RestaurantControllerTest {
 
 		//Send modification
 		mvc.perform(put(URL_ROOT + "/{id}", created.getId().toString())
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(updateSource))
-						.with(accAdmin())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(updateSource))
+				.with(accAdmin())
 		)
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
@@ -771,10 +771,10 @@ public class RestaurantControllerTest {
 				.doesNotContain(removedDish);
 		//New dish list contains newDish
 		assertTrue("newDish", updateResult.getDishes().stream()
-						.filter(dish -> !savedDish.equals(dish))
-						.allMatch(dish ->
-										dish.getName().equals(newDish.getName()) && dish.getPrice().equals(newDish.getPrice())
-						)
+				.filter(dish -> !savedDish.equals(dish))
+				.allMatch(dish ->
+						dish.getName().equals(newDish.getName()) && dish.getPrice().equals(newDish.getPrice())
+				)
 		);
 	}
 
@@ -786,10 +786,10 @@ public class RestaurantControllerTest {
 		created = findRestaurantCreated();
 		created.setName(null);
 		mvc.perform(put(URL_ROOT + "/{id}", created.getId().toString())
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(created))
-						.with(accAdmin())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(created))
+				.with(accAdmin())
 		)
 				.andExpect(status().isConflict())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
@@ -807,10 +807,10 @@ public class RestaurantControllerTest {
 		created = findRestaurantCreated();
 		created.getDishes().iterator().next().setPrice(null);
 		mvc.perform(put(URL_ROOT + "/{id}", created.getId().toString())
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(created))
-						.with(accAdmin())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(created))
+				.with(accAdmin())
 		)
 				.andExpect(status().isConflict())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
@@ -828,10 +828,10 @@ public class RestaurantControllerTest {
 		created = findRestaurantCreated();
 		created.getDishes().iterator().next().setName(null);
 		mvc.perform(put(URL_ROOT + "/{id}", created.getId().toString())
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(created))
-						.with(accAdmin())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(created))
+				.with(accAdmin())
 		)
 				.andExpect(status().isConflict())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
@@ -849,9 +849,9 @@ public class RestaurantControllerTest {
 	@Test
 	public void test_41_patchById_unauthorized() throws Exception {
 		test_unauthorized(patch(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(restaurant("new")))
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(restaurant("new")))
 		)
 		;
 	}
@@ -859,20 +859,20 @@ public class RestaurantControllerTest {
 	@Test
 	public void test_41_patchById_asBadUser() throws Exception {
 		test_badUser(patch(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(restaurant("new")))
-						.with(accBadUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(restaurant("new")))
+				.with(accBadUser())
 		);
 	}
 
 	@Test
 	public void test_41_patchById_asUser() throws Exception {
 		mvc.perform(patch(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(restaurant("new")))
-						.with(accUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(restaurant("new")))
+				.with(accUser())
 		)
 				.andExpect(status().isForbidden())
 				.andExpect(content().string(isEmptyOrNullString()))
@@ -883,10 +883,10 @@ public class RestaurantControllerTest {
 	@Test
 	public void test_41_patchById_asAdmin_notFound() throws Exception {
 		mvc.perform(patch(URL_ROOT + "/{id}", UUID.randomUUID().toString())
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(restaurant("new")))
-						.with(accAdmin())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(restaurant("new")))
+				.with(accAdmin())
 		)
 				.andExpect(status().isNotFound())
 				.andExpect(content().string(isEmptyOrNullString()))
@@ -909,10 +909,10 @@ public class RestaurantControllerTest {
 
 		//Send modification
 		mvc.perform(patch(URL_ROOT + "/{id}", created.getId().toString())
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(updateSource))
-						.with(accAdmin())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(updateSource))
+				.with(accAdmin())
 		)
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
@@ -935,10 +935,10 @@ public class RestaurantControllerTest {
 				.containsAll(created.getDishes());
 		//New dish list contains newDish
 		assertTrue("newDish", updateResult.getDishes().stream()
-						.filter(dish -> !created.getDishes().contains(dish))
-						.allMatch(dish ->
-										dish.getName().equals(newDish.getName()) && dish.getPrice().equals(newDish.getPrice())
-						)
+				.filter(dish -> !created.getDishes().contains(dish))
+				.allMatch(dish ->
+						dish.getName().equals(newDish.getName()) && dish.getPrice().equals(newDish.getPrice())
+				)
 		);
 	}
 
@@ -978,10 +978,10 @@ public class RestaurantControllerTest {
 
 		//Send modification
 		mvc.perform(patch(URL_ROOT + "/{id}", created.getId().toString())
-						.contentType(CONTENT_TYPE)
-						.characterEncoding(ENCODING)
-						.content(objectToJson(updateSource))
-						.with(accAdmin())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(updateSource))
+				.with(accAdmin())
 		)
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
@@ -1003,10 +1003,10 @@ public class RestaurantControllerTest {
 				.containsAll(created.getDishes());
 		//New dish list contains newDish
 		assertTrue("newDish", updateResult.getDishes().stream()
-						.filter(dish -> !created.getDishes().contains(dish))
-						.allMatch(dish ->
-										dish.getName().equals(newDish.getName()) && dish.getPrice().equals(newDish.getPrice())
-						)
+				.filter(dish -> !created.getDishes().contains(dish))
+				.allMatch(dish ->
+						dish.getName().equals(newDish.getName()) && dish.getPrice().equals(newDish.getPrice())
+				)
 		);
 	}
 
