@@ -2,6 +2,7 @@ package name.valery1707.interview.lunchVote;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.Banner;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.ComponentScan;
@@ -23,7 +24,7 @@ public class Launcher {
 		LOG.info("Launcher started at {}", ZonedDateTime.now().format(ISO_OFFSET_DATE_TIME));
 		new SpringApplicationBuilder()
 				.sources(Launcher.class)
-				.showBanner(false)
+				.bannerMode(Banner.Mode.OFF)
 				.build()
 				.run(args);
 	}
