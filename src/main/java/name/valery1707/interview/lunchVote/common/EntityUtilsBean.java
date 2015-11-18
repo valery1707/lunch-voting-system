@@ -312,7 +312,7 @@ public class EntityUtilsBean {
 			for (String path : joinPathFinal) {
 				join = findOrCreateJoin(join, path);
 			}
-			Path<String> field = join == null ? root.get(fieldName) : join.get(fieldName);
+			Path<String> field = join.get(fieldName);
 			switch (operation) {
 				case "<":
 					return cb.lessThan(field, valueRaw);
@@ -341,7 +341,8 @@ public class EntityUtilsBean {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends IBaseEntity> From<T, ?> findOrCreateJoin(From<T, ?> source, String path) {
+	@Nonnull
+	private <T extends IBaseEntity> From<T, ?> findOrCreateJoin(@Nonnull From<T, ?> source, String path) {
 		Optional<? extends Join<?, ?>> existsJoin = source.getJoins().stream().filter(j -> j.getAttribute().getName().equals(path)).findAny();
 		if (existsJoin.isPresent()) {
 			return (From<T, ?>) existsJoin.get();
