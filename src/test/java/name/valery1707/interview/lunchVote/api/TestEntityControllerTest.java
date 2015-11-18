@@ -22,6 +22,7 @@ import static org.springframework.security.test.web.servlet.response.SecurityMoc
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@SuppressWarnings("Duplicates")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Launcher.class)
 @WebAppConfiguration
@@ -238,4 +239,136 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 				.param("filter", "secondCollection.thirdCollection.primitiveByte;!~!;0")
 		);
 	}
+
+
+	@Test
+	public void testFilter_overCollection_short_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;<;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;<;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;<;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;<;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_short_lessThanOrEqualTo() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;<=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;<=;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;<=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;<=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_short_equal() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;=;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;=;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_short_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;=>;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;=>;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;=>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;=>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_short_greaterThan() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;>;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;>;1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_short_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;!=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;!=;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;!=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;!=;42")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;!=;1")
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;!=;2")
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;!=;3")
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;!=;4")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_short_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_short_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;!~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_short_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_short_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;!~!;0")
+		);
+	}
+
 }
