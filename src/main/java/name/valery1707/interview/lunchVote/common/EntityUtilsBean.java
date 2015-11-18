@@ -1,6 +1,7 @@
 package name.valery1707.interview.lunchVote.common;
 
 import name.valery1707.interview.lunchVote.domain.IBaseEntity;
+import org.apache.commons.lang3.ClassUtils;
 import org.hibernate.internal.util.collections.IdentitySet;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Scope;
@@ -300,7 +301,10 @@ public class EntityUtilsBean {
 		String fieldName = joinPath[joinPath.length - 1];
 		String[] joinPathFinal = Arrays.copyOf(joinPath, joinPath.length - 1);
 
-		findAttribute(entityClass, fieldPath);
+		Attribute<? super T, ?> attribute = findAttribute(entityClass, fieldPath);
+		if (ClassUtils.isAssignable(attribute.getJavaType(), Number.class, true)) {
+			Assert.state(!operation.contains("~"), String.format("Incorrect filter operation: number field [%s] could not be filtered by operation [%s]", fieldPath, operation));
+		}
 		//todo Convert value from String to required type
 
 		return (root, query, cb) -> {

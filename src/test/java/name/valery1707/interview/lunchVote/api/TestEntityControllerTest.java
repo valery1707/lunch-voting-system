@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,6 +30,20 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	@Override
 	protected String urlRoot() {
 		return "/api/test/entity";
+	}
+
+	private void assertIncorrect(MockHttpServletRequestBuilder requestBuilder) throws Exception {
+		mvc.perform(requestBuilder)
+				.andExpect(status().isInternalServerError())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.timestamp").isNumber())
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.error").isString())
+				.andExpect(jsonPath("$.message").isString())
+				.andExpect(jsonPath("$.message").value(containsString("Incorrect filter operation")))
+				.andExpect(unauthenticated());
 	}
 
 	private void assertNotFound(MockHttpServletRequestBuilder requestBuilder) throws Exception {
@@ -193,6 +208,34 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 				.param("filter", "secondCollection.thirdCollection.primitiveByte;!=;2")
 				.param("filter", "secondCollection.thirdCollection.primitiveByte;!=;3")
 				.param("filter", "secondCollection.thirdCollection.primitiveByte;!=;4")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_byte_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveByte;~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_byte_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveByte;!~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_byte_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveByte;~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_byte_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveByte;!~!;0")
 		);
 	}
 }
