@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.persistence.criteria.From;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
@@ -284,7 +285,7 @@ public class EntityUtilsBean {
 	private static final Pattern SIMPLE_FILTER_PATTERN = Pattern.compile(
 			"^" +
 			"([\\w\\.]+);" +                 //Field name
-			"(<|<=|=|=>|>|~|!~|~!|!~!);" +   //Operation: LESS(<), LESS_OR_EQUAL(<=), EQUAL(=), GREATER_OR_EQUAL(=>), GREATER(>), NOT_EQUAL(!=), LIKE(~), NOT_LIKE(!~), CASE_SENSITIVE_LIKE(~!), CASE_SENSITIVE_NOT_LIKE(!~!)
+			"(<|<=|=|=>|>|!=|~|!~|~!|!~!);" +//Operation: LESS(<), LESS_OR_EQUAL(<=), EQUAL(=), GREATER_OR_EQUAL(=>), GREATER(>), NOT_EQUAL(!=), LIKE(~), NOT_LIKE(!~), CASE_SENSITIVE_LIKE(~!), CASE_SENSITIVE_NOT_LIKE(!~!)
 			//todo Between
 			"(.+)" +                         //Value
 			"$");
@@ -303,11 +304,9 @@ public class EntityUtilsBean {
 		//todo Convert value from String to required type
 
 		return (root, query, cb) -> {
-			Join<T, ?> join = null;
-			for (String fieldName1 : joinPathFinal) {
-				join = join == null
-						? root.join(fieldName1, JoinType.LEFT)
-						: join.join(fieldName1, JoinType.LEFT);
+			From<T, ?> join = root;
+			for (String path : joinPathFinal) {
+				join = findOrCreateJoin(join, path);
 			}
 			Path<String> field = join == null ? root.get(fieldName) : join.get(fieldName);
 			switch (operation) {
@@ -335,6 +334,16 @@ public class EntityUtilsBean {
 					throw new IllegalStateException(String.format("Unknown operation '%s' in filter: %s", operation, filter));
 			}
 		};
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T extends IBaseEntity> From<T, ?> findOrCreateJoin(From<T, ?> source, String path) {
+		Optional<? extends Join<?, ?>> existsJoin = source.getJoins().stream().filter(j -> j.getAttribute().getName().equals(path)).findAny();
+		if (existsJoin.isPresent()) {
+			return (From<T, ?>) existsJoin.get();
+		} else {
+			return source.join(path, JoinType.LEFT);
+		}
 	}
 
 	/**

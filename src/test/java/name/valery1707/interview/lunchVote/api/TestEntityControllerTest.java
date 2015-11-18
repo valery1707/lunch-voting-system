@@ -173,4 +173,26 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 				.param("filter", "secondCollection.thirdCollection.primitiveByte;>;42")
 		);
 	}
+
+	@Test
+	public void testFilter_overCollection_byte_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveByte;!=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveByte;!=;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveByte;!=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveByte;!=;42")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveByte;!=;1")
+				.param("filter", "secondCollection.thirdCollection.primitiveByte;!=;2")
+				.param("filter", "secondCollection.thirdCollection.primitiveByte;!=;3")
+				.param("filter", "secondCollection.thirdCollection.primitiveByte;!=;4")
+		);
+	}
 }
