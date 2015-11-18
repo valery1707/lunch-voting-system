@@ -292,7 +292,7 @@ public class EntityUtilsBean {
 	private static final Pattern SIMPLE_FILTER_PATTERN = Pattern.compile(
 			"^" +
 			"([\\w\\.]+);" +                 //Field name
-			"(<|<=|=|=>|>|!=|~|!~|~!|!~!|_|!_);" +  //Operation: LESS(<), LESS_OR_EQUAL(<=), EQUAL(=), GREATER_OR_EQUAL(=>), GREATER(>), NOT_EQUAL(!=), LIKE(~), NOT_LIKE(!~), CASE_SENSITIVE_LIKE(~!), CASE_SENSITIVE_NOT_LIKE(!~!), IS_NULL(_), NOT_NULL(!_)
+			"(<|<=|=|=>|>|!=|~|!~|~!|!~!|_|!_|\\?);" +  //Operation: LESS(<), LESS_OR_EQUAL(<=), EQUAL(=), GREATER_OR_EQUAL(=>), GREATER(>), NOT_EQUAL(!=), LIKE(~), NOT_LIKE(!~), CASE_SENSITIVE_LIKE(~!), CASE_SENSITIVE_NOT_LIKE(!~!), IS_NULL(_), NOT_NULL(!_), UNKNOWN(?)
 			//todo Between
 			"(.+)?" +                               //Value
 			"$");
@@ -346,7 +346,7 @@ public class EntityUtilsBean {
 				case "!_":
 					return cb.isNotNull(field);
 				default:
-					throw new IllegalStateException(format("Unknown operation '%s' in filter: %s", operation, filter));
+					throw new IllegalStateException(format("Incorrect filter operation: unknown operation '%s' in filter: %s", operation, filter));
 			}
 		};
 	}

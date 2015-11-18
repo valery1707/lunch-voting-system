@@ -11,6 +11,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.web.util.NestedServletException;
 
 import java.util.List;
 import java.util.Set;
@@ -2004,6 +2005,13 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	public void testFilter_overCollection_String_isNotNull() throws Exception {
 		assertFound(get(urlRoot())
 				.param("filter", "secondCollection.thirdCollection.name;!_;")
+		);
+	}
+
+	@Test(expected = NestedServletException.class)
+	public void testFilter_overCollection_String_unknownOperation() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;?;***")
 		);
 	}
 
