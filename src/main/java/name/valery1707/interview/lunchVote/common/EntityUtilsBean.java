@@ -4,6 +4,7 @@ import name.valery1707.interview.lunchVote.domain.IBaseEntity;
 import org.hibernate.internal.util.collections.IdentitySet;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
@@ -350,12 +351,17 @@ public class EntityUtilsBean {
 	private <V extends Comparable<V>> V convertToTargetType(Class<?> javaType, String raw) {
 		if (raw == null) {
 			return null;
-		} else if (conversionService.canConvert(String.class, javaType)) {
-			Object convert = conversionService.convert(raw, javaType);
-			return (V) convert;
-		} else {
-			throw new IllegalStateException(format("Incorrect filter value: could not convert string '%s' into '%s' type", raw, javaType));
 		}
+		if (conversionService.canConvert(String.class, javaType)) {
+			try {
+				Object convert = conversionService.convert(raw, javaType);
+				if (convert instanceof Comparable) {
+					return (V) convert;
+				}
+			} catch (ConversionFailedException ignored) {
+			}
+		}
+		throw new IllegalStateException(format("Incorrect filter value: could not convert string '%s' into '%s' type", raw, javaType));
 	}
 
 	@SuppressWarnings("unchecked")

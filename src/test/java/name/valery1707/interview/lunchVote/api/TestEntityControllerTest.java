@@ -47,6 +47,20 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 				.andExpect(unauthenticated());
 	}
 
+	private void assertIncorrectValue(MockHttpServletRequestBuilder requestBuilder) throws Exception {
+		mvc.perform(requestBuilder)
+				.andExpect(status().isInternalServerError())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.timestamp").isNumber())
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.error").isString())
+				.andExpect(jsonPath("$.message").isString())
+				.andExpect(jsonPath("$.message").value(containsString("Incorrect filter value")))
+				.andExpect(unauthenticated());
+	}
+
 	private void assertNotFound(MockHttpServletRequestBuilder requestBuilder) throws Exception {
 		mvc.perform(requestBuilder)
 				.andExpect(status().isOk())
@@ -108,6 +122,29 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	@Test
 	public void testFindAll() throws Exception {
 		assertFound(get(urlRoot()));
+	}
+
+	@Test
+	public void testFilter_overCollection_collection_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection;<;***")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_entity_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondCollection.thirdLink;<;***")
+		);
+	}
+
+	//region byte
+
+	@Test
+	public void testFilter_overCollection_byte_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveByte;<;***")
+		);
 	}
 
 	@Test
@@ -240,6 +277,15 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 		);
 	}
 
+	//endregion
+	//region short
+
+	@Test
+	public void testFilter_overCollection_short_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveShort;<;***")
+		);
+	}
 
 	@Test
 	public void testFilter_overCollection_short_lessThan() throws Exception {
@@ -368,6 +414,16 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	public void testFilter_overCollection_short_caseSensitiveNotLike() throws Exception {
 		assertIncorrect(get(urlRoot())
 				.param("filter", "secondCollection.thirdCollection.primitiveShort;!~!;0")
+		);
+	}
+
+	//endregion
+	//region int
+
+	@Test
+	public void testFilter_overCollection_int_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveInt;<;***")
 		);
 	}
 
@@ -501,6 +557,16 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 		);
 	}
 
+	//endregion
+	//region long
+
+	@Test
+	public void testFilter_overCollection_long_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;<;***")
+		);
+	}
+
 	@Test
 	public void testFilter_overCollection_long_lessThan() throws Exception {
 		assertNotFound(get(urlRoot())
@@ -628,6 +694,16 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	public void testFilter_overCollection_long_caseSensitiveNotLike() throws Exception {
 		assertIncorrect(get(urlRoot())
 				.param("filter", "secondCollection.thirdCollection.primitiveLong;!~!;0")
+		);
+	}
+
+	//endregion
+	//region double
+
+	@Test
+	public void testFilter_overCollection_double_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;<;***")
 		);
 	}
 
@@ -761,6 +837,16 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 		);
 	}
 
+	//endregion
+	//region boolean
+
+	@Test
+	public void testFilter_overCollection_boolean_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;<;***")
+		);
+	}
+
 	@Test
 	public void testFilter_overCollection_boolean_lessThan() throws Exception {
 		assertFound(get(urlRoot())
@@ -852,4 +938,6 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;!~!;true")
 		);
 	}
+
+	//endregion
 }
