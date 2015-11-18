@@ -500,4 +500,134 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 				.param("filter", "secondCollection.thirdCollection.primitiveInt;!~!;0")
 		);
 	}
+
+	@Test
+	public void testFilter_overCollection_long_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;<;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;<;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;<;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;<;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_long_lessThanOrEqualTo() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;<=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;<=;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;<=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;<=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_long_equal() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;=;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;=;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_long_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;=>;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;=>;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;=>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;=>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_long_greaterThan() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;>;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;>;1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_long_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;!=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;!=;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;!=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;!=;42")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;!=;1")
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;!=;2")
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;!=;3")
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;!=;4")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_long_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_long_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;!~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_long_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_long_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveLong;!~!;0")
+		);
+	}
 }
