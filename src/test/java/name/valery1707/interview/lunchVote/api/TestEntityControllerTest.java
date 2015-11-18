@@ -760,4 +760,96 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 				.param("filter", "secondCollection.thirdCollection.primitiveDouble;!~!;0.0")
 		);
 	}
+
+	@Test
+	public void testFilter_overCollection_boolean_lessThan() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;<;true")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;<;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_boolean_lessThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;<=;true")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;<=;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_boolean_equal() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;=;true")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;=;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_boolean_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;=>;true")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;=>;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_boolean_greaterThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;>;true")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;>;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_boolean_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;!=;true")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;!=;false")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;!=;true")
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;!=;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_boolean_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;~;true")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_boolean_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;!~;true")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_boolean_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;~!;true")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_boolean_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveBoolean;!~!;true")
+		);
+	}
 }

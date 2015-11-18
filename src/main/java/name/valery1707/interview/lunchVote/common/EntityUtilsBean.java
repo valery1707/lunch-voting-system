@@ -1,10 +1,10 @@
 package name.valery1707.interview.lunchVote.common;
 
 import name.valery1707.interview.lunchVote.domain.IBaseEntity;
-import org.apache.commons.lang3.ClassUtils;
 import org.hibernate.internal.util.collections.IdentitySet;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Component;
@@ -31,8 +31,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.lang3.ClassUtils.isAssignable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
@@ -41,6 +43,9 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 public class EntityUtilsBean {
 	@Inject
 	private EntityManager entityManager;
+
+	@Inject
+	private ConversionService conversionService;
 
 	@SuppressWarnings("unchecked")
 	public void deepClearId(IBaseEntity entity) {
@@ -291,7 +296,7 @@ public class EntityUtilsBean {
 			"(.+)" +                         //Value
 			"$");
 
-	public <T extends IBaseEntity> Specification<T> simpleFilter(Class<T> entityClass, String filter) {
+	public <T extends IBaseEntity, V extends Comparable<V>> Specification<T> simpleFilter(Class<T> entityClass, String filter) {
 		Matcher matcher = SIMPLE_FILTER_PATTERN.matcher(filter);
 		Assert.state(matcher.matches(), "Incorrect filter format: " + filter);
 		String fieldPath = matcher.group(1);
@@ -302,42 +307,55 @@ public class EntityUtilsBean {
 		String[] joinPathFinal = Arrays.copyOf(joinPath, joinPath.length - 1);
 
 		Attribute<? super T, ?> attribute = findAttribute(entityClass, fieldPath);
-		if (ClassUtils.isAssignable(attribute.getJavaType(), Number.class, true)) {
-			Assert.state(!operation.contains("~"), String.format("Incorrect filter operation: number field [%s] could not be filtered by operation [%s]", fieldPath, operation));
+		if (isAssignable(attribute.getJavaType(), Number.class) || isAssignable(attribute.getJavaType(), Boolean.class)) {
+			Assert.state(!operation.contains("~"), format("Incorrect filter operation: field [%s] with type '%s' could not be filtered by operation [%s]", fieldPath, attribute.getJavaType(), operation));
 		}
-		//todo Convert value from String to required type
+		V value = convertToTargetType(attribute.getJavaType(), valueRaw);
 
 		return (root, query, cb) -> {
 			From<T, ?> join = root;
 			for (String path : joinPathFinal) {
 				join = findOrCreateJoin(join, path);
 			}
-			Path<String> field = join.get(fieldName);
+			Path<V> field = join.get(fieldName);
+			Path<String> fieldString = join.get(fieldName);
 			switch (operation) {
 				case "<":
-					return cb.lessThan(field, valueRaw);
+					return cb.lessThan(field, value);
 				case "<=":
-					return cb.lessThanOrEqualTo(field, valueRaw);
+					return cb.lessThanOrEqualTo(field, value);
 				case "=":
-					return cb.equal(field, valueRaw);
+					return cb.equal(field, value);
 				case "=>":
-					return cb.greaterThanOrEqualTo(field, valueRaw);
+					return cb.greaterThanOrEqualTo(field, value);
 				case ">":
-					return cb.greaterThan(field, valueRaw);
+					return cb.greaterThan(field, value);
 				case "!=":
-					return cb.notEqual(field, valueRaw);
+					return cb.notEqual(field, value);
 				case "~":
-					return cb.like(cb.lower(field), toLikePattern(valueRaw).toLowerCase(), '\\');
+					return cb.like(cb.lower(fieldString), toLikePattern(valueRaw).toLowerCase(), '\\');
 				case "!~":
-					return cb.notLike(cb.lower(field), toLikePattern(valueRaw).toLowerCase(), '\\');
+					return cb.notLike(cb.lower(fieldString), toLikePattern(valueRaw).toLowerCase(), '\\');
 				case "~!":
-					return cb.like(field, toLikePattern(valueRaw), '\\');
+					return cb.like(fieldString, toLikePattern(valueRaw), '\\');
 				case "!~!":
-					return cb.notLike(field, toLikePattern(valueRaw), '\\');
+					return cb.notLike(fieldString, toLikePattern(valueRaw), '\\');
 				default:
-					throw new IllegalStateException(String.format("Unknown operation '%s' in filter: %s", operation, filter));
+					throw new IllegalStateException(format("Unknown operation '%s' in filter: %s", operation, filter));
 			}
 		};
+	}
+
+	@SuppressWarnings("unchecked")
+	private <V extends Comparable<V>> V convertToTargetType(Class<?> javaType, String raw) {
+		if (raw == null) {
+			return null;
+		} else if (conversionService.canConvert(String.class, javaType)) {
+			Object convert = conversionService.convert(raw, javaType);
+			return (V) convert;
+		} else {
+			throw new IllegalStateException(format("Incorrect filter value: could not convert string '%s' into '%s' type", raw, javaType));
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -381,10 +399,10 @@ public class EntityUtilsBean {
 			} else if (attribute instanceof PluralAttribute<?, ?, ?>) {
 				return findAttribute(((PluralAttribute) attribute).getElementType().getJavaType(), rest);
 			} else {
-				throw new IllegalStateException(String.format("Unknown field [%s] within class [%s]", rest, entityClass.getCanonicalName()));
+				throw new IllegalStateException(format("Unknown field [%s] within class [%s]", rest, entityClass.getCanonicalName()));
 			}
 		} catch (IllegalArgumentException ex) {
-			throw new IllegalStateException(String.format("Unknown field [%s] within class [%s]", field, entityClass.getCanonicalName()));
+			throw new IllegalStateException(format("Unknown field [%s] within class [%s]", field, entityClass.getCanonicalName()));
 		}
 	}
 
