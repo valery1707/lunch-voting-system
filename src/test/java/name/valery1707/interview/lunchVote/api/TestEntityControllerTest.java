@@ -1733,4 +1733,167 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	}
 
 	//endregion
+	//region String
+
+	@Test
+	public void testFilter_overCollection_String_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;<;1.1.1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;<;1.1.4")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_String_lessThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;<=;1.1.1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;<=;1.1.4")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_String_equal() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;=;1.1.1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;=;1.1.4")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_String_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;=>;1.1.1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;=>;1.1.4")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_String_greaterThan() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;>;1.1.1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;>;1.1.4")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_String_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!=;1.1.1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!=;1.1.4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!=;1.1.1")
+				.param("filter", "secondCollection.thirdCollection.name;!=;1.1.2")
+				.param("filter", "secondCollection.thirdCollection.name;!=;1.1.3")
+				.param("filter", "secondCollection.thirdCollection.name;!=;1.1.4")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_String_like() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;~;.1.")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;~;1.1.")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;~;1.1.?")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;~;1.1.*")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;~;1.1.1?")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;~;1.1.1*")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_String_notLike() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!~;.1.")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!~;1.1.")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!~;1.1.?")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!~;1.1.*")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!~;1.1.1?")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!~;1.1.1*")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!~;1.1.*")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_String_caseSensitiveLike() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;~!;.1.")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;~!;1.1.")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;~!;1.1.?")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;~!;1.1.*")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;~!;1.1.1?")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;~!;1.1.1*")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_String_caseSensitiveNotLike() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!~!;.1.")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!~!;1.1.")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!~!;1.1.?")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!~!;1.1.*")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!~!;1.1.1?")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!~!;1.1.1*")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!~!;1.1.*")
+		);
+	}
+
+	//endregion
 }
