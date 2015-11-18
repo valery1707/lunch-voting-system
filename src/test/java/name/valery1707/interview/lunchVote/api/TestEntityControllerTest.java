@@ -630,4 +630,134 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 				.param("filter", "secondCollection.thirdCollection.primitiveLong;!~!;0")
 		);
 	}
+
+	@Test
+	public void testFilter_overCollection_double_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;<;0.0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;<;1.1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;<;4.4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;<;42.42")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_double_lessThanOrEqualTo() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;<=;0.0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;<=;1.1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;<=;4.4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;<=;42.42")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_double_equal() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;=;0.0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;=;1.1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;=;4.4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;=;42.42")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_double_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;=>;0.0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;=>;1.1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;=>;4.4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;=>;42.42")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_double_greaterThan() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;>;0.0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;>;1.1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;>;4.4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;>;42.42")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_double_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;!=;0.0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;!=;1.1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;!=;4.4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;!=;42.42")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;!=;1.1")
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;!=;2.2")
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;!=;3.3")
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;!=;4.4")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_double_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;~;0.0")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_double_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;!~;0.0")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_double_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;~!;0.0")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_double_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.primitiveDouble;!~!;0.0")
+		);
+	}
 }
