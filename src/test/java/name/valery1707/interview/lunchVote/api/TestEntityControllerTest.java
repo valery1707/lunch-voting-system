@@ -138,6 +138,20 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 		);
 	}
 
+	@Test
+	public void testFilter_overCollection_entity_isNull() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdLink;_;")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_entity_isNotNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdLink;!_;")
+		);
+	}
+
 	//region byte
 
 	@Test
@@ -1078,6 +1092,20 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 		);
 	}
 
+	@Test
+	public void testFilter_overCollection_Byte_isNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.objectByte;_;")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_Byte_isNotNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.objectByte;!_;")
+		);
+	}
+
 	//endregion
 	//region Short
 
@@ -1213,6 +1241,20 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	public void testFilter_overCollection_Short_caseSensitiveNotLike() throws Exception {
 		assertIncorrect(get(urlRoot())
 				.param("filter", "secondCollection.thirdCollection.objectShort;!~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_Short_isNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.objectShort;_;")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_Short_isNotNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.objectShort;!_;")
 		);
 	}
 
@@ -1354,6 +1396,20 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 		);
 	}
 
+	@Test
+	public void testFilter_overCollection_Int_isNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.objectInt;_;")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_Int_isNotNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.objectInt;!_;")
+		);
+	}
+
 	//endregion
 	//region Long
 
@@ -1489,6 +1545,20 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	public void testFilter_overCollection_Long_caseSensitiveNotLike() throws Exception {
 		assertIncorrect(get(urlRoot())
 				.param("filter", "secondCollection.thirdCollection.objectLong;!~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_Long_isNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.objectLong;_;")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_Long_isNotNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.objectLong;!_;")
 		);
 	}
 
@@ -1630,6 +1700,20 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 		);
 	}
 
+	@Test
+	public void testFilter_overCollection_Double_isNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.objectDouble;_;")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_Double_isNotNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.objectDouble;!_;")
+		);
+	}
+
 	//endregion
 	//region Boolean
 
@@ -1729,6 +1813,20 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	public void testFilter_overCollection_Boolean_caseSensitiveNotLike() throws Exception {
 		assertIncorrect(get(urlRoot())
 				.param("filter", "secondCollection.thirdCollection.objectBoolean;!~!;true")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_Boolean_isNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.objectBoolean;_;")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_Boolean_isNotNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.objectBoolean;!_;")
 		);
 	}
 
@@ -1892,6 +1990,20 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 		);
 		assertNotFound(get(urlRoot())
 				.param("filter", "secondCollection.thirdCollection.name;!~!;1.1.*")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_String_isNull() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;_;")
+		);
+	}
+
+	@Test
+	public void testFilter_overCollection_String_isNotNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondCollection.thirdCollection.name;!_;")
 		);
 	}
 

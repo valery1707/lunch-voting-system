@@ -292,9 +292,9 @@ public class EntityUtilsBean {
 	private static final Pattern SIMPLE_FILTER_PATTERN = Pattern.compile(
 			"^" +
 			"([\\w\\.]+);" +                 //Field name
-			"(<|<=|=|=>|>|!=|~|!~|~!|!~!);" +//Operation: LESS(<), LESS_OR_EQUAL(<=), EQUAL(=), GREATER_OR_EQUAL(=>), GREATER(>), NOT_EQUAL(!=), LIKE(~), NOT_LIKE(!~), CASE_SENSITIVE_LIKE(~!), CASE_SENSITIVE_NOT_LIKE(!~!)
+			"(<|<=|=|=>|>|!=|~|!~|~!|!~!|_|!_);" +  //Operation: LESS(<), LESS_OR_EQUAL(<=), EQUAL(=), GREATER_OR_EQUAL(=>), GREATER(>), NOT_EQUAL(!=), LIKE(~), NOT_LIKE(!~), CASE_SENSITIVE_LIKE(~!), CASE_SENSITIVE_NOT_LIKE(!~!), IS_NULL(_), NOT_NULL(!_)
 			//todo Between
-			"(.+)" +                         //Value
+			"(.+)?" +                               //Value
 			"$");
 
 	public <T extends IBaseEntity, V extends Comparable<V>> Specification<T> simpleFilter(Class<T> entityClass, String filter) {
@@ -302,7 +302,7 @@ public class EntityUtilsBean {
 		Assert.state(matcher.matches(), "Incorrect filter format: " + filter);
 		String fieldPath = matcher.group(1);
 		String operation = matcher.group(2);
-		String valueRaw = matcher.group(3);
+		String valueRaw = operation.contains("_") ? null : matcher.group(3);
 		String[] joinPath = fieldPath.split("\\.");
 		String fieldName = joinPath[joinPath.length - 1];
 		String[] joinPathFinal = Arrays.copyOf(joinPath, joinPath.length - 1);
@@ -341,6 +341,10 @@ public class EntityUtilsBean {
 					return cb.like(fieldString, toLikePattern(valueRaw), '\\');
 				case "!~!":
 					return cb.notLike(fieldString, toLikePattern(valueRaw), '\\');
+				case "_":
+					return cb.isNull(field);
+				case "!_":
+					return cb.isNotNull(field);
 				default:
 					throw new IllegalStateException(format("Unknown operation '%s' in filter: %s", operation, filter));
 			}
