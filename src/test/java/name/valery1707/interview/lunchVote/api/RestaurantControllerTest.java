@@ -1,42 +1,25 @@
 package name.valery1707.interview.lunchVote.api;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
 import name.valery1707.interview.lunchVote.Launcher;
 import name.valery1707.interview.lunchVote.domain.Dish;
 import name.valery1707.interview.lunchVote.domain.Restaurant;
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.RequestPostProcessor;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import javax.inject.Inject;
-import java.io.IOException;
 import java.time.ZoneId;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertTrue;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -45,111 +28,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class RestaurantControllerTest {
+public class RestaurantControllerTest extends BaseEntityControllerTest {
 
-	public static final MediaType CONTENT_TYPE = MediaType.APPLICATION_JSON;
-	public static final String ENCODING = "UTF-8";
-	public static final String URL_PREFIX = "http://localhost";
-	public static final String URL_ROOT = "/api/restaurant";
-
-	@Inject
-	private WebApplicationContext context;
-
-	private MockMvc mvc;
-	private ObjectMapper mapper;
-
-	@Before
-	public void setUp() {
-		mvc = MockMvcBuilders
-				.webAppContextSetup(context)
-				.apply(springSecurity())
-				.defaultRequest(get("/").with(csrf()))
-				.build();
-		mapper = new ObjectMapper();
-		mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-	}
-
-	private <T> List<T> jsonToList(Class<T> clazz, String src) throws IOException {
-		return mapper.readValue(src, mapper.getTypeFactory().constructCollectionType(List.class, clazz));
-	}
-
-	private <T> T jsonToObject(Class<T> clazz, String src) throws IOException {
-		return mapper.readValue(src, clazz);
-	}
-
-	private <T> String objectToJson(T src) throws IOException {
-		return mapper.writeValueAsString(src);
-	}
-
-	private String jsonExtract(String jsonPath, String src) throws IOException {
-		Object obj = JsonPath.read(src, jsonPath);
-		return objectToJson(obj);
-	}
-
-	private String extractResult(String src) throws IOException {
-		return jsonExtract("$.result", src);
-	}
-
-	private String extractContent(String src) throws IOException {
-		return jsonExtract("$.content", src);
-	}
-
-	private static RequestPostProcessor accAdmin() {
-		return httpBasic("admin", "admin");
-	}
-
-	private static RequestPostProcessor accUser() {
-		return httpBasic("user_1", "password one");
-	}
-
-	private static RequestPostProcessor accUser2() {
-		return httpBasic("user_2", "password two");
-	}
-
-	private static RequestPostProcessor accBadUser() {
-		return httpBasic("evil", "chaos");
-	}
-
-	protected ResultActions test_unauthorized(RequestBuilder requestBuilder) throws Exception {
-		return mvc.perform(requestBuilder)
-				.andExpect(status().isFound())
-				.andExpect(redirectedUrl(URL_PREFIX + "/login"))
-				.andExpect(unauthenticated())
-//				.andExpect(status().isUnauthorized())
-//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
-//				.andExpect(content().encoding(ENCODING))
-//				.andExpect(jsonPath("$").isMap())
-//				.andExpect(jsonPath("$.message").value("Bad credentials"))
-//				.andExpect(jsonPath("$.path").value(URL_ROOT))
-				;
-	}
-
-	protected ResultActions test_badUser(RequestBuilder requestBuilder) throws Exception {
-		return mvc.perform(requestBuilder)
-				.andExpect(status().isUnauthorized())
-//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
-//				.andExpect(content().encoding(ENCODING))
-//				.andExpect(jsonPath("$").isMap())
-//				.andExpect(jsonPath("$.message").value("Bad credentials"))
-//				.andExpect(jsonPath("$.path").value(startsWith(URL_ROOT)))
-				.andExpect(unauthenticated())
-				;
+	@Override
+	protected String urlRoot() {
+		return "/api/restaurant";
 	}
 
 	@Test
 	public void test_10_findAll_unauthorized() throws Exception {
-		test_unauthorized(get(URL_ROOT))
+		test_unauthorized(get(urlRoot()))
 		;
 	}
 
 	@Test
 	public void test_10_findAll_asBadUser() throws Exception {
-		test_badUser(get(URL_ROOT).with(accBadUser()));
+		test_badUser(get(urlRoot()).with(accBadUser()));
 	}
 
 	@Test
 	public void test_10_findAll_asUser() throws Exception {
-		String content = mvc.perform(get(URL_ROOT).with(accUser()))
+		String content = mvc.perform(get(urlRoot()).with(accUser()))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -179,7 +78,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_10_findAll_asUser_paged() throws Exception {
-		String content = mvc.perform(get(URL_ROOT).with(accUser())
+		String content = mvc.perform(get(urlRoot()).with(accUser())
 				.param("size", "1")
 		)
 				.andExpect(status().isOk())
@@ -211,7 +110,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_10_findAll_asUser_sortedByDirectFields() throws Exception {
-		String content = mvc.perform(get(URL_ROOT).with(accUser())
+		String content = mvc.perform(get(urlRoot()).with(accUser())
 				.param("sort", "name,ASC")
 		)
 				.andExpect(status().isOk())
@@ -244,7 +143,7 @@ public class RestaurantControllerTest {
 	@Ignore("With sorting by nested fields repository will return not distinct root entities.")
 	@Test
 	public void test_10_findAll_asUser_sortedByNestedFields() throws Exception {
-		String content = mvc.perform(get(URL_ROOT).with(accUser())
+		String content = mvc.perform(get(urlRoot()).with(accUser())
 				.param("sort", "name,ASC")
 				.param("sort", "dishes.name,dishes.price,DESC")
 		)
@@ -277,7 +176,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_10_findAll_asUser_simpleFilter_direct_incorrectFilter() throws Exception {
-		mvc.perform(get(URL_ROOT).with(accUser())
+		mvc.perform(get(urlRoot()).with(accUser())
 				.param("filter", "name")
 		)
 				.andExpect(status().isInternalServerError())
@@ -295,7 +194,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_10_findAll_asUser_simpleFilter_direct_unknownField() throws Exception {
-		mvc.perform(get(URL_ROOT).with(accUser())
+		mvc.perform(get(urlRoot()).with(accUser())
 				.param("filter", "description;~;ha-ha")
 		)
 				.andExpect(status().isInternalServerError())
@@ -313,7 +212,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_10_findAll_asUser_simpleFilter_direct_string_notFound() throws Exception {
-		mvc.perform(get(URL_ROOT).with(accUser())
+		mvc.perform(get(urlRoot()).with(accUser())
 				.param("filter", "name;~;heLL")
 				.param("filter", "name;~;bar")
 		)
@@ -342,7 +241,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_10_findAll_asUser_simpleFilter_direct_string_found() throws Exception {
-		String content = mvc.perform(get(URL_ROOT).with(accUser())
+		String content = mvc.perform(get(urlRoot()).with(accUser())
 				.param("filter", "name;~;heLL")
 		)
 				.andExpect(status().isOk())
@@ -374,7 +273,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_10_findAll_asUser_simpleFilter_nested_unknownField() throws Exception {
-		mvc.perform(get(URL_ROOT).with(accUser())
+		mvc.perform(get(urlRoot()).with(accUser())
 				.param("filter", "name.description;~;ha-ha")
 		)
 				.andExpect(status().isInternalServerError())
@@ -389,7 +288,7 @@ public class RestaurantControllerTest {
 				.andExpect(authenticated().withRoles("USER"))
 				.andReturn().getResponse().getContentAsString();
 
-		mvc.perform(get(URL_ROOT).with(accUser())
+		mvc.perform(get(urlRoot()).with(accUser())
 				.param("filter", "dishes.description;~;ha-ha")
 		)
 				.andExpect(status().isInternalServerError())
@@ -407,7 +306,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_10_findAll_asUser_simpleFilter_nested_string_notFound() throws Exception {
-		mvc.perform(get(URL_ROOT).with(accUser())
+		mvc.perform(get(urlRoot()).with(accUser())
 				.param("filter", "dishes.name;~;bread")
 		)
 				.andExpect(status().isOk())
@@ -435,7 +334,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_10_findAll_asUser_simpleFilter_nested_string_found() throws Exception {
-		String content = mvc.perform(get(URL_ROOT).with(accUser())
+		String content = mvc.perform(get(urlRoot()).with(accUser())
 				.param("filter", "dishes.name;~;beer")
 		)
 				.andExpect(status().isOk())
@@ -467,7 +366,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_10_findAll_asUser_simpleFilter_nested_number_found() throws Exception {
-		String content = mvc.perform(get(URL_ROOT).with(accUser())
+		String content = mvc.perform(get(urlRoot()).with(accUser())
 				.param("filter", "dishes.price;<;4")
 		)
 				.andExpect(status().isOk())
@@ -503,13 +402,13 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_10_findById_unauthorized() throws Exception {
-		test_unauthorized(get(URL_ROOT + "/{id}", UUID.randomUUID().toString()))
+		test_unauthorized(get(urlRoot() + "/{id}", UUID.randomUUID().toString()))
 		;
 	}
 
 	@Test
 	public void test_10_findById_notFound() throws Exception {
-		mvc.perform(get(URL_ROOT + "/{id}", UUID.randomUUID().toString()).with(accUser()))
+		mvc.perform(get(urlRoot() + "/{id}", UUID.randomUUID().toString()).with(accUser()))
 				.andExpect(status().isNotFound())
 				.andExpect(content().string(isEmptyOrNullString()))
 				.andExpect(authenticated().withRoles("USER"))
@@ -518,12 +417,12 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_10_findById_exists_asBadUser() throws Exception {
-		test_badUser(get(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID).with(accBadUser()));
+		test_badUser(get(urlRoot() + "/{id}", RESTAURANT_MOE_BAR_ID).with(accBadUser()));
 	}
 
 	@Test
 	public void test_10_findById_exists() throws Exception {
-		String content = mvc.perform(get(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID).with(accUser()))
+		String content = mvc.perform(get(urlRoot() + "/{id}", RESTAURANT_MOE_BAR_ID).with(accUser()))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -547,7 +446,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_20_create_unauthorized() throws Exception {
-		test_unauthorized(post(URL_ROOT)
+		test_unauthorized(post(urlRoot())
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(restaurant("new")))
@@ -557,7 +456,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_20_create_asBadUser() throws Exception {
-		test_badUser(post(URL_ROOT)
+		test_badUser(post(urlRoot())
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(restaurant("new")))
@@ -567,7 +466,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_20_create_asUser() throws Exception {
-		mvc.perform(post(URL_ROOT)
+		mvc.perform(post(urlRoot())
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(restaurant("new")))
@@ -582,7 +481,7 @@ public class RestaurantControllerTest {
 	@Test
 	public void test_20_create_asAdmin() throws Exception {
 		Restaurant source = restaurant("Created from Test", dish("dish1", 1.0), dish("dish 2", 2.0));
-		String content = mvc.perform(post(URL_ROOT)
+		String content = mvc.perform(post(urlRoot())
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(source))
@@ -591,7 +490,7 @@ public class RestaurantControllerTest {
 				.andExpect(status().isCreated())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
-				.andExpect(redirectedUrlPattern(URL_PREFIX + URL_ROOT + "/*"))
+				.andExpect(redirectedUrlPattern(URL_PREFIX + urlRoot() + "/*"))
 				.andExpect(jsonPath("$").isMap())
 				.andExpect(jsonPath("$.result").exists())
 				.andExpect(jsonPath("$.result").isMap())
@@ -605,7 +504,7 @@ public class RestaurantControllerTest {
 		assertThat(result.getDishes()).hasSameSizeAs(source.getDishes());
 
 
-		content = mvc.perform(get(URL_ROOT + "/{id}", result.getId()).with(accUser()))
+		content = mvc.perform(get(urlRoot() + "/{id}", result.getId()).with(accUser()))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -628,7 +527,7 @@ public class RestaurantControllerTest {
 	@Test
 	public void test_20_create_asAdmin_withBugs() throws Exception {
 		//Without name in Restaurant
-		mvc.perform(post(URL_ROOT)
+		mvc.perform(post(urlRoot())
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(restaurant(null, dish("dish1", 1.0), dish("dish 2", 2.0))))
@@ -647,7 +546,7 @@ public class RestaurantControllerTest {
 				.andExpect(authenticated().withRoles("ADMIN"));
 
 		//Without price in Dish
-		mvc.perform(post(URL_ROOT)
+		mvc.perform(post(urlRoot())
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(restaurant("Created from Test", dish("dish1", null), dish("dish 2", 2.0))))
@@ -685,7 +584,7 @@ public class RestaurantControllerTest {
 	}
 
 	private Restaurant findRestaurantCreated() throws Exception {
-		String content = mvc.perform(get(URL_ROOT).with(accUser()))
+		String content = mvc.perform(get(urlRoot()).with(accUser()))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -714,7 +613,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_40_updateById_unauthorized() throws Exception {
-		test_unauthorized(put(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
+		test_unauthorized(put(urlRoot() + "/{id}", RESTAURANT_MOE_BAR_ID)
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(restaurant("new")))
@@ -724,7 +623,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_40_updateById_asBadUser() throws Exception {
-		test_badUser(put(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
+		test_badUser(put(urlRoot() + "/{id}", RESTAURANT_MOE_BAR_ID)
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(restaurant("new")))
@@ -734,7 +633,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_40_updateById_asUser() throws Exception {
-		mvc.perform(put(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
+		mvc.perform(put(urlRoot() + "/{id}", RESTAURANT_MOE_BAR_ID)
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(restaurant("new")))
@@ -748,7 +647,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_40_updateById_asAdmin_notFound() throws Exception {
-		mvc.perform(put(URL_ROOT + "/{id}", UUID.randomUUID().toString())
+		mvc.perform(put(urlRoot() + "/{id}", UUID.randomUUID().toString())
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(restaurant("new")))
@@ -776,7 +675,7 @@ public class RestaurantControllerTest {
 		updateSource.getDishes().add(newDish);
 
 		//Send modification
-		mvc.perform(put(URL_ROOT + "/{id}", created.getId().toString())
+		mvc.perform(put(urlRoot() + "/{id}", created.getId().toString())
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(updateSource))
@@ -818,7 +717,7 @@ public class RestaurantControllerTest {
 		//Without name in Restaurant
 		created = findRestaurantCreated();
 		created.setName(null);
-		mvc.perform(put(URL_ROOT + "/{id}", created.getId().toString())
+		mvc.perform(put(urlRoot() + "/{id}", created.getId().toString())
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(created))
@@ -839,7 +738,7 @@ public class RestaurantControllerTest {
 		//Without price in Dish
 		created = findRestaurantCreated();
 		created.getDishes().iterator().next().setPrice(null);
-		mvc.perform(put(URL_ROOT + "/{id}", created.getId().toString())
+		mvc.perform(put(urlRoot() + "/{id}", created.getId().toString())
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(created))
@@ -860,7 +759,7 @@ public class RestaurantControllerTest {
 		//Without name in Dish
 		created = findRestaurantCreated();
 		created.getDishes().iterator().next().setName(null);
-		mvc.perform(put(URL_ROOT + "/{id}", created.getId().toString())
+		mvc.perform(put(urlRoot() + "/{id}", created.getId().toString())
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(created))
@@ -881,7 +780,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_41_patchById_unauthorized() throws Exception {
-		test_unauthorized(patch(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
+		test_unauthorized(patch(urlRoot() + "/{id}", RESTAURANT_MOE_BAR_ID)
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(restaurant("new")))
@@ -891,7 +790,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_41_patchById_asBadUser() throws Exception {
-		test_badUser(patch(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
+		test_badUser(patch(urlRoot() + "/{id}", RESTAURANT_MOE_BAR_ID)
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(restaurant("new")))
@@ -901,7 +800,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_41_patchById_asUser() throws Exception {
-		mvc.perform(patch(URL_ROOT + "/{id}", RESTAURANT_MOE_BAR_ID)
+		mvc.perform(patch(urlRoot() + "/{id}", RESTAURANT_MOE_BAR_ID)
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(restaurant("new")))
@@ -915,7 +814,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_41_patchById_asAdmin_notFound() throws Exception {
-		mvc.perform(patch(URL_ROOT + "/{id}", UUID.randomUUID().toString())
+		mvc.perform(patch(urlRoot() + "/{id}", UUID.randomUUID().toString())
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(restaurant("new")))
@@ -941,7 +840,7 @@ public class RestaurantControllerTest {
 		updateSource.getDishes().add(newDish);
 
 		//Send modification
-		mvc.perform(patch(URL_ROOT + "/{id}", created.getId().toString())
+		mvc.perform(patch(urlRoot() + "/{id}", created.getId().toString())
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(updateSource))
@@ -1010,7 +909,7 @@ public class RestaurantControllerTest {
 		updateSource.getDishes().add(partialDishWithIncorrectId);
 
 		//Send modification
-		mvc.perform(patch(URL_ROOT + "/{id}", created.getId().toString())
+		mvc.perform(patch(urlRoot() + "/{id}", created.getId().toString())
 				.contentType(CONTENT_TYPE)
 				.characterEncoding(ENCODING)
 				.content(objectToJson(updateSource))
@@ -1045,13 +944,13 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_50_deleteById_unauthorized() throws Exception {
-		test_unauthorized(delete(URL_ROOT + "/{id}", UUID.randomUUID().toString()))
+		test_unauthorized(delete(urlRoot() + "/{id}", UUID.randomUUID().toString()))
 		;
 	}
 
 	@Test
 	public void test_50_deleteById_asUser() throws Exception {
-		mvc.perform(delete(URL_ROOT + "/{id}", UUID.randomUUID().toString()).with(accUser()))
+		mvc.perform(delete(urlRoot() + "/{id}", UUID.randomUUID().toString()).with(accUser()))
 				.andExpect(status().isForbidden())
 				.andExpect(content().string(isEmptyOrNullString()))
 				.andExpect(authenticated().withRoles("USER"))
@@ -1060,7 +959,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_50_deleteById_asAdmin_notFound() throws Exception {
-		mvc.perform(delete(URL_ROOT + "/{id}", UUID.randomUUID().toString()).with(accAdmin()))
+		mvc.perform(delete(urlRoot() + "/{id}", UUID.randomUUID().toString()).with(accAdmin()))
 				.andExpect(status().isNotFound())
 				.andExpect(content().string(isEmptyOrNullString()))
 				.andExpect(authenticated().withRoles("ADMIN"))
@@ -1071,7 +970,7 @@ public class RestaurantControllerTest {
 	public void test_50_deleteById_asAdmin_exists() throws Exception {
 		UUID restaurantCreatedId = findRestaurantCreated().getId();
 
-		mvc.perform(delete(URL_ROOT + "/{id}", restaurantCreatedId.toString()).with(accAdmin()))
+		mvc.perform(delete(urlRoot() + "/{id}", restaurantCreatedId.toString()).with(accAdmin()))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -1086,30 +985,30 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_60_voteScore_unauthorized() throws Exception {
-		test_unauthorized(get(URL_ROOT + "/vote"))
+		test_unauthorized(get(urlRoot() + "/vote"))
 		;
 	}
 
 	@Test
 	public void test_60_voteScore_asBadUser() throws Exception {
-		test_badUser(get(URL_ROOT + "/vote").with(accBadUser()));
+		test_badUser(get(urlRoot() + "/vote").with(accBadUser()));
 	}
 
 	@Test
 	public void test_60_voteScore_malformedDate() throws Exception {
-		mvc.perform(get(URL_ROOT + "/vote").with(accUser()).param("date", "2015.10.21"))
+		mvc.perform(get(urlRoot() + "/vote").with(accUser()).param("date", "2015.10.21"))
 				.andExpect(status().isBadRequest())
 //				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 //				.andExpect(content().encoding(ENCODING))
 //				.andExpect(jsonPath("$").isMap())
-//				.andExpect(jsonPath("$.path").value(URL_ROOT + "/vote"))
+//				.andExpect(jsonPath("$.path").value(urlRoot() + "/vote"))
 				.andExpect(authenticated().withRoles("USER"))
 		;
 	}
 
 	@Test
 	public void test_60_voteScore_now() throws Exception {
-		mvc.perform(get(URL_ROOT + "/vote").with(accUser()))
+		mvc.perform(get(urlRoot() + "/vote").with(accUser()))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -1122,7 +1021,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_60_voteScore_marty() throws Exception {
-		mvc.perform(get(URL_ROOT + "/vote").with(accUser()).param("date", "2015-10-21"))
+		mvc.perform(get(urlRoot() + "/vote").with(accUser()).param("date", "2015-10-21"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -1134,30 +1033,30 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_61_vote_unauthorized() throws Exception {
-		test_unauthorized(post(URL_ROOT + "/{id}/vote", RESTAURANT_MOE_BAR_ID))
+		test_unauthorized(post(urlRoot() + "/{id}/vote", RESTAURANT_MOE_BAR_ID))
 		;
 	}
 
 	@Test
 	public void test_61_vote_asBadUser() throws Exception {
-		test_badUser(post(URL_ROOT + "/{id}/vote", RESTAURANT_MOE_BAR_ID).with(accBadUser()));
+		test_badUser(post(urlRoot() + "/{id}/vote", RESTAURANT_MOE_BAR_ID).with(accBadUser()));
 	}
 
 	@Test
 	public void test_61_vote_malformedDate() throws Exception {
-		mvc.perform(post(URL_ROOT + "/{id}/vote", RESTAURANT_MOE_BAR_ID).with(accUser()).param("datetime", "2015.10.21"))
+		mvc.perform(post(urlRoot() + "/{id}/vote", RESTAURANT_MOE_BAR_ID).with(accUser()).param("datetime", "2015.10.21"))
 				.andExpect(status().isBadRequest())
 //				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 //				.andExpect(content().encoding(ENCODING))
 //				.andExpect(jsonPath("$").isMap())
-//				.andExpect(jsonPath("$.path").value(URL_ROOT + "/vote"))
+//				.andExpect(jsonPath("$.path").value(urlRoot() + "/vote"))
 				.andExpect(authenticated().withRoles("USER"))
 		;
 	}
 
 	@Test
 	public void test_61_vote_notFound() throws Exception {
-		mvc.perform(post(URL_ROOT + "/{id}/vote", UUID.randomUUID().toString()).with(accUser()))
+		mvc.perform(post(urlRoot() + "/{id}/vote", UUID.randomUUID().toString()).with(accUser()))
 				.andExpect(status().isNotFound())
 				.andExpect(content().string(isEmptyOrNullString()))
 				.andExpect(authenticated().withRoles("USER"))
@@ -1166,7 +1065,7 @@ public class RestaurantControllerTest {
 
 	@Test
 	public void test_61_vote_exists_now() throws Exception {
-		mvc.perform(post(URL_ROOT + "/{id}/vote", RESTAURANT_MOE_BAR_ID).with(accUser()))
+		mvc.perform(post(urlRoot() + "/{id}/vote", RESTAURANT_MOE_BAR_ID).with(accUser()))
 				.andExpect(status().isCreated())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -1180,7 +1079,7 @@ public class RestaurantControllerTest {
 	@Test
 	public void test_61_vote_exists_doc() throws Exception {
 		//First try
-		mvc.perform(post(URL_ROOT + "/{id}/vote", RESTAURANT_MOE_BAR_ID).with(accUser()).param("datetime", "1885-09-02T10:30:21.000Z[" + ZoneId.systemDefault().toString() + "]"))
+		mvc.perform(post(urlRoot() + "/{id}/vote", RESTAURANT_MOE_BAR_ID).with(accUser()).param("datetime", "1885-09-02T10:30:21.000Z[" + ZoneId.systemDefault().toString() + "]"))
 				.andExpect(status().isCreated())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -1190,7 +1089,7 @@ public class RestaurantControllerTest {
 				.andExpect(authenticated().withRoles("USER"))
 		;
 		//Second try
-		mvc.perform(post(URL_ROOT + "/{id}/vote", RESTAURANT_HELL_KITCHEN_ID).with(accUser()).param("datetime", "1885-09-02T10:40:21.000Z[" + ZoneId.systemDefault().toString() + "]"))
+		mvc.perform(post(urlRoot() + "/{id}/vote", RESTAURANT_HELL_KITCHEN_ID).with(accUser()).param("datetime", "1885-09-02T10:40:21.000Z[" + ZoneId.systemDefault().toString() + "]"))
 				.andExpect(status().isAccepted())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -1200,7 +1099,7 @@ public class RestaurantControllerTest {
 				.andExpect(authenticated().withRoles("USER"))
 		;
 		//After max hour
-		mvc.perform(post(URL_ROOT + "/{id}/vote", RESTAURANT_HELL_KITCHEN_ID).with(accUser()).param("datetime", "1885-09-02T11:00:21.000Z[" + ZoneId.systemDefault().toString() + "]"))
+		mvc.perform(post(urlRoot() + "/{id}/vote", RESTAURANT_HELL_KITCHEN_ID).with(accUser()).param("datetime", "1885-09-02T11:00:21.000Z[" + ZoneId.systemDefault().toString() + "]"))
 				.andExpect(status().isNotModified())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -1219,7 +1118,7 @@ public class RestaurantControllerTest {
 		String createdId = created.getId().toString();
 
 		//Vote for him
-		mvc.perform(post(URL_ROOT + "/{id}/vote", createdId).with(accUser2()))
+		mvc.perform(post(urlRoot() + "/{id}/vote", createdId).with(accUser2()))
 				.andExpect(status().isCreated())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))
@@ -1230,7 +1129,7 @@ public class RestaurantControllerTest {
 		;
 
 		//Check vote is exists
-		mvc.perform(get(URL_ROOT + "/vote").with(accUser2()))
+		mvc.perform(get(urlRoot() + "/vote").with(accUser2()))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
 				.andExpect(content().encoding(ENCODING))

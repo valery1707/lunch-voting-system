@@ -16,8 +16,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.inject.Inject;
 
-import static name.valery1707.interview.lunchVote.api.RestaurantControllerTest.CONTENT_TYPE;
-import static name.valery1707.interview.lunchVote.api.RestaurantControllerTest.ENCODING;
+import static name.valery1707.interview.lunchVote.api.BaseEntityControllerTest.CONTENT_TYPE;
+import static name.valery1707.interview.lunchVote.api.BaseEntityControllerTest.ENCODING;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
