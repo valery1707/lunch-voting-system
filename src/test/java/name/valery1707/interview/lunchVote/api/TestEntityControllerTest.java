@@ -153,7 +153,7 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 		);
 	}
 
-	//region byte
+	//region Collection(byte)
 
 	@Test
 	public void testFilter_overCollection_byte_incorrectValue() throws Exception {
@@ -293,7 +293,7 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	}
 
 	//endregion
-	//region short
+	//region Collection(short)
 
 	@Test
 	public void testFilter_overCollection_short_incorrectValue() throws Exception {
@@ -433,7 +433,7 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	}
 
 	//endregion
-	//region int
+	//region Collection(int)
 
 	@Test
 	public void testFilter_overCollection_int_incorrectValue() throws Exception {
@@ -573,7 +573,7 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	}
 
 	//endregion
-	//region long
+	//region Collection(long)
 
 	@Test
 	public void testFilter_overCollection_long_incorrectValue() throws Exception {
@@ -713,7 +713,7 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	}
 
 	//endregion
-	//region double
+	//region Collection(double)
 
 	@Test
 	public void testFilter_overCollection_double_incorrectValue() throws Exception {
@@ -853,7 +853,7 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	}
 
 	//endregion
-	//region boolean
+	//region Collection(boolean)
 
 	@Test
 	public void testFilter_overCollection_boolean_incorrectValue() throws Exception {
@@ -956,7 +956,7 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 
 	//endregion
 
-	//region Byte
+	//region Collection(Byte)
 
 	@Test
 	public void testFilter_overCollection_Byte_incorrectValue() throws Exception {
@@ -1108,7 +1108,7 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	}
 
 	//endregion
-	//region Short
+	//region Collection(Short)
 
 	@Test
 	public void testFilter_overCollection_Short_incorrectValue() throws Exception {
@@ -1260,7 +1260,7 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	}
 
 	//endregion
-	//region Int
+	//region Collection(Int)
 
 	@Test
 	public void testFilter_overCollection_Int_incorrectValue() throws Exception {
@@ -1412,7 +1412,7 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	}
 
 	//endregion
-	//region Long
+	//region Collection(Long)
 
 	@Test
 	public void testFilter_overCollection_Long_incorrectValue() throws Exception {
@@ -1564,7 +1564,7 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	}
 
 	//endregion
-	//region Double
+	//region Collection(Double)
 
 	@Test
 	public void testFilter_overCollection_Double_incorrectValue() throws Exception {
@@ -1716,7 +1716,7 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	}
 
 	//endregion
-	//region Boolean
+	//region Collection(Boolean)
 
 	@Test
 	public void testFilter_overCollection_Boolean_incorrectValue() throws Exception {
@@ -1832,7 +1832,7 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	}
 
 	//endregion
-	//region String
+	//region Collection(String)
 
 	@Test
 	public void testFilter_overCollection_String_lessThan() throws Exception {
@@ -2016,4 +2016,1893 @@ public class TestEntityControllerTest extends BaseEntityControllerTest {
 	}
 
 	//endregion
+
+	//region Link(byte)
+
+	@Test
+	public void testFilter_overLink_byte_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;<;***")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_byte_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;<;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;<;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;<;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;<;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_byte_lessThanOrEqualTo() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;<=;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;<=;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;<=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;<=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_byte_equal() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;=;3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;=;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_byte_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;=>;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;=>;1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;=>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;=>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_byte_greaterThan() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;>;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;>;1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_byte_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;!=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;!=;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;!=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;!=;42")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;!=;1")
+				.param("filter", "secondLink.thirdLink.primitiveByte;!=;2")
+				.param("filter", "secondLink.thirdLink.primitiveByte;!=;3")
+				.param("filter", "secondLink.thirdLink.primitiveByte;!=;4")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_byte_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_byte_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;!~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_byte_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_byte_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveByte;!~!;0")
+		);
+	}
+
+	//endregion
+	//region Link(short)
+
+	@Test
+	public void testFilter_overLink_short_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;<;***")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_short_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;<;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;<;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;<;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;<;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_short_lessThanOrEqualTo() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;<=;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;<=;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;<=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;<=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_short_equal() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;=;3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;=;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_short_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;=>;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;=>;1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;=>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;=>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_short_greaterThan() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;>;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;>;1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_short_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;!=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;!=;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;!=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;!=;42")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;!=;1")
+				.param("filter", "secondLink.thirdLink.primitiveShort;!=;2")
+				.param("filter", "secondLink.thirdLink.primitiveShort;!=;3")
+				.param("filter", "secondLink.thirdLink.primitiveShort;!=;4")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_short_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_short_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;!~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_short_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_short_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveShort;!~!;0")
+		);
+	}
+
+	//endregion
+	//region Link(int)
+
+	@Test
+	public void testFilter_overLink_int_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;<;***")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_int_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;<;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;<;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;<;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;<;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_int_lessThanOrEqualTo() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;<=;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;<=;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;<=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;<=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_int_equal() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;=;3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;=;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_int_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;=>;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;=>;1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;=>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;=>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_int_greaterThan() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;>;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;>;1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_int_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;!=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;!=;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;!=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;!=;42")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;!=;1")
+				.param("filter", "secondLink.thirdLink.primitiveInt;!=;2")
+				.param("filter", "secondLink.thirdLink.primitiveInt;!=;3")
+				.param("filter", "secondLink.thirdLink.primitiveInt;!=;4")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_int_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_int_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;!~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_int_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_int_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveInt;!~!;0")
+		);
+	}
+
+	//endregion
+	//region Link(long)
+
+	@Test
+	public void testFilter_overLink_long_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;<;***")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_long_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;<;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;<;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;<;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;<;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_long_lessThanOrEqualTo() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;<=;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;<=;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;<=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;<=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_long_equal() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;=;3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;=;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_long_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;=>;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;=>;1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;=>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;=>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_long_greaterThan() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;>;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;>;1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_long_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;!=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;!=;1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;!=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;!=;42")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;!=;1")
+				.param("filter", "secondLink.thirdLink.primitiveLong;!=;2")
+				.param("filter", "secondLink.thirdLink.primitiveLong;!=;3")
+				.param("filter", "secondLink.thirdLink.primitiveLong;!=;4")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_long_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_long_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;!~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_long_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_long_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveLong;!~!;0")
+		);
+	}
+
+	//endregion
+	//region Link(double)
+
+	@Test
+	public void testFilter_overLink_double_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;<;***")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_double_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;<;0.0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;<;1.1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;<;4.4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;<;42.42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_double_lessThanOrEqualTo() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;<=;0.0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;<=;1.1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;<=;4.4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;<=;42.42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_double_equal() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;=;0.0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;=;3.3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;=;4.4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;=;42.42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_double_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;=>;0.0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;=>;1.1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;=>;4.4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;=>;42.42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_double_greaterThan() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;>;0.0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;>;1.1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;>;4.4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;>;42.42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_double_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;!=;0.0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;!=;1.1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;!=;4.4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;!=;42.42")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;!=;1.1")
+				.param("filter", "secondLink.thirdLink.primitiveDouble;!=;2.2")
+				.param("filter", "secondLink.thirdLink.primitiveDouble;!=;3.3")
+				.param("filter", "secondLink.thirdLink.primitiveDouble;!=;4.4")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_double_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;~;0.0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_double_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;!~;0.0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_double_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;~!;0.0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_double_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveDouble;!~!;0.0")
+		);
+	}
+
+	//endregion
+	//region Link(boolean)
+
+	@Test
+	public void testFilter_overLink_boolean_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;<;***")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_boolean_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;<;true")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;<;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_boolean_lessThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;<=;true")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;<=;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_boolean_equal() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;=;true")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;=;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_boolean_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;=>;true")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;=>;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_boolean_greaterThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;>;true")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;>;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_boolean_notEqual() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;!=;true")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;!=;false")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;!=;true")
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;!=;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_boolean_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;~;true")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_boolean_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;!~;true")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_boolean_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;~!;true")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_boolean_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.primitiveBoolean;!~!;true")
+		);
+	}
+
+	//endregion
+
+	//region Link(Byte)
+
+	@Test
+	public void testFilter_overLink_Byte_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;<;***")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Byte_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;<;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;<;3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;<;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;<;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Byte_lessThanOrEqualTo() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;<=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;<=;3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;<=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;<=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Byte_equal() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;=;3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;=;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Byte_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;=>;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;=>;3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;=>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;=>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Byte_greaterThan() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;>;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;>;3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Byte_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;!=;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;!=;3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;!=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;!=;42")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;!=;3")
+				.param("filter", "secondLink.thirdLink.objectByte;!=;4")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Byte_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Byte_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;!~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Byte_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Byte_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;!~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Byte_isNull() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;_;")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Byte_isNotNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectByte;!_;")
+		);
+	}
+
+	//endregion
+	//region Link(Short)
+
+	@Test
+	public void testFilter_overLink_Short_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;<;***")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Short_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;<;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;<;3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;<;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;<;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Short_lessThanOrEqualTo() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;<=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;<=;3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;<=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;<=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Short_equal() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;=;3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;=;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Short_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;=>;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;=>;3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;=>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;=>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Short_greaterThan() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;>;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;>;3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Short_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;!=;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;!=;3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;!=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;!=;42")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;!=;3")
+				.param("filter", "secondLink.thirdLink.objectShort;!=;4")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Short_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Short_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;!~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Short_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Short_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;!~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Short_isNull() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;_;")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Short_isNotNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectShort;!_;")
+		);
+	}
+
+	//endregion
+	//region Link(Int)
+
+	@Test
+	public void testFilter_overLink_Int_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;<;***")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Int_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;<;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;<;3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;<;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;<;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Int_lessThanOrEqualTo() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;<=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;<=;3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;<=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;<=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Int_equal() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;=;3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;=;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Int_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;=>;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;=>;3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;=>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;=>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Int_greaterThan() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;>;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;>;3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Int_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;!=;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;!=;3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;!=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;!=;42")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;!=;3")
+				.param("filter", "secondLink.thirdLink.objectInt;!=;4")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Int_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Int_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;!~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Int_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Int_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;!~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Int_isNull() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;_;")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Int_isNotNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectInt;!_;")
+		);
+	}
+
+	//endregion
+	//region Link(Long)
+
+	@Test
+	public void testFilter_overLink_Long_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;<;***")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Long_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;<;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;<;3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;<;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;<;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Long_lessThanOrEqualTo() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;<=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;<=;3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;<=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;<=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Long_equal() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;=;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;=;3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;=;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;=;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Long_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;=>;0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;=>;3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;=>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;=>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Long_greaterThan() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;>;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;>;3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;>;4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;>;42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Long_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;!=;0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;!=;3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;!=;4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;!=;42")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;!=;3")
+				.param("filter", "secondLink.thirdLink.objectLong;!=;4")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Long_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Long_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;!~;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Long_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Long_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;!~!;0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Long_isNull() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;_;")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Long_isNotNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectLong;!_;")
+		);
+	}
+
+	//endregion
+	//region Link(Double)
+
+	@Test
+	public void testFilter_overLink_Double_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;<;***")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Double_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;<;0.0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;<;3.3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;<;4.4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;<;42.42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Double_lessThanOrEqualTo() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;<=;0.0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;<=;3.3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;<=;4.4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;<=;42.42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Double_equal() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;=;0.0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;=;3.3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;=;4.4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;=;42.42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Double_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;=>;0.0")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;=>;3.3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;=>;4.4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;=>;42.42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Double_greaterThan() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;>;0.0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;>;3.3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;>;4.4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;>;42.42")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Double_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;!=;0.0")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;!=;3.3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;!=;4.4")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;!=;42.42")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;!=;3.3")
+				.param("filter", "secondLink.thirdLink.objectDouble;!=;4.4")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Double_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;~;0.0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Double_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;!~;0.0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Double_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;~!;0.0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Double_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;!~!;0.0")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Double_isNull() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;_;")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Double_isNotNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectDouble;!_;")
+		);
+	}
+
+	//endregion
+	//region Link(Boolean)
+
+	@Test
+	public void testFilter_overLink_Boolean_incorrectValue() throws Exception {
+		assertIncorrectValue(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;<;***")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Boolean_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;<;true")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;<;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Boolean_lessThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;<=;true")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;<=;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Boolean_equal() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;=;true")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;=;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Boolean_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;=>;true")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;=>;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Boolean_greaterThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;>;true")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;>;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Boolean_notEqual() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;!=;true")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;!=;false")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;!=;true")
+				.param("filter", "secondLink.thirdLink.objectBoolean;!=;false")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Boolean_like() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;~;true")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Boolean_notLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;!~;true")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Boolean_caseSensitiveLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;~!;true")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Boolean_caseSensitiveNotLike() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;!~!;true")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Boolean_isNull() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;_;")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_Boolean_isNotNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.objectBoolean;!_;")
+		);
+	}
+
+	//endregion
+	//region Link(String)
+
+	@Test
+	public void testFilter_overLink_String_lessThan() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;<;1.1.1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;<;1.1.3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;<;1.1.4")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_String_lessThanOrEqualTo() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;<=;1.1.1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;<=;1.1.3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;<=;1.1.4")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_String_equal() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;=;1.1.1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;=;1.1.3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;=;1.1.4")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_String_greaterThanOrEqualTo() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;=>;1.1.1")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;=>;1.1.3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;=>;1.1.4")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_String_greaterThan() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;>;1.1.1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;>;1.1.3")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;>;1.1.4")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_String_notEqual() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!=;1.1.1")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!=;1.1.3")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!=;1.1.4")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!=;1.1.1")
+				.param("filter", "secondLink.thirdLink.name;!=;1.1.2")
+				.param("filter", "secondLink.thirdLink.name;!=;1.1.3")
+				.param("filter", "secondLink.thirdLink.name;!=;1.1.4")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_String_like() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;~;.1.")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;~;1.1.")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;~;1.1.?")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;~;1.1.*")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;~;1.1.1?")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;~;1.1.1*")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;~;1.1.3*")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_String_notLike() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!~;.1.")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!~;1.1.")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!~;1.1.?")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!~;1.1.*")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!~;1.1.1?")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!~;1.1.1*")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!~;1.1.*")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_String_caseSensitiveLike() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;~!;.1.")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;~!;1.1.")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;~!;1.1.?")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;~!;1.1.*")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;~!;1.1.1?")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;~!;1.1.1*")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;~!;1.1.3*")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_String_caseSensitiveNotLike() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!~!;.1.")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!~!;1.1.")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!~!;1.1.?")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!~!;1.1.*")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!~!;1.1.1?")
+		);
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!~!;1.1.1*")
+		);
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!~!;1.1.*")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_String_isNull() throws Exception {
+		assertNotFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;_;")
+		);
+	}
+
+	@Test
+	public void testFilter_overLink_String_isNotNull() throws Exception {
+		assertFound(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;!_;")
+		);
+	}
+
+	@Test(expected = NestedServletException.class)
+	public void testFilter_overLink_String_unknownOperation() throws Exception {
+		assertIncorrect(get(urlRoot())
+				.param("filter", "secondLink.thirdLink.name;?;***")
+		);
+	}
+
+	//endregion
+
 }

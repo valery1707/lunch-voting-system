@@ -24,6 +24,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.PluralAttribute;
+import javax.persistence.metamodel.SingularAttribute;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -409,7 +410,12 @@ public class EntityUtilsBean {
 			} else if (attribute instanceof PluralAttribute<?, ?, ?>) {
 				return findAttribute(((PluralAttribute) attribute).getElementType().getJavaType(), rest);
 			} else {
-				throw new IllegalStateException(format("Unknown field [%s] within class [%s]", rest, entityClass.getCanonicalName()));
+				Class javaType = ((SingularAttribute) attribute).getJavaType();
+				if (isAssignable(javaType, IBaseEntity.class)) {
+					return findAttribute(javaType, rest);
+				} else {
+					throw new IllegalStateException(format("Unknown field [%s] within class [%s]", rest, javaType));
+				}
 			}
 		} catch (IllegalArgumentException ex) {
 			throw new IllegalStateException(format("Unknown field [%s] within class [%s]", field, entityClass.getCanonicalName()));
