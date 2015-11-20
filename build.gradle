@@ -70,9 +70,10 @@ dependencies {
 	compile "org.springframework:spring-orm:4.2.3.RELEASE"
 	compile "org.springframework.data:spring-data-jpa:1.9.1.RELEASE"
 	compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
-	compile 'org.hibernate:hibernate-core:5.0.3.Final'
-	compile 'org.hibernate:hibernate-entitymanager:5.0.3.Final'
-	compile 'org.hibernate:hibernate-java8:5.0.3.Final'
+	compile 'org.hibernate:hibernate-core:5.0.4.Final'
+	compile 'org.hibernate:hibernate-entitymanager:5.0.4.Final'
+	compile 'org.hibernate:hibernate-java8:5.0.4.Final'
+	compile 'javax.transaction:javax.transaction-api:1.2'
 
 	//JSON parse library
 	compile 'com.fasterxml.jackson.core:jackson-annotations:2.6.3'
