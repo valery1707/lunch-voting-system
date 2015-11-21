@@ -54,8 +54,8 @@ public class EntityUtilsBean {
 		deepClearId(entity, new IdentitySet());
 	}
 
-	protected void deepClearId(IBaseEntity entity, Set<IBaseEntity> seen) {
-		if (entity == null || !seen.add(entity)) {
+	protected void deepClearId(IBaseEntity entity, Set<IBaseEntity> visited) {
+		if (entity == null || !visited.add(entity)) {
 			return;
 		}
 		entity.setId(null);
@@ -63,7 +63,7 @@ public class EntityUtilsBean {
 				.forEach(attr -> {
 					Collection<IBaseEntity> nested = attr.read(entity);
 					for (IBaseEntity item : nested) {
-						deepClearId(item, seen);
+						deepClearId(item, visited);
 					}
 				});
 	}
@@ -73,8 +73,8 @@ public class EntityUtilsBean {
 		deepFixBackReference(entity, new IdentitySet());
 	}
 
-	protected void deepFixBackReference(IBaseEntity entity, Set<IBaseEntity> seen) {
-		if (entity == null || !seen.add(entity)) {
+	protected void deepFixBackReference(IBaseEntity entity, Set<IBaseEntity> visited) {
+		if (entity == null || !visited.add(entity)) {
 			return;
 		}
 		getPluralAttributes(entity.getClass()).stream()
@@ -82,7 +82,7 @@ public class EntityUtilsBean {
 					Collection<IBaseEntity> nested = attr.read(entity);
 					for (IBaseEntity item : nested) {
 						attr.writeBackReference(item, entity);
-						deepFixBackReference(item, seen);
+						deepFixBackReference(item, visited);
 					}
 				});
 	}
@@ -92,8 +92,8 @@ public class EntityUtilsBean {
 		deepCleanNested(src, dst, new IdentitySet());
 	}
 
-	private void deepCleanNested(IBaseEntity src, IBaseEntity dst, Set<IBaseEntity> seen) {
-		if (src == null || !seen.add(src)) {
+	private void deepCleanNested(IBaseEntity src, IBaseEntity dst, Set<IBaseEntity> visited) {
+		if (src == null || !visited.add(src)) {
 			return;
 		}
 		getPluralAttributes(src.getClass()).stream()
@@ -105,7 +105,7 @@ public class EntityUtilsBean {
 					for (IBaseEntity itemDst : nestedDst) {
 						IBaseEntity itemSrc = nestedSrcMap.get(itemDst.getId());
 						if (itemSrc != null) {
-							deepCleanNested(itemDst, itemSrc, seen);
+							deepCleanNested(itemDst, itemSrc, visited);
 						}
 					}
 				});
@@ -116,8 +116,8 @@ public class EntityUtilsBean {
 		deepPatch(src, dst, new IdentitySet());
 	}
 
-	private void deepPatch(IBaseEntity src, IBaseEntity dst, Set<IBaseEntity> seen) {
-		if (src == null || !seen.add(src)) {
+	private void deepPatch(IBaseEntity src, IBaseEntity dst, Set<IBaseEntity> visited) {
+		if (src == null || !visited.add(src)) {
 			return;
 		}
 		patch(src, dst);
@@ -130,7 +130,7 @@ public class EntityUtilsBean {
 					nestedDst.stream()
 							.filter(itemDst -> nestedSrcMap.containsKey(itemDst.getId()))
 							.forEach(itemDst -> {
-								deepPatch(nestedSrcMap.get(itemDst.getId()), itemDst, seen);
+								deepPatch(nestedSrcMap.get(itemDst.getId()), itemDst, visited);
 							});
 					//Add collection items that exists in src but not exists in dst
 					nestedDst.addAll(nestedSrc.stream().filter(itemSrc -> !nestedDst.contains(itemSrc)).collect(toList()));
