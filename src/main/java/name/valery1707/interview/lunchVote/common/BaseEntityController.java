@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.DataBinder;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static name.valery1707.interview.lunchVote.common.SimpleDistinctSpec.distinct;
 import static name.valery1707.interview.lunchVote.common.Utils.getGenericType;
@@ -37,6 +38,9 @@ public abstract class BaseEntityController<T extends IBaseEntity, REPO extends P
 	@Inject
 	private EntityUtilsBean entityUtils;
 
+	@Inject
+	private JsonMapper jsonMapper;
+
 	public BaseEntityController() {
 		entityClass = getGenericType(getClass(), BaseEntityController.class, "T");
 	}
@@ -45,10 +49,13 @@ public abstract class BaseEntityController<T extends IBaseEntity, REPO extends P
 		return entityClass;
 	}
 
-	protected BindingResult validate(Object target, String objectName) {
-		BeanPropertyBindingResult errors = new BeanPropertyBindingResult(target, objectName);
-		validator.validate(target, errors);
-		return errors;
+	protected BindingResult validate(Object target, String objectName, Validator... validators) {
+		DataBinder binder = new DataBinder(target, objectName);
+		binder.addValidators(validator);
+		Class<?> targetClass = target.getClass();
+		Stream.of(validators).filter(v -> v.supports(targetClass)).forEach(binder::addValidators);
+		binder.validate();
+		return binder.getBindingResult();
 	}
 
 	protected <R> ResponseEntity<RestResult<R>> created(URI location, R body) {
@@ -72,9 +79,7 @@ public abstract class BaseEntityController<T extends IBaseEntity, REPO extends P
 	}
 
 	protected <R> ResponseEntity<RestResult<R>> invalid(BindingResult validate) {
-		RestResult<R> result = new RestResult<>(false, null);
-		validate.getFieldErrors().forEach(fieldError -> result.addError(fieldError.getField(), fieldError.getDefaultMessage(), fieldError.getArguments()));
-		validate.getGlobalErrors().forEach(objectError -> result.addError("", objectError.getDefaultMessage(), objectError.getArguments()));
+		RestResult<R> result = RestResult.fromBindingResult(validate);
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(result);
 	}
 
@@ -130,9 +135,10 @@ public abstract class BaseEntityController<T extends IBaseEntity, REPO extends P
 	) {
 		Specification<T> spec = distinct();
 		if (restFilter != null) {
-			BindingResult validate = validate(restFilter, "filter");
+			BindingResult validate = validate(restFilter, "filter", new RestFilterValidator());
 			if (validate.hasErrors()) {
-				throw new IllegalStateException();//todo Describe exception
+				RestResult<T> result = RestResult.fromBindingResult(validate);
+				throw new IllegalStateException(jsonMapper.writeValueAsString(result));
 			}
 			Specification<T> filter = entityUtils.complexFilter(entityClass(), restFilter);
 			spec = Specifications.where(spec).and(filter);

@@ -27,11 +27,11 @@ public class RestFilterValidator implements Validator {
 		rejectIfEmptyNonNullCollection(errors, "or");
 		if (hasLength(filter.getField()) || hasLength(filter.getOperation()) || filter.getValue() != null) {
 			fieldsMustBeNullIfTrue(errors, true, "and", "or", "not");
-			rejectIfEmptyOrWhitespace(errors, "field", "must.have.value", "Field must have value");
-			rejectIfEmptyOrWhitespace(errors, "operation", "must.have.value", "Field must have value");
+			rejectIfEmptyOrWhitespace(errors, "field", "must.have.value", new Object[0], "Field must have value");
+			rejectIfEmptyOrWhitespace(errors, "operation", "must.have.value", new Object[0], "Field must have value");
 			//Value must be exists for any operation exclude IS_NULL and NOT_NULL
 			if (!trimToEmpty(filter.getOperation()).contains("_")) {
-				rejectIfEmptyOrWhitespace(errors, "value", "must.have.value", "Field must have value");
+				rejectIfEmptyOrWhitespace(errors, "value", "must.have.value", new Object[0], "Field must have value");
 			}
 			//Operation must be known
 			try {
@@ -49,7 +49,7 @@ public class RestFilterValidator implements Validator {
 				return;
 			}
 		}
-		errors.reject("at.least.one.field.must.have.value", "At least one field must have value");
+		errors.reject("at.least.one.field.must.have.value", new Object[0], "At least one field must have value");
 	}
 
 	private void rejectIfEmptyNonNullCollection(Errors errors, String field) {
@@ -57,11 +57,11 @@ public class RestFilterValidator implements Validator {
 		if (value instanceof Collection) {
 			Collection collection = (Collection) value;
 			if (collection.isEmpty()) {
-				errors.rejectValue(field, "must.have.items", "Collection must have items");
+				errors.rejectValue(field, "must.have.items", new Object[0], "Collection must have items");
 			}
 			for (Object filter : collection) {
 				if (filter == null) {
-					errors.rejectValue(field, "must.have.value", "Field must have value");
+					errors.rejectValue(field, "must.have.value", new Object[0], "Field must have value");
 				}
 				//todo Validate collection items
 /*
@@ -92,7 +92,7 @@ public class RestFilterValidator implements Validator {
 	private void rejectIfNotNull(Errors errors, String field) {
 		Object value = errors.getFieldValue(field);
 		if (value != null) {
-			errors.rejectValue(field, "must.be.null", "Field must be null");
+			errors.rejectValue(field, "must.be.null", new Object[0], "Field must be null");
 		}
 	}
 }

@@ -1,5 +1,7 @@
 package name.valery1707.interview.lunchVote.common;
 
+import org.springframework.validation.BindingResult;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +19,13 @@ public class RestResult<T> {
 		this();
 		setValid(valid);
 		setResult(result);
+	}
+
+	public static <R> RestResult<R> fromBindingResult(BindingResult validate) {
+		RestResult<R> result = new RestResult<>(false, null);
+		validate.getFieldErrors().forEach(fieldError -> result.addError(fieldError.getField(), fieldError.getDefaultMessage(), fieldError.getArguments()));
+		validate.getGlobalErrors().forEach(objectError -> result.addError("", objectError.getDefaultMessage(), objectError.getArguments()));
+		return result;
 	}
 
 	public RestResult(T result) {

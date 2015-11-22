@@ -413,7 +413,7 @@ public class RestaurantControllerTest extends BaseEntityControllerTest {
 				.andExpect(jsonPath("$.timestamp").isNotEmpty())
 				.andExpect(jsonPath("$.error").isString())
 				.andExpect(jsonPath("$.message").isString())
-				.andExpect(jsonPath("$.message").value(containsString("Incorrect filter operation: unknown operation")))
+				.andExpect(jsonPath("$.message").value(containsString("Unknown filter operation")))
 				.andExpect(authenticated().withRoles("USER"))
 				.andReturn().getResponse().getContentAsString();
 	}
