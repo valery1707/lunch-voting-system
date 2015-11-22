@@ -1,6 +1,7 @@
 package name.valery1707.interview.lunchVote.api;
 
 import name.valery1707.interview.lunchVote.common.BaseEntityController;
+import name.valery1707.interview.lunchVote.common.RestFilter;
 import name.valery1707.interview.lunchVote.common.RestResult;
 import name.valery1707.interview.lunchVote.domain.Account;
 import name.valery1707.interview.lunchVote.domain.Restaurant;
@@ -43,8 +44,12 @@ public class RestaurantController extends BaseEntityController<Restaurant, Resta
 
 	@Override
 	@PreAuthorize("hasRole('ROLE_USER')")
-	public Page<Restaurant> findAll(@PageableDefault(size = 20) @SortDefault("name") Pageable pageable, @RequestParam(name = "filter", required = false) List<String> filters) {
-		return super.findAll(pageable, filters);
+	public Page<Restaurant> findAll(
+			@PageableDefault(size = 20) @SortDefault("name") Pageable pageable,
+			@RequestParam(name = "filter", required = false) List<String> filters,
+			@RequestBody(required = false) RestFilter restFilter
+	) {
+		return super.findAll(pageable, filters, restFilter);
 	}
 
 	@Override

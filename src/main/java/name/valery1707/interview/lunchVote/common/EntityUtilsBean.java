@@ -2,6 +2,7 @@ package name.valery1707.interview.lunchVote.common;
 
 import name.valery1707.interview.lunchVote.domain.IBaseEntity;
 import org.hibernate.internal.util.collections.IdentitySet;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.convert.ConversionFailedException;
@@ -280,6 +281,32 @@ public class EntityUtilsBean {
 		}
 	}
 
+	public <T extends IBaseEntity> Specification<T> complexFilter(Class<T> entityClass, RestFilter filter) {
+		switch (filter.getType()) {
+			case AND:
+				return filter.getAnd().stream()
+						.map(f -> complexFilter(entityClass, f))
+						.map(Specifications::where)
+						.reduce(Specifications.where(null), Specifications::and);
+			case OR:
+				return filter.getOr().stream()
+						.map(f -> complexFilter(entityClass, f))
+						.map(Specifications::where)
+						.reduce(Specifications.where(null), Specifications::or);
+			case NOT:
+				return Specifications.not(complexFilter(entityClass, filter.getNot()));
+			case FILTER:
+			default:
+				FILTER_OPERATION operation;
+				try {
+					operation = FILTER_OPERATION.byCode(filter.getOperation());
+				} catch (IllegalArgumentException ex) {
+					throw unknownFilterOperation(filter.getField(), filter.getOperation(), filter.getValue());
+				}
+				return simpleFilter(entityClass, filter.getField(), operation, filter.getValue());
+		}
+	}
+
 	public <T extends IBaseEntity> Specification<T> simpleFilter(Class<T> entityClass, List<String> filters) {
 //		noNullElements(filters, "Filters must not contain null element");
 		Specifications<T> spec = null;
@@ -293,7 +320,7 @@ public class EntityUtilsBean {
 	private static final Pattern SIMPLE_FILTER_PATTERN = Pattern.compile(
 			"^" +
 			"([\\w\\.]+);" +                 //Field name
-			"(" + Stream.of(FILTER_OPERATION.values()).filter(f -> !f.equals(FILTER_OPERATION.UNKNOWN)).map(FILTER_OPERATION::getCode).map(Pattern::quote).collect(joining("|")) + "|\\?);" +  //Operation
+			"(" + Stream.of(FILTER_OPERATION.values()).map(FILTER_OPERATION::getCode).map(Pattern::quote).collect(joining("|")) + ");" +  //Operation
 			//todo Between
 			"(.+)?" +                               //Value
 			"$");
@@ -330,7 +357,8 @@ public class EntityUtilsBean {
 					return operation;
 				}
 			}
-			return UNKNOWN;
+			throw new IllegalArgumentException("Unknown operation code: " + code);
+//			return UNKNOWN;
 		}
 	}
 
@@ -340,13 +368,17 @@ public class EntityUtilsBean {
 		String fieldPath = matcher.group(1);
 		FILTER_OPERATION operation = FILTER_OPERATION.byCode(matcher.group(2));
 		String valueRaw = operation.getCode().contains("_") ? null : matcher.group(3);
+		return simpleFilter(entityClass, fieldPath, operation, valueRaw);
+	}
+
+	public <T extends IBaseEntity, V extends Comparable<V>> Specification<T> simpleFilter(Class<T> entityClass, String fieldPath, FILTER_OPERATION operation, Object valueRaw) {
 		String[] joinPath = fieldPath.split("\\.");
 		String fieldName = joinPath[joinPath.length - 1];
 		String[] joinPathFinal = Arrays.copyOf(joinPath, joinPath.length - 1);
 
 		Attribute<? super T, ?> attribute = findAttribute(entityClass, fieldPath);
 		if (isAssignable(attribute.getJavaType(), Number.class) || isAssignable(attribute.getJavaType(), Boolean.class)) {
-			Assert.state(!operation.getCode().contains("~"), format("Incorrect filter operation: field [%s] with type '%s' could not be filtered by operation [%s]", fieldPath, attribute.getJavaType(), operation));
+			Assert.state(!operation.getCode().contains("~"), format("Incorrect filter operation: field [%s] with type '%s' could not be filtered by operation [%s]", fieldPath, attribute.getJavaType().getCanonicalName(), operation));
 		}
 		V value = convertToTargetType(attribute.getJavaType(), valueRaw);
 
@@ -383,17 +415,22 @@ public class EntityUtilsBean {
 				case NOT_NULL:
 					return cb.isNotNull(field);
 				default:
-					throw new IllegalStateException(format("Incorrect filter operation: unknown operation '%s' in filter: %s", operation, filter));
+					throw unknownFilterOperation(fieldPath, operation.getCode(), valueRaw);
 			}
 		};
 	}
 
+	@NotNull
+	private IllegalStateException unknownFilterOperation(String fieldPath, String operation, Object valueRaw) {
+		return new IllegalStateException(format("Incorrect filter operation: unknown operation '%s' in filter: %s %s %s", operation, fieldPath, operation, valueRaw));
+	}
+
 	@SuppressWarnings("unchecked")
-	private <V extends Comparable<V>> V convertToTargetType(Class<?> javaType, String raw) {
+	private <V extends Comparable<V>> V convertToTargetType(Class<?> javaType, Object raw) {
 		if (raw == null) {
 			return null;
 		}
-		if (conversionService.canConvert(String.class, javaType)) {
+		if (conversionService.canConvert(raw.getClass(), javaType)) {
 			try {
 				Object convert = conversionService.convert(raw, javaType);
 				if (convert instanceof Comparable) {
@@ -402,7 +439,7 @@ public class EntityUtilsBean {
 			} catch (ConversionFailedException ignored) {
 			}
 		}
-		throw new IllegalStateException(format("Incorrect filter value: could not convert string '%s' into '%s' type", raw, javaType));
+		throw new IllegalStateException(format("Incorrect filter value: could not convert value '%s' with type '%s' into '%s' type", raw, raw.getClass(), javaType));
 	}
 
 	@Nonnull
@@ -460,7 +497,11 @@ public class EntityUtilsBean {
 	}
 
 	@Nonnull
-	static String toLikePattern(@Nullable String simplePattern) {
+	static String toLikePattern(@Nullable Object rawPattern) {
+		if (rawPattern == null) {
+			return "%";
+		}
+		String simplePattern = rawPattern.toString();
 		if (isBlank(simplePattern)) {
 			return "%";
 		}

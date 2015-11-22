@@ -16,6 +16,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.time.ZoneId;
 import java.util.*;
 
+import static name.valery1707.interview.lunchVote.common.RestFilter.and;
+import static name.valery1707.interview.lunchVote.common.RestFilter.filter;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertTrue;
@@ -368,6 +370,245 @@ public class RestaurantControllerTest extends BaseEntityControllerTest {
 	public void test_10_findAll_asUser_simpleFilter_nested_number_found() throws Exception {
 		String content = mvc.perform(get(urlRoot()).with(accUser())
 				.param("filter", "dishes.price;<;4")
+		)
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.first").isBoolean())
+				.andExpect(jsonPath("$.first").value(true))
+				.andExpect(jsonPath("$.last").isBoolean())
+				.andExpect(jsonPath("$.last").value(true))
+				.andExpect(jsonPath("$.totalElements").isNumber())
+				.andExpect(jsonPath("$.totalElements").value(1))
+				.andExpect(jsonPath("$.totalPages").isNumber())
+				.andExpect(jsonPath("$.totalPages").value(1))
+				.andExpect(jsonPath("$.size").isNumber())
+				.andExpect(jsonPath("$.size").value(20))
+				.andExpect(jsonPath("$.numberOfElements").isNumber())
+				.andExpect(jsonPath("$.numberOfElements").value(1))
+				.andExpect(jsonPath("$.content").exists())
+				.andExpect(jsonPath("$.content").isArray())
+				.andExpect(jsonPath("$.content", hasSize(1)))
+				.andExpect(jsonPath("$.content[*].id").value(contains(RESTAURANT_MOE_BAR_ID)))
+				.andExpect(authenticated().withRoles("USER"))
+				.andReturn().getResponse().getContentAsString();
+
+		List<Restaurant> result = jsonToList(Restaurant.class, extractContent(content));
+		assertThat(result).hasSize(1);
+	}
+
+	@Test
+	public void test_10_findAll_asUser_complexFilter_direct_incorrectFilter() throws Exception {
+		mvc.perform(get(urlRoot()).with(accUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(filter("name", null, null)))
+		)
+				.andExpect(status().isInternalServerError())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.timestamp").isNumber())
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.error").isString())
+				.andExpect(jsonPath("$.message").isString())
+				.andExpect(jsonPath("$.message").value(containsString("Incorrect filter operation: unknown operation")))
+				.andExpect(authenticated().withRoles("USER"))
+				.andReturn().getResponse().getContentAsString();
+	}
+
+	@Test
+	public void test_10_findAll_asUser_complexFilter_direct_unknownField() throws Exception {
+		mvc.perform(get(urlRoot()).with(accUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(filter("description", "~", "ha-ha")))
+		)
+				.andExpect(status().isInternalServerError())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.timestamp").isNumber())
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.error").isString())
+				.andExpect(jsonPath("$.message").isString())
+				.andExpect(jsonPath("$.message").value(containsString("Unknown field [description]")))
+				.andExpect(authenticated().withRoles("USER"))
+				.andReturn().getResponse().getContentAsString();
+	}
+
+	@Test
+	public void test_10_findAll_asUser_complexFilter_direct_string_notFound() throws Exception {
+		mvc.perform(get(urlRoot()).with(accUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(and(filter("name", "~", "heLL"), filter("name", "~", "bar"))))
+		)
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.first").isBoolean())
+				.andExpect(jsonPath("$.first").value(true))
+				.andExpect(jsonPath("$.last").isBoolean())
+				.andExpect(jsonPath("$.last").value(true))
+				.andExpect(jsonPath("$.totalElements").isNumber())
+				.andExpect(jsonPath("$.totalElements").value(0))
+				.andExpect(jsonPath("$.totalPages").isNumber())
+				.andExpect(jsonPath("$.totalPages").value(0))
+				.andExpect(jsonPath("$.size").isNumber())
+				.andExpect(jsonPath("$.size").value(20))
+				.andExpect(jsonPath("$.numberOfElements").isNumber())
+				.andExpect(jsonPath("$.numberOfElements").value(0))
+				.andExpect(jsonPath("$.content").exists())
+				.andExpect(jsonPath("$.content").isArray())
+				.andExpect(jsonPath("$.content", hasSize(0)))
+				.andExpect(authenticated().withRoles("USER"))
+				.andReturn().getResponse().getContentAsString();
+	}
+
+	@Test
+	public void test_10_findAll_asUser_complexFilter_direct_string_found() throws Exception {
+		String content = mvc.perform(get(urlRoot()).with(accUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(filter("name", "~", "heLL")))
+		)
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.first").isBoolean())
+				.andExpect(jsonPath("$.first").value(true))
+				.andExpect(jsonPath("$.last").isBoolean())
+				.andExpect(jsonPath("$.last").value(true))
+				.andExpect(jsonPath("$.totalElements").isNumber())
+				.andExpect(jsonPath("$.totalElements").value(1))
+				.andExpect(jsonPath("$.totalPages").isNumber())
+				.andExpect(jsonPath("$.totalPages").value(1))
+				.andExpect(jsonPath("$.size").isNumber())
+				.andExpect(jsonPath("$.size").value(20))
+				.andExpect(jsonPath("$.numberOfElements").isNumber())
+				.andExpect(jsonPath("$.numberOfElements").value(1))
+				.andExpect(jsonPath("$.content").exists())
+				.andExpect(jsonPath("$.content").isArray())
+				.andExpect(jsonPath("$.content", hasSize(1)))
+				.andExpect(jsonPath("$.content[*].id").value(contains(RESTAURANT_HELL_KITCHEN_ID)))
+				.andExpect(authenticated().withRoles("USER"))
+				.andReturn().getResponse().getContentAsString();
+
+		List<Restaurant> result = jsonToList(Restaurant.class, extractContent(content));
+		assertThat(result).hasSize(1);
+	}
+
+	@Test
+	public void test_10_findAll_asUser_complexFilter_nested_unknownField() throws Exception {
+		mvc.perform(get(urlRoot()).with(accUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(filter("name.description", "~", "ha-ha")))
+		)
+				.andExpect(status().isInternalServerError())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.timestamp").isNumber())
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.error").isString())
+				.andExpect(jsonPath("$.message").isString())
+				.andExpect(jsonPath("$.message").value(containsString("Unknown field [description]")))
+				.andExpect(authenticated().withRoles("USER"))
+				.andReturn().getResponse().getContentAsString();
+
+		mvc.perform(get(urlRoot()).with(accUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(filter("dishes.description", "~", "heLL")))
+		)
+				.andExpect(status().isInternalServerError())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.timestamp").isNumber())
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.error").isString())
+				.andExpect(jsonPath("$.message").isString())
+				.andExpect(jsonPath("$.message").value(containsString("Unknown field [description]")))
+				.andExpect(authenticated().withRoles("USER"))
+				.andReturn().getResponse().getContentAsString();
+	}
+
+	@Test
+	public void test_10_findAll_asUser_complexFilter_nested_string_notFound() throws Exception {
+		mvc.perform(get(urlRoot()).with(accUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(filter("dishes.name", "~", "bread")))
+		)
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.first").isBoolean())
+				.andExpect(jsonPath("$.first").value(true))
+				.andExpect(jsonPath("$.last").isBoolean())
+				.andExpect(jsonPath("$.last").value(true))
+				.andExpect(jsonPath("$.totalElements").isNumber())
+				.andExpect(jsonPath("$.totalElements").value(0))
+				.andExpect(jsonPath("$.totalPages").isNumber())
+				.andExpect(jsonPath("$.totalPages").value(0))
+				.andExpect(jsonPath("$.size").isNumber())
+				.andExpect(jsonPath("$.size").value(20))
+				.andExpect(jsonPath("$.numberOfElements").isNumber())
+				.andExpect(jsonPath("$.numberOfElements").value(0))
+				.andExpect(jsonPath("$.content").exists())
+				.andExpect(jsonPath("$.content").isArray())
+				.andExpect(jsonPath("$.content", hasSize(0)))
+				.andExpect(authenticated().withRoles("USER"))
+				.andReturn().getResponse().getContentAsString();
+	}
+
+	@Test
+	public void test_10_findAll_asUser_complexFilter_nested_string_found() throws Exception {
+		String content = mvc.perform(get(urlRoot()).with(accUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(filter("dishes.name", "~", "beer")))
+		)
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.first").isBoolean())
+				.andExpect(jsonPath("$.first").value(true))
+				.andExpect(jsonPath("$.last").isBoolean())
+				.andExpect(jsonPath("$.last").value(true))
+				.andExpect(jsonPath("$.totalElements").isNumber())
+				.andExpect(jsonPath("$.totalElements").value(1))
+				.andExpect(jsonPath("$.totalPages").isNumber())
+				.andExpect(jsonPath("$.totalPages").value(1))
+				.andExpect(jsonPath("$.size").isNumber())
+				.andExpect(jsonPath("$.size").value(20))
+				.andExpect(jsonPath("$.numberOfElements").isNumber())
+				.andExpect(jsonPath("$.numberOfElements").value(1))
+				.andExpect(jsonPath("$.content").exists())
+				.andExpect(jsonPath("$.content").isArray())
+				.andExpect(jsonPath("$.content", hasSize(1)))
+				.andExpect(jsonPath("$.content[*].id").value(contains(RESTAURANT_MOE_BAR_ID)))
+				.andExpect(authenticated().withRoles("USER"))
+				.andReturn().getResponse().getContentAsString();
+
+		List<Restaurant> result = jsonToList(Restaurant.class, extractContent(content));
+		assertThat(result).hasSize(1);
+	}
+
+	@Test
+	public void test_10_findAll_asUser_complexFilter_nested_number_found() throws Exception {
+		String content = mvc.perform(get(urlRoot()).with(accUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(filter("dishes.price", "<", "4")))
 		)
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))

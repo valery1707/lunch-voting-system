@@ -123,8 +123,20 @@ public abstract class BaseEntityController<T extends IBaseEntity, REPO extends P
 	}
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public Page<T> findAll(Pageable pageable, @RequestParam(name = "filter", required = false) List<String> filters) {
+	public Page<T> findAll(
+			Pageable pageable,
+			@RequestParam(name = "filter", required = false) List<String> filters,
+			@RequestBody(required = false) RestFilter restFilter
+	) {
 		Specification<T> spec = distinct();
+		if (restFilter != null) {
+			BindingResult validate = validate(restFilter, "filter");
+			if (validate.hasErrors()) {
+				throw new IllegalStateException();//todo Describe exception
+			}
+			Specification<T> filter = entityUtils.complexFilter(entityClass(), restFilter);
+			spec = Specifications.where(spec).and(filter);
+		}
 		if (filters != null) {
 			Specification<T> filter = entityUtils.simpleFilter(entityClass(), filters);
 			spec = Specifications.where(spec).and(filter);
