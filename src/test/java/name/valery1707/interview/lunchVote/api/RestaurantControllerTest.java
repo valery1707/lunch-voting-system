@@ -1,6 +1,7 @@
 package name.valery1707.interview.lunchVote.api;
 
 import name.valery1707.interview.lunchVote.Launcher;
+import name.valery1707.interview.lunchVote.common.RestFilter;
 import name.valery1707.interview.lunchVote.domain.Dish;
 import name.valery1707.interview.lunchVote.domain.Restaurant;
 import org.junit.FixMethodOrder;
@@ -630,6 +631,75 @@ public class RestaurantControllerTest extends BaseEntityControllerTest {
 				.andExpect(jsonPath("$.content").isArray())
 				.andExpect(jsonPath("$.content", hasSize(1)))
 				.andExpect(jsonPath("$.content[*].id").value(contains(RESTAURANT_MOE_BAR_ID)))
+				.andExpect(authenticated().withRoles("USER"))
+				.andReturn().getResponse().getContentAsString();
+
+		List<Restaurant> result = jsonToList(Restaurant.class, extractContent(content));
+		assertThat(result).hasSize(1);
+	}
+
+	@Test
+	public void test_10_findAll_asUser_complexFilter_incorrectFilter() throws Exception {
+		mvc.perform(get(urlRoot()).with(accUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(
+						and(
+								filter("name", "!~", "bar"),
+								RestFilter.or(
+										RestFilter.not(filter("dishes.name", "~", "Nachos")),
+										filter("dishes.price", ">=", 5)
+								)
+						)
+				))
+		)
+				.andExpect(status().isInternalServerError())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.timestamp").isNumber())
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.error").isString())
+				.andExpect(jsonPath("$.message").isString())
+				.andExpect(jsonPath("$.message").value(containsString("Incorrect filter operation: unknown operation '>=' in filter: dishes.price >= 5")))
+				.andExpect(authenticated().withRoles("USER"));
+	}
+
+	@Test
+	public void test_10_findAll_asUser_complexFilter_found() throws Exception {
+		String content = mvc.perform(get(urlRoot()).with(accUser())
+				.contentType(CONTENT_TYPE)
+				.characterEncoding(ENCODING)
+				.content(objectToJson(
+						and(
+								filter("name", "!~", "bar"),
+								RestFilter.or(
+										RestFilter.not(filter("dishes.name", "~", "Nachos")),
+										filter("dishes.price", "=>", 5)
+								)
+						)
+				))
+		)
+				.andExpect(status().isOk())
+				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+				.andExpect(content().encoding(ENCODING))
+				.andExpect(jsonPath("$").isMap())
+				.andExpect(jsonPath("$.first").isBoolean())
+				.andExpect(jsonPath("$.first").value(true))
+				.andExpect(jsonPath("$.last").isBoolean())
+				.andExpect(jsonPath("$.last").value(true))
+				.andExpect(jsonPath("$.totalElements").isNumber())
+				.andExpect(jsonPath("$.totalElements").value(1))
+				.andExpect(jsonPath("$.totalPages").isNumber())
+				.andExpect(jsonPath("$.totalPages").value(1))
+				.andExpect(jsonPath("$.size").isNumber())
+				.andExpect(jsonPath("$.size").value(20))
+				.andExpect(jsonPath("$.numberOfElements").isNumber())
+				.andExpect(jsonPath("$.numberOfElements").value(1))
+				.andExpect(jsonPath("$.content").exists())
+				.andExpect(jsonPath("$.content").isArray())
+				.andExpect(jsonPath("$.content", hasSize(1)))
+				.andExpect(jsonPath("$.content[*].id").value(contains(RESTAURANT_HELL_KITCHEN_ID)))
 				.andExpect(authenticated().withRoles("USER"))
 				.andReturn().getResponse().getContentAsString();
 

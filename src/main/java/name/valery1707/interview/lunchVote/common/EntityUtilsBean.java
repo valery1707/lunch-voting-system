@@ -358,7 +358,6 @@ public class EntityUtilsBean {
 				}
 			}
 			throw new IllegalArgumentException("Unknown operation code: " + code);
-//			return UNKNOWN;
 		}
 	}
 
