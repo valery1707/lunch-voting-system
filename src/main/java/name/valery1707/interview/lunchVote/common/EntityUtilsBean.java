@@ -32,10 +32,10 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 import static org.apache.commons.lang3.ClassUtils.isAssignable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
@@ -293,24 +293,60 @@ public class EntityUtilsBean {
 	private static final Pattern SIMPLE_FILTER_PATTERN = Pattern.compile(
 			"^" +
 			"([\\w\\.]+);" +                 //Field name
-			"(<|<=|=|=>|>|!=|~|!~|~!|!~!|_|!_|\\?);" +  //Operation: LESS(<), LESS_OR_EQUAL(<=), EQUAL(=), GREATER_OR_EQUAL(=>), GREATER(>), NOT_EQUAL(!=), LIKE(~), NOT_LIKE(!~), CASE_SENSITIVE_LIKE(~!), CASE_SENSITIVE_NOT_LIKE(!~!), IS_NULL(_), NOT_NULL(!_), UNKNOWN(?)
+			"(" + Stream.of(FILTER_OPERATION.values()).filter(f -> !f.equals(FILTER_OPERATION.UNKNOWN)).map(FILTER_OPERATION::getCode).map(Pattern::quote).collect(joining("|")) + "|\\?);" +  //Operation
 			//todo Between
 			"(.+)?" +                               //Value
 			"$");
+
+	public enum FILTER_OPERATION {
+		LESS("<"),
+		LESS_OR_EQUAL("<="),
+		EQUAL("="),
+		GREATER_OR_EQUAL("=>"),
+		GREATER(">"),
+		NOT_EQUAL("!="),
+		LIKE("~"),
+		NOT_LIKE("!~"),
+		CASE_SENSITIVE_LIKE("~!"),
+		CASE_SENSITIVE_NOT_LIKE("!~!"),
+		IS_NULL("_"),
+		NOT_NULL("!_"),
+		UNKNOWN("?");
+
+		private final String code;
+
+		FILTER_OPERATION(String code) {
+			this.code = code;
+		}
+
+		public String getCode() {
+			return code;
+		}
+
+		@Nonnull
+		public static FILTER_OPERATION byCode(String code) {
+			for (FILTER_OPERATION operation : values()) {
+				if (operation.getCode().equals(code)) {
+					return operation;
+				}
+			}
+			return UNKNOWN;
+		}
+	}
 
 	public <T extends IBaseEntity, V extends Comparable<V>> Specification<T> simpleFilter(Class<T> entityClass, String filter) {
 		Matcher matcher = SIMPLE_FILTER_PATTERN.matcher(filter);
 		Assert.state(matcher.matches(), "Incorrect filter format: " + filter);
 		String fieldPath = matcher.group(1);
-		String operation = matcher.group(2);
-		String valueRaw = operation.contains("_") ? null : matcher.group(3);
+		FILTER_OPERATION operation = FILTER_OPERATION.byCode(matcher.group(2));
+		String valueRaw = operation.getCode().contains("_") ? null : matcher.group(3);
 		String[] joinPath = fieldPath.split("\\.");
 		String fieldName = joinPath[joinPath.length - 1];
 		String[] joinPathFinal = Arrays.copyOf(joinPath, joinPath.length - 1);
 
 		Attribute<? super T, ?> attribute = findAttribute(entityClass, fieldPath);
 		if (isAssignable(attribute.getJavaType(), Number.class) || isAssignable(attribute.getJavaType(), Boolean.class)) {
-			Assert.state(!operation.contains("~"), format("Incorrect filter operation: field [%s] with type '%s' could not be filtered by operation [%s]", fieldPath, attribute.getJavaType(), operation));
+			Assert.state(!operation.getCode().contains("~"), format("Incorrect filter operation: field [%s] with type '%s' could not be filtered by operation [%s]", fieldPath, attribute.getJavaType(), operation));
 		}
 		V value = convertToTargetType(attribute.getJavaType(), valueRaw);
 
@@ -322,29 +358,29 @@ public class EntityUtilsBean {
 			Path<V> field = join.get(fieldName);
 			Path<String> fieldString = join.get(fieldName);
 			switch (operation) {
-				case "<":
+				case LESS:
 					return cb.lessThan(field, value);
-				case "<=":
+				case LESS_OR_EQUAL:
 					return cb.lessThanOrEqualTo(field, value);
-				case "=":
+				case EQUAL:
 					return cb.equal(field, value);
-				case "=>":
+				case GREATER_OR_EQUAL:
 					return cb.greaterThanOrEqualTo(field, value);
-				case ">":
+				case GREATER:
 					return cb.greaterThan(field, value);
-				case "!=":
+				case NOT_EQUAL:
 					return cb.notEqual(field, value);
-				case "~":
+				case LIKE:
 					return cb.like(cb.lower(fieldString), toLikePattern(valueRaw).toLowerCase(), '\\');
-				case "!~":
+				case NOT_LIKE:
 					return cb.notLike(cb.lower(fieldString), toLikePattern(valueRaw).toLowerCase(), '\\');
-				case "~!":
+				case CASE_SENSITIVE_LIKE:
 					return cb.like(fieldString, toLikePattern(valueRaw), '\\');
-				case "!~!":
+				case CASE_SENSITIVE_NOT_LIKE:
 					return cb.notLike(fieldString, toLikePattern(valueRaw), '\\');
-				case "_":
+				case IS_NULL:
 					return cb.isNull(field);
-				case "!_":
+				case NOT_NULL:
 					return cb.isNotNull(field);
 				default:
 					throw new IllegalStateException(format("Incorrect filter operation: unknown operation '%s' in filter: %s", operation, filter));
@@ -369,8 +405,8 @@ public class EntityUtilsBean {
 		throw new IllegalStateException(format("Incorrect filter value: could not convert string '%s' into '%s' type", raw, javaType));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Nonnull
+	@SuppressWarnings("unchecked")
 	private <T extends IBaseEntity> From<T, ?> findOrCreateJoin(@Nonnull From<T, ?> source, String path) {
 		Optional<? extends Join<?, ?>> existsJoin = source.getJoins().stream().filter(j -> j.getAttribute().getName().equals(path)).findAny();
 		if (existsJoin.isPresent()) {
@@ -390,6 +426,7 @@ public class EntityUtilsBean {
 	 * @throws IllegalStateException If field does not found in entity
 	 */
 	@Nonnull
+	@SuppressWarnings("unchecked")
 	private <T extends IBaseEntity> Attribute<? super T, ?> findAttribute(Class<T> entityClass, String fieldPath) {
 		ManagedType<T> managedType = entityManager.getEntityManagerFactory().getMetamodel().managedType(entityClass);
 
