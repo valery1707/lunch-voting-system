@@ -1,6 +1,6 @@
 package name.valery1707.interview.lunchVote.common;
 
-import name.valery1707.interview.lunchVote.common.EntityUtilsBean.FILTER_OPERATION;
+import name.valery1707.interview.lunchVote.common.EntityUtilsBean.FilterOperation;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -35,7 +35,7 @@ public class RestFilterValidator implements Validator {
 			}
 			//Operation must be known
 			try {
-				FILTER_OPERATION.byCode(filter.getOperation());
+				FilterOperation.byCode(filter.getOperation());
 			} catch (IllegalArgumentException ex) {
 				errors.rejectValue("operation", "unknown.filter.operation", new Object[]{filter.getOperation()}, "Unknown filter operation '{0}'");
 			}

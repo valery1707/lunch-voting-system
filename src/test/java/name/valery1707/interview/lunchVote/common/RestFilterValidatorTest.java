@@ -1,6 +1,6 @@
 package name.valery1707.interview.lunchVote.common;
 
-import name.valery1707.interview.lunchVote.common.EntityUtilsBean.FILTER_OPERATION;
+import name.valery1707.interview.lunchVote.common.EntityUtilsBean.FilterOperation;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -60,29 +60,29 @@ public class RestFilterValidatorTest {
 				.extracting(FieldError::getField)
 				.containsOnly("operation", "value");
 
-		errors = validate(filter("field", FILTER_OPERATION.GREATER.getCode(), null));
+		errors = validate(filter("field", FilterOperation.GREATER.getCode(), null));
 		assertThat(errors.getFieldErrors()).as("field")
 				.hasSize(1)
 				.extracting(FieldError::getField)
 				.containsOnly("value");
 
-		errors = validate(filter("field", FILTER_OPERATION.GREATER.getCode(), 10));
+		errors = validate(filter("field", FilterOperation.GREATER.getCode(), 10));
 		assertThat(errors.getFieldErrors()).as("field")
 				.isEmpty();
 
-		errors = validate(filter(null, FILTER_OPERATION.GREATER.getCode(), null));
+		errors = validate(filter(null, FilterOperation.GREATER.getCode(), null));
 		assertThat(errors.getFieldErrors()).as("field")
 				.hasSize(2)
 				.extracting(FieldError::getField)
 				.containsOnly("field", "value");
 
-		errors = validate(filter(null, FILTER_OPERATION.IS_NULL.getCode(), null));
+		errors = validate(filter(null, FilterOperation.IS_NULL.getCode(), null));
 		assertThat(errors.getFieldErrors()).as("field")
 				.hasSize(1)
 				.extracting(FieldError::getField)
 				.containsOnly("field");
 
-		errors = validate(filter(null, FILTER_OPERATION.GREATER.getCode(), 10));
+		errors = validate(filter(null, FilterOperation.GREATER.getCode(), 10));
 		assertThat(errors.getFieldErrors()).as("field")
 				.hasSize(1)
 				.extracting(FieldError::getField)
@@ -135,7 +135,7 @@ public class RestFilterValidatorTest {
 				.isEmpty();
 		testCollectionWithOther(filter, field, "not", RestFilter::setNot, filterEqual42());
 		testCollectionWithOther(filter, field, "field", RestFilter::setField, "someField");
-		testCollectionWithOther(filter, field, "operation", RestFilter::setOperation, FILTER_OPERATION.EQUAL.getCode());
+		testCollectionWithOther(filter, field, "operation", RestFilter::setOperation, FilterOperation.EQUAL.getCode());
 		//noinspection UnnecessaryBoxing
 		testCollectionWithOther(filter, field, "value", RestFilter::setValue, Integer.valueOf(42));
 		if (field.equals("and")) {
@@ -156,7 +156,7 @@ public class RestFilterValidatorTest {
 	}
 
 	private RestFilter filterEqual42() {
-		return filter("field", FILTER_OPERATION.EQUAL.getCode(), 42);
+		return filter("field", FilterOperation.EQUAL.getCode(), 42);
 	}
 
 	@Test
@@ -168,7 +168,7 @@ public class RestFilterValidatorTest {
 		assertThat(errors.getFieldErrors()).as("field")
 				.isEmpty();
 		testCollectionWithOther(filter, "not", "field", RestFilter::setField, "someField");
-		testCollectionWithOther(filter, "not", "operation", RestFilter::setOperation, FILTER_OPERATION.EQUAL.getCode());
+		testCollectionWithOther(filter, "not", "operation", RestFilter::setOperation, FilterOperation.EQUAL.getCode());
 		//noinspection UnnecessaryBoxing
 		testCollectionWithOther(filter, "not", "value", RestFilter::setValue, Integer.valueOf(42));
 		testCollectionWithOther(filter, "not", "or", RestFilter::setOr, singletonList(filterEqual42()));

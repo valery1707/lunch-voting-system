@@ -297,9 +297,9 @@ public class EntityUtilsBean {
 				return Specifications.not(complexFilter(entityClass, filter.getNot()));
 			case FILTER:
 			default:
-				FILTER_OPERATION operation;
+				FilterOperation operation;
 				try {
-					operation = FILTER_OPERATION.byCode(filter.getOperation());
+					operation = FilterOperation.byCode(filter.getOperation());
 				} catch (IllegalArgumentException ex) {
 					throw unknownFilterOperation(filter.getField(), filter.getOperation(), filter.getValue());
 				}
@@ -320,12 +320,12 @@ public class EntityUtilsBean {
 	private static final Pattern SIMPLE_FILTER_PATTERN = Pattern.compile(
 			"^" +
 			"([\\w\\.]+);" +                 //Field name
-			"(" + Stream.of(FILTER_OPERATION.values()).map(FILTER_OPERATION::getCode).map(Pattern::quote).collect(joining("|")) + ");" +  //Operation
+			"(" + Stream.of(FilterOperation.values()).map(FilterOperation::getCode).map(Pattern::quote).collect(joining("|")) + ");" +  //Operation
 			//todo Between
 			"(.+)?" +                               //Value
 			"$");
 
-	public enum FILTER_OPERATION {
+	public enum FilterOperation {
 		LESS("<"),
 		LESS_OR_EQUAL("<="),
 		EQUAL("="),
@@ -342,7 +342,7 @@ public class EntityUtilsBean {
 
 		private final String code;
 
-		FILTER_OPERATION(String code) {
+		FilterOperation(String code) {
 			this.code = code;
 		}
 
@@ -351,8 +351,8 @@ public class EntityUtilsBean {
 		}
 
 		@Nonnull
-		public static FILTER_OPERATION byCode(String code) {
-			for (FILTER_OPERATION operation : values()) {
+		public static FilterOperation byCode(String code) {
+			for (FilterOperation operation : values()) {
 				if (operation.getCode().equals(code)) {
 					return operation;
 				}
@@ -365,12 +365,12 @@ public class EntityUtilsBean {
 		Matcher matcher = SIMPLE_FILTER_PATTERN.matcher(filter);
 		Assert.state(matcher.matches(), "Incorrect filter format: " + filter);
 		String fieldPath = matcher.group(1);
-		FILTER_OPERATION operation = FILTER_OPERATION.byCode(matcher.group(2));
+		FilterOperation operation = FilterOperation.byCode(matcher.group(2));
 		String valueRaw = operation.getCode().contains("_") ? null : matcher.group(3);
 		return simpleFilter(entityClass, fieldPath, operation, valueRaw);
 	}
 
-	public <T extends IBaseEntity, V extends Comparable<V>> Specification<T> simpleFilter(Class<T> entityClass, String fieldPath, FILTER_OPERATION operation, Object valueRaw) {
+	public <T extends IBaseEntity, V extends Comparable<V>> Specification<T> simpleFilter(Class<T> entityClass, String fieldPath, FilterOperation operation, Object valueRaw) {
 		String[] joinPath = fieldPath.split("\\.");
 		String fieldName = joinPath[joinPath.length - 1];
 		String[] joinPathFinal = Arrays.copyOf(joinPath, joinPath.length - 1);
