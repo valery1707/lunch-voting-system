@@ -28,7 +28,6 @@ import javax.persistence.metamodel.PluralAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
@@ -40,6 +39,7 @@ import static java.util.stream.Collectors.*;
 import static org.apache.commons.lang3.ClassUtils.isAssignable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
+import static org.springframework.util.ReflectionUtils.invokeMethod;
 
 @Component
 @Scope(scopeName = SCOPE_SINGLETON)
@@ -182,18 +182,11 @@ public class EntityUtilsBean {
 		}
 
 		public Object read(IBaseEntity entity) {
-			try {
-				return propertyDescriptor.getReadMethod().invoke(entity);
-			} catch (IllegalAccessException | InvocationTargetException ignored) {
-				return null;
-			}
+			return invokeMethod(propertyDescriptor.getReadMethod(), entity);
 		}
 
 		public void write(IBaseEntity entity, Object value) {
-			try {
-				propertyDescriptor.getWriteMethod().invoke(entity, value);
-			} catch (IllegalAccessException | InvocationTargetException ignored) {
-			}
+			invokeMethod(propertyDescriptor.getWriteMethod(), entity, value);
 		}
 	}
 
@@ -264,19 +257,12 @@ public class EntityUtilsBean {
 
 		@SuppressWarnings("unchecked")
 		public Collection<IBaseEntity> read(IBaseEntity container) {
-			try {
-				return (Collection<IBaseEntity>) propertyDescriptor.getReadMethod().invoke(container);
-			} catch (IllegalAccessException | InvocationTargetException ignored) {
-				return Collections.emptyList();
-			}
+			return (Collection<IBaseEntity>) invokeMethod(propertyDescriptor.getReadMethod(), container);
 		}
 
 		public void writeBackReference(IBaseEntity entity, IBaseEntity backReference) {
 			if (backReferenceDescriptor != null) {
-				try {
-					backReferenceDescriptor.getWriteMethod().invoke(entity, backReference);
-				} catch (IllegalAccessException | InvocationTargetException ignored) {
-				}
+				invokeMethod(backReferenceDescriptor.getWriteMethod(), entity, backReference);
 			}
 		}
 	}
