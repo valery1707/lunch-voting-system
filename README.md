@@ -82,6 +82,19 @@ curl -i \
   -u "user_1:password one" \
   'http://localhost:8080/api/restaurant?filter=name;~;heLL&filter=name;~;bar'
 ```
+1. Query first page of restaurants with complex filter by name:
+```bash
+curl -i \
+  -H "Accept: application/json" \
+  -u "user_1:password one" \
+  -X GET \
+  -d '{
+    "or": [
+      {"field": "name", "operation": "~", "value": "heLL"},
+      {"field": "name", "operation": "~", "value": "bar"}
+    ]
+  }' http://localhost:8080/api/restaurant
+```
 1. Get information about one Restaurant by id:
 ```bash
 curl -i \
