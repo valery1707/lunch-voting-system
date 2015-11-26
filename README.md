@@ -221,3 +221,5 @@ curl -i \
   }' \
   http://localhost:8080/api/restaurant/60d4f411-4cff-4f60-b392-46bed14c5f86
 ```
+
+[![Analytics](https://ga-beacon.appspot.com/UA-70691593-1/lunch-voting-system/README.md)](https://github.com/igrigorik/ga-beacon)
