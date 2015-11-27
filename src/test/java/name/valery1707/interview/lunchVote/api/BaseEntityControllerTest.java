@@ -18,6 +18,7 @@ import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -112,6 +113,19 @@ public abstract class BaseEntityControllerTest {
 //				.andExpect(jsonPath("$.message").value("Bad credentials"))
 //				.andExpect(jsonPath("$.path").value(startsWith(urlRoot())))
 				.andExpect(unauthenticated())
+				;
+	}
+
+	protected ResultActions test_forbidden(RequestBuilder requestBuilder) throws Exception {
+		return mvc.perform(requestBuilder)
+				.andExpect(status().isForbidden())
+				.andExpect(authenticated())
+//				.andExpect(status().isUnauthorized())
+//				.andExpect(content().contentTypeCompatibleWith(CONTENT_TYPE))
+//				.andExpect(content().encoding(ENCODING))
+//				.andExpect(jsonPath("$").isMap())
+//				.andExpect(jsonPath("$.message").value("Bad credentials"))
+//				.andExpect(jsonPath("$.path").value(urlRoot()))
 				;
 	}
 }

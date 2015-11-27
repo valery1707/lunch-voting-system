@@ -40,8 +40,7 @@ public class RestaurantControllerTest extends BaseEntityControllerTest {
 
 	@Test
 	public void test_10_findAll_unauthorized() throws Exception {
-		test_unauthorized(get(urlRoot()))
-		;
+		test_unauthorized(get(urlRoot()));
 	}
 
 	@Test

@@ -1,5 +1,7 @@
 package name.valery1707.interview.lunchVote.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -19,6 +21,7 @@ public class Account extends ABaseEntity {
 	private String lastName;
 
 	@Column
+	@JsonProperty("admin")
 	private boolean isAdmin;
 
 	public String getLogin() {
