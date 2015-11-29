@@ -24,6 +24,12 @@ public class AccountController extends BaseEntityController<Account, AccountRepo
 	private AccountRepo repo;
 
 	@Override
+	protected Account clearSensitiveFields(Account src) {
+		src.setPassword(null);
+		return src;
+	}
+
+	@Override
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public Page<Account> findAll(
 			Pageable pageable,

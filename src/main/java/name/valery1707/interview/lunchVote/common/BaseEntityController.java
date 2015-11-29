@@ -127,6 +127,10 @@ public abstract class BaseEntityController<T extends IBaseEntity, REPO extends P
 		entityUtils.deepCleanNested(src, dst);
 	}
 
+	protected T clearSensitiveFields(T src) {
+		return src;
+	}
+
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public Page<T> findAll(
 			Pageable pageable,
@@ -147,7 +151,8 @@ public abstract class BaseEntityController<T extends IBaseEntity, REPO extends P
 			Specification<T> filter = entityUtils.simpleFilter(entityClass(), filters);
 			spec = Specifications.where(spec).and(filter);
 		}
-		return repository.findAll(spec, pageable);
+		Page<T> page = repository.findAll(spec, pageable);
+		return page.map(this::clearSensitiveFields);
 	}
 
 	@RequestMapping(value = "", method = {RequestMethod.PUT, RequestMethod.POST})
@@ -162,7 +167,7 @@ public abstract class BaseEntityController<T extends IBaseEntity, REPO extends P
 		deepFixBackReference(source);
 
 		T saved = repository.save(source);
-		return created(saved, request, "/{id}");
+		return created(clearSensitiveFields(saved), request, "/{id}");
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -172,7 +177,7 @@ public abstract class BaseEntityController<T extends IBaseEntity, REPO extends P
 			return notFound();
 		}
 
-		return ResponseEntity.ok(entity);
+		return ResponseEntity.ok(clearSensitiveFields(entity));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
@@ -183,7 +188,7 @@ public abstract class BaseEntityController<T extends IBaseEntity, REPO extends P
 		}
 
 		repository.delete(entity);
-		return ResponseEntity.ok(entity);
+		return ResponseEntity.ok(clearSensitiveFields(entity));
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
@@ -217,7 +222,7 @@ public abstract class BaseEntityController<T extends IBaseEntity, REPO extends P
 		}
 
 		update = repository.save(update);
-		return updated(update);
+		return updated(clearSensitiveFields(update));
 	}
 
 	@ExceptionHandler(IllegalStateException.class)

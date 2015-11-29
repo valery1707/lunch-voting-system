@@ -85,6 +85,7 @@ public class AccountControllerTest extends BaseEntityControllerTest {
 		assertThat(result)
 				.extracting(Account::getPassword)
 				.hasSameSizeAs(result)
-				.areExactly(expectedCount, new Condition<>(StringUtils::isNotEmpty, "isNotEmpty"));
+				.containsNull()
+				.areExactly(expectedCount, new Condition<>(StringUtils::isEmpty, "isEmpty"));
 	}
 }
