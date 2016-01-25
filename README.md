@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/valery1707/lunch-voting-system.svg)](https://travis-ci.org/valery1707/lunch-voting-system)
+[![Build status](https://ci.appveyor.com/api/projects/status/f1iixe94tbk038c0/branch/master?svg=true)](https://ci.appveyor.com/project/valery1707/lunch-voting-system/branch/master)
 [![Coverage Status](https://coveralls.io/repos/valery1707/lunch-voting-system/badge.svg?branch=master&service=github)](https://coveralls.io/github/valery1707/lunch-voting-system?branch=master)
 [![Coverity Scan](https://img.shields.io/coverity/scan/6845.svg)](https://scan.coverity.com/projects/valery1707-lunch-voting-system)
 [![Dependency Status](https://www.versioneye.com/user/projects/5634dd1836d0ab0019001c05/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5634dd1836d0ab0019001c05)
