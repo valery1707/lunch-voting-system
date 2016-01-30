@@ -26,6 +26,8 @@ buildscript {
 	}
 }
 apply plugin: 'spring-boot'
+//http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#howto-customize-dependency-versions
+ext['jetty.version'] = '9.3.7.v20160115'
 
 apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
@@ -83,7 +85,7 @@ dependencies {
 
 	//Servlet container
 	compile 'javax.servlet:javax.servlet-api:3.1.0'
-	runtime 'org.eclipse.jetty:jetty-webapp:9.3.6.v20151106'
+	runtime 'org.eclipse.jetty:jetty-webapp:9.3.7.v20160115'
 
 	//JDBC driver (and implicit in-memory database server)
 	runtime 'com.h2database:h2:1.4.191'
