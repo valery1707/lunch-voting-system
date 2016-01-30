@@ -86,7 +86,7 @@ dependencies {
 	runtime 'org.eclipse.jetty:jetty-webapp:9.3.6.v20151106'
 
 	//JDBC driver (and implicit in-memory database server)
-	runtime 'com.h2database:h2:1.4.190'
+	runtime 'com.h2database:h2:1.4.191'
 	//JDBC Connection pooling
 	compile 'org.apache.tomcat:tomcat-jdbc:8.0.30'
 
