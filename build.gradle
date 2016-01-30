@@ -72,9 +72,9 @@ dependencies {
 	compile "org.springframework:spring-orm:4.2.4.RELEASE"
 	compile "org.springframework.data:spring-data-jpa:1.9.2.RELEASE"
 	compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
-	compile 'org.hibernate:hibernate-core:5.0.6.Final'
-	compile 'org.hibernate:hibernate-entitymanager:5.0.6.Final'
-	compile 'org.hibernate:hibernate-java8:5.0.6.Final'
+	compile 'org.hibernate:hibernate-core:5.0.7.Final'
+	compile 'org.hibernate:hibernate-entitymanager:5.0.7.Final'
+	compile 'org.hibernate:hibernate-java8:5.0.7.Final'
 	compile 'javax.transaction:javax.transaction-api:1.2'
 
 	//JSON parse library
@@ -102,7 +102,7 @@ dependencies {
 
 	//Validation
 	compile 'javax.validation:validation-api:1.1.0.Final'
-	compile 'org.hibernate:hibernate-validator:5.2.2.Final'
+	compile 'org.hibernate:hibernate-validator:5.2.3.Final'
 	compile 'javax.el:javax.el-api:3.0.0'
 
 	//Testing
