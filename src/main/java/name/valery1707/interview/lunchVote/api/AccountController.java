@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.UUID;
@@ -19,9 +18,6 @@ import java.util.UUID;
 @RequestMapping("/api/account")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AccountController extends BaseEntityController<Account, AccountRepo> {
-
-	@Inject
-	private AccountRepo repo;
 
 	@Override
 	protected Account clearSensitiveFields(Account src) {
