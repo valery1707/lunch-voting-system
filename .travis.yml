@@ -5,7 +5,11 @@ jdk:
 
 before_install:
   - pip install --user codecov
+  - curl -sL http://bit.ly/jpm4j >jpm4j.jar
+  - java -jar jpm4j.jar --user init
+  - ${HOME}/jpm/bin/jpm install com.codacy:codacy-coverage-reporter:assembly
 
 after_success:
   - ./gradlew jacocoTestReport coveralls
   - codecov
+  - ${HOME}/jpm/bin/codacy-coverage-reporter -l Java -r ./build/reports/jacoco/test/jacocoTestReport.xml
