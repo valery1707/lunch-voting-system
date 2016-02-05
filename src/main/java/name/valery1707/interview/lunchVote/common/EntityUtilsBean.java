@@ -452,7 +452,8 @@ public class EntityUtilsBean {
 	private <T extends IBaseEntity> Attribute<? super T, ?> findAttribute(Class<T> entityClass, String fieldPath) {
 		ManagedType<T> managedType = entityManager.getEntityManagerFactory().getMetamodel().managedType(entityClass);
 
-		String field, rest;
+		String field;
+		String rest;
 		if (fieldPath.contains(".")) {
 			int i = fieldPath.indexOf('.');
 			field = fieldPath.substring(0, i);
