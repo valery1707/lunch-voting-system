@@ -138,7 +138,7 @@ public class RestFilterValidatorTest {
 		testCollectionWithOther(filter, field, "operation", RestFilter::setOperation, FilterOperation.EQUAL.getCode());
 		//noinspection UnnecessaryBoxing
 		testCollectionWithOther(filter, field, "value", RestFilter::setValue, Integer.valueOf(42));
-		if (field.equals("and")) {
+		if ("and".equals(field)) {
 			testCollectionWithOther(filter, field, "or", RestFilter::setOr, singletonList(filterEqual42()));
 		} else {
 			testCollectionWithOther(filter, field, "and", RestFilter::setAnd, singletonList(filterEqual42()));
