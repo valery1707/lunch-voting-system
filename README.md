@@ -6,6 +6,7 @@
 
 [![Coverage Status](https://coveralls.io/repos/valery1707/lunch-voting-system/badge.svg?branch=master&service=github)](https://coveralls.io/github/valery1707/lunch-voting-system?branch=master)
 [![codecov.io](https://codecov.io/github/valery1707/lunch-voting-system/coverage.svg?branch=master)](https://codecov.io/github/valery1707/lunch-voting-system)
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/86f3e1ba12934be6af1e39ca5e61c917)](https://www.codacy.com/app/valery1707/lunch-voting-system)
 [![Dependency Status](https://www.versioneye.com/user/projects/5634dd1836d0ab0019001c05/badge.svg?style=flat)](https://www.versioneye.com/user/projects/5634dd1836d0ab0019001c05)
 
 Simple service with JSON API using Hibernate/Spring/SpringMVC **without frontend**.
