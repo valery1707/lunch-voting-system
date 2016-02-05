@@ -221,8 +221,8 @@ public abstract class BaseEntityController<T extends IBaseEntity, REPO extends P
 			return invalid(validate);
 		}
 
-		update = repository.save(update);
-		return updated(clearSensitiveFields(update));
+		T updated = repository.save(update);
+		return updated(clearSensitiveFields(updated));
 	}
 
 	@ExceptionHandler(IllegalStateException.class)
