@@ -42,6 +42,6 @@ public class UtilsTest {
 
 	@Test(expected = IllegalAccessException.class)
 	public void testConstructor() throws Exception {
-		Utils utils = new Utils();
+		new Utils();
 	}
 }
