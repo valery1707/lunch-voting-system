@@ -482,7 +482,7 @@ public class EntityUtilsBean {
 	}
 
 	@Nonnull
-	static String toLikePattern(@Nullable Object rawPattern) {
+	protected static String toLikePattern(@Nullable Object rawPattern) {
 		if (rawPattern == null) {
 			return "%";
 		}
