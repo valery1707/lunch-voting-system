@@ -1,0 +1,18 @@
+# Use the JDK container from Docker Hub
+box: java:8-jdk
+
+# The steps that will be executed in the build pipeline
+build:
+  steps:
+    # Build the project
+    - ./gradlew --no-search-upward assemble
+    # Test the project
+    - ./gradlew --no-search-upward check
+
+# The steps that will be executed in the deploy pipeline
+deploy:
+  steps:
+    - script
+      name: not-implemented
+      code: |
+        echo 'Deploy is not implemented'

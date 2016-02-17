@@ -3,6 +3,7 @@
 [![Build status](https://codeship.com/projects/7d03b270-a8ac-0133-5371-2a9c037ce78e/status?branch=master)](https://codeship.com/projects/130683)
 [![Build status](https://circleci.com/gh/valery1707/lunch-voting-system.svg?style=svg)](https://circleci.com/gh/valery1707/lunch-voting-system)
 [![Build Status](https://drone.io/github.com/valery1707/lunch-voting-system/status.png)](https://drone.io/github.com/valery1707/lunch-voting-system/latest)
+[![Build status](https://app.wercker.com/status/19ff06a2e2da0ce7e080f1ebf858f948/s/master)](https://app.wercker.com/project/bykey/19ff06a2e2da0ce7e080f1ebf858f948)
 
 [![Coverage Status](https://coveralls.io/repos/valery1707/lunch-voting-system/badge.svg?branch=master&service=github)](https://coveralls.io/github/valery1707/lunch-voting-system?branch=master)
 [![codecov.io](https://codecov.io/github/valery1707/lunch-voting-system/coverage.svg?branch=master)](https://codecov.io/github/valery1707/lunch-voting-system)
