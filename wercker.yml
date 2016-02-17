@@ -31,7 +31,9 @@ deploy:
     - script:
       name: build
       code: |
-        ./gradlew --no-search-upward assemble
+        java -version
+        javac -version
+        ./gradlew --no-search-upward --stacktrace assemble
     # Test the project
     - script:
       name: test
