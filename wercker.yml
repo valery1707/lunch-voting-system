@@ -1,8 +1,7 @@
-# Use the JDK container from Docker Hub
-box: java:8-jdk
-
 # The steps that will be executed in the build pipeline
 build:
+  # Use the JDK container from Docker Hub
+  box: java:8-jdk
   steps:
     # Setup environment
     - script:
@@ -21,8 +20,20 @@ build:
 
 # The steps that will be executed in the deploy pipeline
 deploy:
+  # Use the JDK container from Docker Hub
+  box: java:9-jdk
   steps:
+    # Setup environment
     - script:
-      name: not-implemented
+      name: Gradle environment
+      code: export GRADLE_USER_HOME="${WERCKER_CACHE_DIR}/gradle/"
+    # Build the project
+    - script:
+      name: build
       code: |
-        echo 'Deploy is not implemented'
+        ./gradlew --no-search-upward assemble
+    # Test the project
+    - script:
+      name: test
+      code: |
+        ./gradlew --no-search-upward check
