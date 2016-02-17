@@ -4,6 +4,10 @@ box: java:8-jdk
 # The steps that will be executed in the build pipeline
 build:
   steps:
+    # Setup environment
+    - script:
+      name: Gradle environment
+      code: export GRADLE_USER_HOME="${WERCKER_CACHE_DIR}/gradle/"
     # Build the project
     - script:
       name: build
