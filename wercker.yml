@@ -3,39 +3,31 @@ build:
   # Use the JDK container from Docker Hub
   box: java:8-jdk
   steps:
-    # Setup environment
-    - script:
-      name: Gradle environment
-      code: export GRADLE_USER_HOME="${WERCKER_CACHE_DIR}/gradle/"
     # Build the project
-    - script:
+    - valery1707/gradle:
       name: build
-      code: |
-        ./gradlew --no-search-upward assemble
+      tasks: clean assemble
     # Test the project
-    - script:
+    - valery1707/gradle:
       name: test
-      code: |
-        ./gradlew --no-search-upward check
+      tasks: check
 
 # The steps that will be executed in the deploy pipeline
 deploy:
   # Use the JDK container from Docker Hub
   box: java:9-jdk
   steps:
-    # Setup environment
+    # Java version
     - script:
-      name: Gradle environment
-      code: export GRADLE_USER_HOME="${WERCKER_CACHE_DIR}/gradle/"
-    # Build the project
-    - script:
-      name: build
+      name: java version
       code: |
         java -version
         javac -version
-        ./gradlew --no-search-upward --stacktrace assemble
+    # Build the project
+    - valery1707/gradle:
+      name: build
+      tasks: --stacktrace clean assemble
     # Test the project
-    - script:
+    - valery1707/gradle:
       name: test
-      code: |
-        ./gradlew --no-search-upward check
+      tasks: check
