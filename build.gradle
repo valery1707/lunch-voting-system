@@ -85,10 +85,10 @@ dependencies {
 	compile 'javax.transaction:javax.transaction-api:1.2'
 
 	//JSON parse library
-	compile 'com.fasterxml.jackson.core:jackson-annotations:2.7.1'
-	compile 'com.fasterxml.jackson.core:jackson-core:2.7.1'
-	compile 'com.fasterxml.jackson.core:jackson-databind:2.7.1-1'
-	compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.7.1'
+	compile 'com.fasterxml.jackson.core:jackson-annotations:2.7.2'
+	compile 'com.fasterxml.jackson.core:jackson-core:2.7.2'
+	compile 'com.fasterxml.jackson.core:jackson-databind:2.7.2'
+	compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.7.2'
 
 	//Servlet container
 	compile 'javax.servlet:javax.servlet-api:3.1.0'
