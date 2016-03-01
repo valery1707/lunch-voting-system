@@ -32,7 +32,7 @@ ext['jetty.version'] = '9.3.7.v20160115'
 apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
 jacoco {
-	toolVersion = "0.7.5.201505241946"
+	toolVersion = "0.7.6.201602180812"
 }
 buildscript {
 	dependencies {
