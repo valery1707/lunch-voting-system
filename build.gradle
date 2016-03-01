@@ -46,6 +46,13 @@ jacocoTestReport {
 	}
 }
 
+buildscript {
+	dependencies {
+		classpath 'org.standardout:gradle-versioneye-plugin:1.2.0'
+	}
+}
+apply plugin: 'org.standardout.versioneye'
+
 dependencies {
 	//Logging
 	compile "org.slf4j:slf4j-api:1.7.16"

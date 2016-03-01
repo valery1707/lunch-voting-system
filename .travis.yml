@@ -13,3 +13,4 @@ after_success:
   - ./gradlew jacocoTestReport coveralls
   - codecov
   - ${HOME}/jpm/bin/codacy-coverage-reporter -l Java -r ./build/reports/jacoco/test/jacocoTestReport.xml
+  - ./gradlew -Pversioneye.projectid=${VERSION_EYE__PROJECT_ID} -Pversioneye.api_key=${VERSION_EYE__API_KEY} versionEyeUpdate
