@@ -100,7 +100,7 @@ dependencies {
 	compile 'org.apache.tomcat:tomcat-jdbc:8.0.32'
 
 	//Database migration tool
-	compile 'org.flywaydb:flyway-core:3.2.1'
+	compile 'org.flywaydb:flyway-core:4.0'
 
 	//Useful annotations
 	compile 'com.google.code.findbugs:jsr305:3.0.1'
