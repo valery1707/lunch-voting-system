@@ -98,7 +98,7 @@ dependencies {
 	//JDBC driver (and implicit in-memory database server)
 	runtime 'com.h2database:h2:1.4.191'
 	//JDBC Connection pooling
-	compile 'org.apache.tomcat:tomcat-jdbc:8.0.32'
+	compile 'org.apache.tomcat:tomcat-jdbc:8.5.0'
 
 	//Database migration tool
 	compile 'org.flywaydb:flyway-core:4.0'
