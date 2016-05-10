@@ -63,8 +63,8 @@ dependencies {
 	compile 'org.apache.commons:commons-lang3:3.4'
 
 	//Spring
-	compile "org.springframework:spring-context:4.2.5.RELEASE"
-	compile "org.springframework:spring-webmvc:4.2.5.RELEASE"
+	compile "org.springframework:spring-context:4.2.6.RELEASE"
+	compile "org.springframework:spring-webmvc:4.2.6.RELEASE"
 	compile "org.springframework.boot:spring-boot:1.3.5.RELEASE"
 	compile "org.springframework.boot:spring-boot-autoconfigure:1.3.5.RELEASE"
 
@@ -74,9 +74,9 @@ dependencies {
 	compile 'org.aspectj:aspectjweaver:1.8.9'
 
 	//Database integration
-	compile "org.springframework:spring-jdbc:4.2.5.RELEASE"
-	compile "org.springframework:spring-tx:4.2.5.RELEASE"
-	compile "org.springframework:spring-orm:4.2.5.RELEASE"
+	compile "org.springframework:spring-jdbc:4.2.6.RELEASE"
+	compile "org.springframework:spring-tx:4.2.6.RELEASE"
+	compile "org.springframework:spring-orm:4.2.6.RELEASE"
 	compile 'org.springframework.data:spring-data-jpa:1.10.1.RELEASE'
 	compile 'org.springframework.data:spring-data-commons:1.12.1.RELEASE'
 	compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
@@ -118,7 +118,7 @@ dependencies {
 	testCompile "org.mockito:mockito-core:1.10.19"
 	testCompile "org.hamcrest:hamcrest-core:1.3"
 	testCompile "org.hamcrest:hamcrest-library:1.3"
-	testCompile "org.springframework:spring-test:4.2.5.RELEASE"
+	testCompile "org.springframework:spring-test:4.2.6.RELEASE"
 	testCompile "org.springframework.security:spring-security-test:4.0.4.RELEASE"
 	testCompile "com.jayway.jsonpath:json-path:2.2.0"
 	testCompile "com.jayway.jsonpath:json-path-assert:2.2.0"
