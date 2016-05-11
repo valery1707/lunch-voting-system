@@ -69,8 +69,8 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-autoconfigure:1.3.5.RELEASE"
 
 	//Spring security
-	compile "org.springframework.security:spring-security-config:4.0.4.RELEASE"
-	compile "org.springframework.security:spring-security-web:4.0.4.RELEASE"
+	compile "org.springframework.security:spring-security-config:4.1.0.RELEASE"
+	compile "org.springframework.security:spring-security-web:4.1.0.RELEASE"
 	compile 'org.aspectj:aspectjweaver:1.8.9'
 
 	//Database integration
@@ -119,7 +119,7 @@ dependencies {
 	testCompile "org.hamcrest:hamcrest-core:1.3"
 	testCompile "org.hamcrest:hamcrest-library:1.3"
 	testCompile "org.springframework:spring-test:4.2.6.RELEASE"
-	testCompile "org.springframework.security:spring-security-test:4.0.4.RELEASE"
+	testCompile "org.springframework.security:spring-security-test:4.1.0.RELEASE"
 	testCompile "com.jayway.jsonpath:json-path:2.2.0"
 	testCompile "com.jayway.jsonpath:json-path-assert:2.2.0"
 	testCompile "org.assertj:assertj-core:3.4.1"
