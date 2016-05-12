@@ -5,7 +5,7 @@ jdk:
 
 before_install:
   - pip install --user codecov
-  - curl -sL http://bit.ly/jpm4j >jpm4j.jar
+  - curl -sL https://bndtools.ci.cloudbees.com/job/bnd.master/lastSuccessfulBuild/artifact/biz.aQute.jpm/generated/biz.aQute.jpm.run.jar >jpm4j.jar
   - java -jar jpm4j.jar --user init
   - ${HOME}/jpm/bin/jpm install com.codacy:codacy-coverage-reporter:assembly
 
